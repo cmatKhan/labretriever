@@ -7,10 +7,10 @@
 
   # # Set the log threshold to INFO, which means that INFO, WARNING, and ERROR
   # # messages will be logged, but DEBUG messages will not
-  futile.logger::flog.threshold(futile.logger::WARN)
+  futile.logger::flog.threshold(futile.logger::INFO)
   #
   # # Log a message at the INFO level to indicate that the package has been loaded
-  futile.logger::flog.info(
+  futile.logger::flog.debug(
     sprintf("Package '%s' version %s loaded",
             pkgname,
             packageVersion(pkgname)))

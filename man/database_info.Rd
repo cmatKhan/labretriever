@@ -3,56 +3,56 @@
 \docType{data}
 \name{database_info}
 \alias{database_info}
-\title{URLs and other information for accessing the database.}
+\title{Database Information for the Yeast Compendium API}
 \format{
-A list containing information about the database.
+A list containing the following elements:
+\describe{
+\item{base_url}{The base URL for the API (a character string).}
+\item{endpoints}{
+A list of API endpoints (character strings) for various resources:
+\describe{
+\item{auth_token}{Authentication token endpoint.}
+\item{chrmap}{Chromosome map endpoint.}
+\item{genes}{Genes endpoint.}
+\item{genes_with_effects}{Genes with effects endpoint.}
+\item{promoterregions}{Promoter regions endpoint.}
+\item{promoterregions_targets}{Promoter regions targets endpoint.}
+\item{harbisonchip}{Harbison ChIP endpoint.}
+\item{harbisonchip_with_annote}{Harbison ChIP with
+annotations endpoint.}
+\item{kemmerentfko}{Kemmeren TF knockout endpoint.}
+\item{mcisaaczev}{McIsaac ZEV endpoint.}
+\item{background}{Background endpoint.}
+\item{cctf}{CC TF endpoint.}
+\item{ccexperiment}{CC experiment endpoint.}
+\item{hops}{HOPS endpoint.}
+\item{hopsreplicatesig}{HOPS replicate significance endpoint.}
+\item{hopsreplicatesig_with_annote}{HOPS replicate significance
+with annotations endpoint.}
+\item{qcmetrics}{QC metrics endpoint.}
+\item{qcmanualreview}{QC manual review endpoint.}
+\item{qcr1tor2}{QC R1 to R2 endpoint.}
+\item{qcr2tor1}{QC R2 to R1 endpoint.}
+\item{qctftotransposon}{QC TF to transposon endpoint.}
+\item{expression}{Expression endpoint.}
+\item{pagination_info}{Pagination information endpoint.}
+\item{row_count}{Row count endpoint.}
+}
+}
+}
 }
 \usage{
 database_info
 }
 \description{
-A list of lists containing endpoint addresses for the various views in the database.
-These are intended to be appended to the URL of the database itself.
-
-@field base_url The base url, to which the endpoints may be appended,
-to the database
+A list containing the base URL and various API endpoints to interact
+with the Yeast Compendium API.
 }
-\section{Fields}{
-
-\describe{
-\item{\code{endpoints}}{A list containing endpoint addresses for various views in the database.
-These endpoints are intended to be appended to the URL of the database.
-The currently configured endpoints are\if{html}{\out{
-  <li><code><b>auth_token</b></code>: Authentication token endpoint address.</li></br>
-  <li><code><b>chrmap</b></code>: Chromosome map endpoint address.</li></br>
-  <li><code><b>genes</b></code>: Genes endpoint address.</li></br>
-  <li><code><b>promoterregions</b></code>: Promoter regions endpoint address.</li></br>
-  <li><code><b>harbisonchip</b></code>: Harbison chip endpoint address.</li></br>
-  <li><code><b>kemmerentfko</b></code>: Kemmeren TF knockout endpoint address.</li></br>
-  <li><code><b>mcisaaczev</b></code>: McIsaac Zev endpoint address.</li></br>
-  <li><code><b>background</b></code>: Background endpoint address.</li></br>
-  <li><code><b>cctf</b></code>: CCTF endpoint address.</li></br>
-  <li><code><b>ccexperiment</b></code>: CC experiment endpoint address.</li></br>
-  <li><code><b>hops</b></code>: HOPS endpoint address.</li></br>
-  <li><code><b>hopsreplicatesig</b></code>: HOPS replicate signature endpoint address.</li></br>
-  <li><code><b>qcmetrics</b></code>: QC metrics endpoint address.</li></br>
-  <li><code><b>qcmanualreview</b></code>: QC manual review endpoint address.</li></br>
-  <li><code><b>qcr1tor2</b></code>: QC R1 to R2 endpoint address.</li></br>
-  <li><code><b>qcr2tor1</b></code>: QC R2 to R1 endpoint address.</li></br>
-  <li><code><b>qctftotransposon</b></code>: QC TF to transposon endpoint address.</li></br>
-  <li><code><b>pagination_info</b></code>: Pagination info endpoint address.
-    Note that this should be appended to one of the data view URLS above</li></br>
-  <li><code><b>row_count</b></code>: Row count endpoint address.
-     Note that this should be appended to one of the data view URLS above</li>
-}}}
-}}
-
 \examples{
-data(database_info)
+# Accessing the base_url from the database_info object
+database_info$base_url
+# Accessing the genes endpoint from the database_info object
 database_info$endpoints$genes
-paste0('www.some-url.com',
-       database_info$endpoints$genes,
-       database_info$endpoints$pagination_info)
 
 }
 \keyword{datasets}
