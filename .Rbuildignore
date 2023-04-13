@@ -7,3 +7,8 @@ dockerfile
 ^README\.Rmd$
 ^LICENSE\.md$
 .dockerignore
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$
+^codecov\.yml$

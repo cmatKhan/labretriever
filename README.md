@@ -1,15 +1,13 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-## output: github_document
-
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
 # labretriever <a href=''><img src='man/figures/logo.png' align="right" height="135" /></a>
 
-# labretriever
-
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/cmatKhan/labretriever/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/cmatKhan/labretriever/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/cmatKhan/labretriever/branch/main/graph/badge.svg)](https://app.codecov.io/gh/cmatKhan/labretriever?branch=main)
 <!-- badges: end -->
 
 The goal of labretriever is to …
@@ -53,7 +51,7 @@ example workflow can be found here:
 
 You can also embed plots, for example:
 
-<img src="README-pressure-1.png" width="100%" />
+<img src="man/figures/README-pressure-1.png" width="100%" />
 
 In that case, don’t forget to commit and push the resulting figure
 files, so they display on GitHub and CRAN.
