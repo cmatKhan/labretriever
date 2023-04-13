@@ -52,4 +52,5 @@ library(labretriever)
 Given some API requirements, configuring labretriever for use with a different 
 set of endpoints simply means overwriting the `database_info`.  
 
-More details on the API expectations may be found in the [documentation](https://cmatkhan.github.io/labretriever/)
+More details on the API expectations may be found in the 
+[documentation](https://cmatkhan.github.io/labretriever/)
