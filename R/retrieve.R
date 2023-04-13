@@ -63,6 +63,8 @@
 #'
 #' @export
 get_user_auth_token <- function(url, username, password) {
+  # if successful, this will be overwritten
+  output = NULL
   # see package httr for help
   response <- httr::POST(
     url = url,
@@ -85,12 +87,14 @@ get_user_auth_token <- function(url, username, password) {
       sep = " "
     ))
     futile.logger::flog.debug(response_msg)
-    httr::content(response)$token
+    output = httr::content(response)$token
   } else {
     futile.logger::flog.error(
       labretriever::extend_msg_error(response_msg, response, url)
     )
   }
+
+  output
 }
 
 
@@ -145,6 +149,10 @@ get_pagination_info <- function(
     url,
     token,
     pagination_endpoint = database_info$endpoints$pagination_info) {
+
+  # if successful, this will be overwritten
+  output = NULL
+
   # construct pagination end point
   pagination_url <- file.path(gsub("/$", "", url), pagination_endpoint)
 
@@ -165,7 +173,7 @@ get_pagination_info <- function(
   if (httr::http_status(response)$category == "Success") {
     futile.logger::flog.debug(response_msg)
     # return a list, eg list(default_page_size = 10, page_size_limit = 10)
-    httr::content(response)
+    output = httr::content(response)
   } else {
     futile.logger::flog.error(
       labretriever::extend_msg_error(
@@ -175,6 +183,8 @@ get_pagination_info <- function(
       )
     )
   }
+
+  output
 }
 
 
@@ -210,6 +220,8 @@ get_field_info <- function(
     token,
     fields_endpoint = "fields/") {
 
+  # if successful, this will be overwritten
+  output = NULL
   # TODO error handling -- should the slots all have entries, eg?
 
   # ensure that fields_endpoint ends in a /
@@ -235,7 +247,7 @@ get_field_info <- function(
   if (httr::http_status(response)$category == "Success") {
     futile.logger::flog.debug(response_msg)
     # return the fields of the table as a list
-    httr::content(response)
+    output = httr::content(response)
   } else {
     futile.logger::flog.error(labretriever::extend_msg_error(
       response_msg,
@@ -243,6 +255,8 @@ get_field_info <- function(
       fields_url
     ))
   }
+
+  output
 }
 
 
@@ -289,6 +303,9 @@ get_record_count <- function(
     url,
     token,
     count_endpoint = database_info$endpoints$row_count) {
+
+  # if successful, this will be overwritten
+  output = NULL
   # construct row count endpoint
   count_url = ifelse(count_endpoint=='',
                      url,
@@ -311,7 +328,7 @@ get_record_count <- function(
   if (httr::http_status(response)$category == "Success") {
     futile.logger::flog.debug(response_msg)
     # return a of the table fields
-    httr::content(response)
+    output = httr::content(response)
   } else {
     futile.logger::flog.error(labretriever::extend_msg_error(
       response_msg,
@@ -319,6 +336,8 @@ get_record_count <- function(
       count_url
     ))
   }
+
+  output
 }
 
 
@@ -354,6 +373,9 @@ get_table_by_page <- function(url, token, page_size) {
   # of this function with different start_indexes
   inner <- function(start_index) {
 
+    # if successful, this will be overwritten
+    output = NULL
+
     index_string = paste0("limit=",page_size,"&offset=",start_index)
     curr_url= paste0(url, ifelse(grepl("\\?", url), "&", "?"), index_string)
 
@@ -373,7 +395,7 @@ get_table_by_page <- function(url, token, page_size) {
     if (httr::http_status(response)$category == "Success") {
       futile.logger::flog.debug(response_msg)
       # return the content of the response
-      httr::content(response, "text", encoding = "UTF-8")
+      output = httr::content(response, "text", encoding = "UTF-8")
     } else {
       futile.logger::flog.error(
         labretriever::extend_msg_error(
@@ -383,6 +405,8 @@ get_table_by_page <- function(url, token, page_size) {
         )
       )
     }
+
+    output
   }
   # return the inner function to the caller
   inner
@@ -416,8 +440,13 @@ get_table_by_page <- function(url, token, page_size) {
 retrieve <- function(
     url,
     token, ...) {
+  # if successful, this will be overwritten
+  output = NULL
   if ('filter_list' %in% names(list(...))){
-      url_list = labretriever::apply_filters_to_url(url,list(...)$filter_list,token)
+      url_list = labretriever::apply_filters_to_url(
+        url,
+        list(...)$filter_list,token)
+
       url = url_list$url
       pagination_info = get_pagination_info(url_list$pagination, token, '')
       total_records = get_record_count(url_list$count, token, '')
@@ -443,7 +472,7 @@ retrieve <- function(
       table_by_page <- get_table_by_page(url, token, page_size)
 
       # Download pages in parallel
-      foreach::foreach(
+      output = foreach::foreach(
         i = 1:total_pages,
         .combine = "rbind"
       ) %dopar% {
@@ -487,6 +516,7 @@ retrieve <- function(
       futile.logger::flog.error(
         paste0("Error in ", match.call()[[1]], "(): ", e)
       )
-    }
+    },
+    finally = return(output)
   )
 }

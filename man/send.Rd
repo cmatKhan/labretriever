@@ -4,7 +4,7 @@
 \alias{send}
 \title{Send a dataframe to a server endpoint}
 \usage{
-send(df, url, token)
+send(df, url, token, strict = TRUE, update = FALSE)
 }
 \arguments{
 \item{df}{A dataframe to send to the server endpoint.}
@@ -14,6 +14,14 @@ a request. This should be constructed using database_info -- see the
 example.}
 
 \item{token}{The authentication token to use when accessing the endpoint}
+
+\item{strict}{Ensure that writable columns in the database table are
+present in input df. the Defaults to TRUE.}
+
+\item{update}{Set to TRUE if you are updating a table. This will turn off
+the strict check -- only the 'id' column is required.
+Additional columns will be those updated, according to the 'id'. This
+will be used to append to the url}
 }
 \value{
 Nothing is returned explicitly; the function logs the HTTP

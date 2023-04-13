@@ -41,7 +41,6 @@ test_that("get_user_auth_token returns error message for invalid credentials", {
       status = 401
     )
 
-  # Call the function and check the results
   res <- capture.output(get_user_auth_token(token_url, username, password))
 
   # parse out message for testing

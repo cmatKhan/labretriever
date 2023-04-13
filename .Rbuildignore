@@ -2,3 +2,8 @@
 ^renv\.lock$
 ^labretriever\.Rproj$
 ^\.Rproj\.user$
+tmp
+dockerfile
+^README\.Rmd$
+^LICENSE\.md$
+.dockerignore

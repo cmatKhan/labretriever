@@ -22,6 +22,9 @@
 #'       \item{mcisaaczev}{McIsaac ZEV endpoint.}
 #'       \item{background}{Background endpoint.}
 #'       \item{cctf}{CC TF endpoint.}
+#'       \item{cctf_tf_list}{a dataframe with columns tf_id, tf_locus_tag,
+#'         tf_gene which describes the TFs which have been interrogated by
+#'         calling cards}
 #'       \item{ccexperiment}{CC experiment endpoint.}
 #'       \item{hops}{HOPS endpoint.}
 #'       \item{hopsreplicatesig}{HOPS replicate significance endpoint.}
@@ -29,6 +32,7 @@
 #'         with annotations endpoint.}
 #'       \item{qcmetrics}{QC metrics endpoint.}
 #'       \item{qcmanualreview}{QC manual review endpoint.}
+#'       \item{qcreview}{This is the endpoint for the summarized QC view with which most users will want to interactive}
 #'       \item{qcr1tor2}{QC R1 to R2 endpoint.}
 #'       \item{qcr2tor1}{QC R2 to R1 endpoint.}
 #'       \item{qctftotransposon}{QC TF to transposon endpoint.}
@@ -52,7 +56,7 @@ database_info <- list(
     auth_token = "/api-token-auth/",
     chrmap = "/api/v1/chrmap/",
     genes = "/api/v1/genes/",
-    genes_with_effects = "/api/v1/genes/with-effects/",
+    genes_with_effects = "/api/v1/genes/effects/",
     promoterregions = "/api/v1/promoterregions/",
     promoterregions_targets = "/api/v1/promoterregions/targets/",
     harbisonchip = "/api/v1/harbisonchip/",
@@ -61,12 +65,14 @@ database_info <- list(
     mcisaaczev = "/api/v1/mcisaaczev/",
     background = "/api/v1/background/",
     cctf = "/api/v1/cctf/",
+    cctf_tf_list = '/api/v1/cctf/tf_list/',
     ccexperiment = "/api/v1/ccexperiment/",
     hops = "/api/v1/hops/",
     hopsreplicatesig = "/api/v1/hopsreplicatesig/",
     hopsreplicatesig_with_annote = "api/v1/hopsreplicatesig/with_annote/",
     qcmetrics = "/api/v1/qcmetrics/",
     qcmanualreview = "/api/v1/qcmanualreview/",
+    qcreview = 'api/v1/qc_review/',
     qcr1tor2 = "/api/v1/qcr1tor2/",
     qcr2tor1 = "/api/v1/qcr2tor1/",
     qctftotransposon = "/api/v1/qctftotransposon/",

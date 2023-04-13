@@ -24,6 +24,9 @@ annotations endpoint.}
 \item{mcisaaczev}{McIsaac ZEV endpoint.}
 \item{background}{Background endpoint.}
 \item{cctf}{CC TF endpoint.}
+\item{cctf_tf_list}{a dataframe with columns tf_id, tf_locus_tag,
+tf_gene which describes the TFs which have been interrogated by
+calling cards}
 \item{ccexperiment}{CC experiment endpoint.}
 \item{hops}{HOPS endpoint.}
 \item{hopsreplicatesig}{HOPS replicate significance endpoint.}
@@ -31,6 +34,7 @@ annotations endpoint.}
 with annotations endpoint.}
 \item{qcmetrics}{QC metrics endpoint.}
 \item{qcmanualreview}{QC manual review endpoint.}
+\item{qcreview}{This is the endpoint for the summarized QC view with which most users will want to interactive}
 \item{qcr1tor2}{QC R1 to R2 endpoint.}
 \item{qcr2tor1}{QC R2 to R1 endpoint.}
 \item{qctftotransposon}{QC TF to transposon endpoint.}

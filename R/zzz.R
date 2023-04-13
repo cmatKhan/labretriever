@@ -1,5 +1,6 @@
 #' @importFrom foreach registerDoSEQ
 #' @importFrom futile.logger flog.threshold flog.info INFO WARN
+#' @importFrom utils packageVersion
 .onLoad = function(libname, pkgname){
 
   # set default sequential backend for foreach %dopar%
@@ -13,6 +14,6 @@
   futile.logger::flog.debug(
     sprintf("Package '%s' version %s loaded",
             pkgname,
-            packageVersion(pkgname)))
+            utils::packageVersion(pkgname)))
 
 }
