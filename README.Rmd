@@ -34,7 +34,7 @@ devtools::install_github('https://github.com/cmatKhan/labretriever.git')
 
 There are three main objects in the public API:
 
-```{r example}
+```{r example, eval=FALSE}
 library(labretriever)
 
 # Get documentation on configured endpoints
