@@ -12,7 +12,7 @@ and the JSON format."><meta property="og:image" content="https://cmatkhan.github
     
     <a class="navbar-brand me-2" href="../index.html">labretriever</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,7 +48,16 @@ and the JSON format.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">send</span><span class="op">(</span><span class="va">df</span>, <span class="va">url</span>, <span class="va">token</span>, strict <span class="op">=</span> <span class="cn">TRUE</span>, update <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">send</span><span class="op">(</span></span>
+<span>  <span class="va">df</span>,</span>
+<span>  <span class="va">url</span>,</span>
+<span>  <span class="va">token</span>,</span>
+<span>  update <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  strict <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  async <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  csv <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  csv_postgres <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -58,13 +67,19 @@ and the JSON format.</p>
 
 
 <dt>url</dt>
-<dd><p>A character string specifying the view against which to send
-a request. This should be constructed using database_info -- see the
-example.</p></dd>
+<dd><p>The base URL of the endpoint, such as
+"http://127.0.0.1:8000/api/v1/genes/".</p></dd>
 
 
 <dt>token</dt>
-<dd><p>The authentication token to use when accessing the endpoint</p></dd>
+<dd><p>Your API authentication token, if required.</p></dd>
+
+
+<dt>update</dt>
+<dd><p>Set to TRUE if you are updating a table. This will turn off
+the strict check and ignore the the async or csv endpoints. Only the 'id'
+column is required. Additional columns will be those updated, according
+to the 'id'. This will be used to append to the url</p></dd>
 
 
 <dt>strict</dt>
@@ -72,11 +87,20 @@ example.</p></dd>
 present in input df. the Defaults to TRUE.</p></dd>
 
 
-<dt>update</dt>
-<dd><p>Set to TRUE if you are updating a table. This will turn off
-the strict check -- only the 'id' column is required.
-Additional columns will be those updated, according to the 'id'. This
-will be used to append to the url</p></dd>
+<dt>async</dt>
+<dd><p>Boolean. Default FALSE. Post the data to an
+asynchronous endpoint</p></dd>
+
+
+<dt>csv</dt>
+<dd><p>Boolean. Default FALSE. Post the data as a csv file</p></dd>
+
+
+<dt>csv_postgres</dt>
+<dd><p>Boolean. Default FALSE. This sends a csv file to an
+endpoint set up to create bulk records using the postgresql COPY
+method. This is faster for larger data, but will not work on other
+database backends</p></dd>
 
 </dl></div>
     <div class="section level2">

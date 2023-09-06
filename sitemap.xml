@@ -40,13 +40,7 @@
     <loc>https://cmatkhan.github.io/labretriever/reference/get_field_info.html</loc>
   </url>
   <url>
-    <loc>https://cmatkhan.github.io/labretriever/reference/get_pagination_info.html</loc>
-  </url>
-  <url>
-    <loc>https://cmatkhan.github.io/labretriever/reference/get_record_count.html</loc>
-  </url>
-  <url>
-    <loc>https://cmatkhan.github.io/labretriever/reference/get_table_by_page.html</loc>
+    <loc>https://cmatkhan.github.io/labretriever/reference/get_paginated_data.html</loc>
   </url>
   <url>
     <loc>https://cmatkhan.github.io/labretriever/reference/get_user_auth_token.html</loc>
@@ -56,6 +50,15 @@
   </url>
   <url>
     <loc>https://cmatkhan.github.io/labretriever/reference/pipe.html</loc>
+  </url>
+  <url>
+    <loc>https://cmatkhan.github.io/labretriever/reference/post_csv.html</loc>
+  </url>
+  <url>
+    <loc>https://cmatkhan.github.io/labretriever/reference/post_json.html</loc>
+  </url>
+  <url>
+    <loc>https://cmatkhan.github.io/labretriever/reference/post_postgres_csv.html</loc>
   </url>
   <url>
     <loc>https://cmatkhan.github.io/labretriever/reference/post_update.html</loc>
