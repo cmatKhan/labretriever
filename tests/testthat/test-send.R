@@ -4,7 +4,7 @@ test_that("send() correctly handles field differences and logs messages", {
   url <- "http://example.com/api/"
   endpoint <- "myendpoint"
   auth_token <- "my_token"
-
+  browser()
   # Mock the fields endpoint
   fields_json <- '{
     "readable": ["id", "name", "description"],
@@ -34,7 +34,6 @@ test_that("send() correctly handles field differences and logs messages", {
       headers = list("Content-Type" = "application/json"),
       status = 200
     )
-
   # Capture the log messages
   futile.logger::flog.threshold(futile.logger::INFO)
   log_messages <- testthat::capture_output_lines(

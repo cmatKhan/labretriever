@@ -51,7 +51,7 @@
 #'
 #' @export
 database_info <- list(
-  base_url = "http://127.0.0.1:8000",
+  base_url = "ec2-3-143-144-93.us-east-2.compute.amazonaws.com",
   endpoints = list(
     auth_token = "/api-token-auth/",
     chrmap = "/api/v1/chrmap/",

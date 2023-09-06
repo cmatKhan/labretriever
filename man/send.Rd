@@ -4,24 +4,42 @@
 \alias{send}
 \title{Send a dataframe to a server endpoint}
 \usage{
-send(df, url, token, strict = TRUE, update = FALSE)
+send(
+  df,
+  url,
+  token,
+  update = FALSE,
+  strict = TRUE,
+  async = FALSE,
+  csv = FALSE,
+  csv_postgres = FALSE
+)
 }
 \arguments{
 \item{df}{A dataframe to send to the server endpoint.}
 
-\item{url}{A character string specifying the view against which to send
-a request. This should be constructed using database_info -- see the
-example.}
+\item{url}{The base URL of the endpoint, such as
+"http://127.0.0.1:8000/api/v1/genes/".}
 
-\item{token}{The authentication token to use when accessing the endpoint}
+\item{token}{Your API authentication token, if required.}
+
+\item{update}{Set to TRUE if you are updating a table. This will turn off
+the strict check and ignore the the async or csv endpoints. Only the 'id'
+column is required. Additional columns will be those updated, according
+to the 'id'. This will be used to append to the url}
 
 \item{strict}{Ensure that writable columns in the database table are
 present in input df. the Defaults to TRUE.}
 
-\item{update}{Set to TRUE if you are updating a table. This will turn off
-the strict check -- only the 'id' column is required.
-Additional columns will be those updated, according to the 'id'. This
-will be used to append to the url}
+\item{async}{Boolean. Default FALSE. Post the data to an
+asynchronous endpoint}
+
+\item{csv}{Boolean. Default FALSE. Post the data as a csv file}
+
+\item{csv_postgres}{Boolean. Default FALSE. This sends a csv file to an
+endpoint set up to create bulk records using the postgresql COPY
+method. This is faster for larger data, but will not work on other
+database backends}
 }
 \value{
 Nothing is returned explicitly; the function logs the HTTP

@@ -4,14 +4,16 @@
 \alias{retrieve}
 \title{Retrieve from a REST API with pagination}
 \usage{
-retrieve(url, token, ...)
+retrieve(url, token, retrieve_all = TRUE, ...)
 }
 \arguments{
-\item{url}{A character string specifying the view against which to send
-a request. This should be constructed using database_info -- see the
-example.}
+\item{url}{The base URL of the endpoint, such as
+"http://127.0.0.1:8000/api/v1/genes/".}
 
-\item{token}{The authentication token to use when accessing the endpoint}
+\item{token}{Your API authentication token, if required.}
+
+\item{retrieve_all}{Boolean. Default TRUE. Set to FALSE to return
+only a single page, if the data is paginated}
 
 \item{...}{
   Arguments passed on to \code{\link[=apply_filters_to_url]{apply_filters_to_url}}
