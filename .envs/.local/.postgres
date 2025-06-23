@@ -1,0 +1,7 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=labretriever
+POSTGRES_USER=XcJpZFwblfJMYqTOCoPHMaFfHgBxKWaq
+POSTGRES_PASSWORD=y7jfadz4smn7YjPcILFaAWHqnUyTPooaCkcZ4JAS638qzVv26G6pL4At3HO3P5Av
