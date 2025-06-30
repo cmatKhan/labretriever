@@ -8,7 +8,6 @@ TODO -- remove me once this verified to be documented elsewhere
 
 ```raw
 ➜  tmpdb cookiecutter https://github.com/cookiecutter/cookiecutter-django
-You've downloaded /home/chase/.cookiecutters/cookiecutter-django before. Is it okay to delete and
 re-download it? [y/n] (y): y
   [1/27] project_name (My Awesome Project): asdasdf
   [2/27] project_slug (asdasdf): asdfasdfasdf
@@ -178,3 +177,4 @@ The following details how to deploy this application.
 ### Docker
 
 See detailed [cookiecutter-django Docker documentation](https://cookiecutter-django.readthedocs.io/en/latest/3-deployment/deployment-with-docker.html).
+
