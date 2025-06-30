@@ -67,7 +67,8 @@ class GzipFileUploadWithIdMixin:  # pylint: disable=too-few-public-methods
         :type upload_dir: str
         :param extension: The file extension to use. By default set to "", which
             will use the extension of the file name. If the file name does not
-            have an extension that can be easily parsed out, `extension` will be set to `.txt.gz`.
+            have an extension that can be easily parsed out, `extension`
+            will be set to `.txt.gz`.
         :type extension: str
 
         :return: None
@@ -101,7 +102,8 @@ class GzipFileUploadWithIdMixin:  # pylint: disable=too-few-public-methods
             self_with_pk = cast("HasPkProtocol", self)
             # raise AttributeError if self does not have a pk attribute
             if not self_with_pk.pk:
-                raise AttributeError("%s does not have a pk attribute", self)
+                msg = f"{self} does not have a pk attribute"
+                raise AttributeError(msg)
             logger.debug(
                 "Updating file name for %s to %s/%s.%s",
                 self_with_pk,
