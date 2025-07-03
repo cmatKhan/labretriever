@@ -42,14 +42,6 @@ class FileValidator(BaseModel):
         default=True,
         help_text="Used to disable validators without deleting them.",
     )
-    notes = models.CharField(
-        max_length=1000,
-        default="none",
-        help_text=(
-            "CharField with a max length of 1000, representing any notes "
-            "about the file validator"
-        ),
-    )
 
     def __str__(self):
         return self.name

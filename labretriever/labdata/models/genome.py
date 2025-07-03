@@ -25,14 +25,6 @@ class Genome(BaseModel):
             "CharField with a max length of 100, representing the version of the genome"
         ),
     )
-    notes = models.CharField(
-        max_length=1000,
-        default="none",
-        help_text=(
-            "CharField with a max length of 1000, representing any notes "
-            "about the genome"
-        ),
-    )
 
     def __str__(self):
         return f"{self.organism.name} {self.version}"

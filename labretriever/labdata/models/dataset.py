@@ -64,14 +64,6 @@ class Dataset(BaseModel):
             "optional longer description of the dataset"
         ),
     )
-    notes = models.CharField(
-        max_length=1000,
-        default="none",
-        help_text=(
-            "CharField with a max length of 1000, representing any notes "
-            "about the dataset"
-        ),
-    )
 
     def __str__(self):
         return self.name
