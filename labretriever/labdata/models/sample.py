@@ -42,14 +42,6 @@ class Sample(BaseModel):
         ),
         db_index=True,
     )
-    notes = models.CharField(
-        max_length=1000,
-        default="none",
-        help_text=(
-            "CharField with a max length of 1000, representing any notes "
-            "about the sample"
-        ),
-    )
 
     def __str__(self):
         tissue_str = f" ({self.tissue})" if self.tissue else ""

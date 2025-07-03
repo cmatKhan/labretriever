@@ -18,14 +18,6 @@ class Organism(BaseModel):
             "scientific name of the organism"
         ),
     )
-    notes = models.CharField(
-        max_length=1000,
-        default="none",
-        help_text=(
-            "CharField with a max length of 1000, representing any notes "
-            "about the organism"
-        ),
-    )
 
     def __str__(self):
         return self.name

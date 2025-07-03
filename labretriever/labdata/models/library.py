@@ -26,15 +26,6 @@ class Library(BaseModel):
         ),
         db_index=True,
     )
-    file = models.FileField(upload_to="libraries/")
-    notes = models.CharField(
-        max_length=1000,
-        default="none",
-        help_text=(
-            "CharField with a max length of 1000, representing any notes "
-            "about the library"
-        ),
-    )
 
     def __str__(self):
         return f"Library {self.batch} for {self.sample}"
