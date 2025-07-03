@@ -13,7 +13,7 @@ class Fastq(BaseModel):
 
     library = models.ManyToManyField(
         "Library",
-        related_name="fastq_files",
+        related_name="fastq",
         help_text=(
             "ManyToManyField to the Library model, representing the "
             "libraries of the FASTQ file"
@@ -22,7 +22,7 @@ class Fastq(BaseModel):
     fileformat = models.ForeignKey(
         "FileFormat",
         on_delete=models.CASCADE,
-        related_name="fastq_files",
+        related_name="fastq",
         help_text=(
             "ForeignKey to the FileFormat model, representing the format "
             "of the FASTQ file"
@@ -79,19 +79,29 @@ class Fastq(BaseModel):
         upload_to="fastq/",
         help_text="FileField representing the R1 of the FASTQ file",
     )
+    r1_md5sum = models.CharField(
+        max_length=32,
+        blank=True,
+        help_text=(
+            "CharField with a max length of 32, representing the MD5 checksum "
+            "of the R1 FASTQ file"
+        ),
+        unique=True,
+    )
     r2 = models.FileField(
         upload_to="fastq/",
         blank=True,
         null=True,
         help_text="FileField representing the R2 of the FASTQ file",
     )
-    notes = models.CharField(
-        max_length=1000,
-        default="none",
+    r2_md5sum = models.CharField(
+        max_length=32,
+        blank=True,
         help_text=(
-            "CharField with a max length of 1000, representing any notes "
-            "about the FASTQ file"
+            "CharField with a max length of 32, representing the MD5 checksum "
+            "of the R2 FASTQ file"
         ),
+        unique=True,
     )
 
     def __str__(self):

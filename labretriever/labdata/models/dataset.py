@@ -21,7 +21,7 @@ class Dataset(BaseModel):
     assay = models.ForeignKey(
         "Assay",
         on_delete=models.CASCADE,
-        related_name="datasets",
+        related_name="dataset",
         help_text=(
             "ForeignKey to the Assay model, representing the assay of the dataset"
         ),
@@ -62,14 +62,6 @@ class Dataset(BaseModel):
         help_text=(
             "CharField with a max length of 1000, representing the "
             "optional longer description of the dataset"
-        ),
-    )
-    notes = models.CharField(
-        max_length=1000,
-        default="none",
-        help_text=(
-            "CharField with a max length of 1000, representing any notes "
-            "about the dataset"
         ),
     )
 

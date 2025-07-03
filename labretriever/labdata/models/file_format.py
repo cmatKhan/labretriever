@@ -25,7 +25,7 @@ class FileFormat(BaseModel):
     validator = models.ForeignKey(
         "FileValidator",
         on_delete=models.CASCADE,
-        related_name="file_formats",
+        related_name="fileformats",
         blank=True,
         null=True,
         help_text=(
@@ -39,14 +39,6 @@ class FileFormat(BaseModel):
         help_text=(
             "CharField with a max length of 1000, representing the "
             "description of the file format"
-        ),
-    )
-    notes = models.CharField(
-        max_length=1000,
-        default="none",
-        help_text=(
-            "CharField with a max length of 1000, representing any notes "
-            "about the file format"
         ),
     )
 

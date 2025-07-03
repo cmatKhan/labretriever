@@ -11,7 +11,7 @@ class Library(BaseModel):
     sample = models.ForeignKey(
         "Sample",
         on_delete=models.CASCADE,
-        related_name="libraries",
+        related_name="library",
         help_text=(
             "ForeignKey to the Sample model, representing the sample of the library"
         ),
@@ -25,15 +25,6 @@ class Library(BaseModel):
             "in the case of calling cards"
         ),
         db_index=True,
-    )
-    file = models.FileField(upload_to="libraries/")
-    notes = models.CharField(
-        max_length=1000,
-        default="none",
-        help_text=(
-            "CharField with a max length of 1000, representing any notes "
-            "about the library"
-        ),
     )
 
     def __str__(self):

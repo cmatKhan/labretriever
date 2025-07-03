@@ -21,7 +21,7 @@ class Sample(BaseModel):
     dataset = models.ForeignKey(
         "Dataset",
         on_delete=models.CASCADE,
-        related_name="samples",
+        related_name="sample",
         help_text=(
             "ForeignKey to the Dataset model, representing the dataset of the sample"
         ),
@@ -41,14 +41,6 @@ class Sample(BaseModel):
             "in the case of calling cards"
         ),
         db_index=True,
-    )
-    notes = models.CharField(
-        max_length=1000,
-        default="none",
-        help_text=(
-            "CharField with a max length of 1000, representing any notes "
-            "about the sample"
-        ),
     )
 
     def __str__(self):

@@ -29,14 +29,6 @@ class Assay(BaseModel):
             "description of the assay"
         ),
     )
-    notes = models.CharField(
-        max_length=1000,
-        default="none",
-        help_text=(
-            "CharField with a max length of 1000, representing any notes "
-            "about the assay"
-        ),
-    )
 
     def __str__(self):
         return self.name

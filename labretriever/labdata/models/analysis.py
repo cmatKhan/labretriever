@@ -1,9 +1,10 @@
 from django.db import models
 
 from .base_model import BaseModel
+from .file_model import FileModel
 
 
-class Analysis(BaseModel):
+class Analysis(BaseModel, FileModel):
     """
     Model representing analysis results.
 
@@ -26,15 +27,6 @@ class Analysis(BaseModel):
     parameters = models.TextField(
         help_text="TextField representing the parameters of the analysis",
     )
-    fileformat = models.ForeignKey(
-        "FileFormat",
-        on_delete=models.CASCADE,
-        related_name="analyses",
-        help_text=(
-            "ForeignKey to the FileFormat model, representing the format "
-            "of the analysis"
-        ),
-    )
     input = models.JSONField(
         help_text=(
             "Keys must be a Table in the database, values are a list of "
@@ -42,14 +34,6 @@ class Analysis(BaseModel):
         ),
         blank=False,
         null=False,
-    )
-    notes = models.CharField(
-        max_length=1000,
-        default="none",
-        help_text=(
-            "CharField with a max length of 1000, representing any notes "
-            "about the analysis"
-        ),
     )
 
     def __str__(self):

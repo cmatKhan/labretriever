@@ -11,7 +11,7 @@ class Genome(BaseModel):
     organism = models.ForeignKey(
         "Organism",
         on_delete=models.CASCADE,
-        related_name="genomes",
+        related_name="genome",
         help_text=(
             "ForeignKey to the Organism model, representing the organism of the genome"
         ),
@@ -23,14 +23,6 @@ class Genome(BaseModel):
         default="none",
         help_text=(
             "CharField with a max length of 100, representing the version of the genome"
-        ),
-    )
-    notes = models.CharField(
-        max_length=1000,
-        default="none",
-        help_text=(
-            "CharField with a max length of 1000, representing any notes "
-            "about the genome"
         ),
     )
 

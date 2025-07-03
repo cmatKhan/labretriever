@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from .base_model import BaseModel
@@ -24,7 +25,7 @@ class Fasta(BaseModel):
     organism = models.ForeignKey(
         "Organism",
         on_delete=models.CASCADE,
-        related_name="fasta_files",
+        related_name="fasta",
         help_text=(
             "ForeignKey to the Organism model, representing the organism "
             "of the FASTA file"
@@ -33,7 +34,7 @@ class Fasta(BaseModel):
     genome = models.ForeignKey(
         "Genome",
         on_delete=models.CASCADE,
-        related_name="fasta_files",
+        related_name="fasta",
         help_text=(
             "ForeignKey to the Genome model, representing the genome of the FASTA file"
         ),
@@ -58,22 +59,39 @@ class Fasta(BaseModel):
             "description of the FASTA file"
         ),
     )
-    file = models.FileField(upload_to="fasta/")
+    fasta = models.FileField(
+        upload_to="fasta/",
+        help_text=(
+            "FileField representing the FASTA file, stored in the 'fasta/' directory"
+        ),
+    )
+    md5sum_fasta = models.CharField(
+        max_length=32,
+        blank=True,
+        unique=True,
+        help_text="CharField representing the MD5 checksum of the FASTA file",
+    )
+    # TODO: this should be a async offloaded task to generate the FAI file
+    fai = models.FileField(
+        upload_to="fasta/",
+        blank=True,
+        help_text=(
+            "FileField representing the FASTA index file (FAI), "
+            "stored in the 'fasta/' directory"
+        ),
+    )
+    md5sum_fai = models.CharField(
+        max_length=32,
+        blank=True,
+        help_text="CharField representing the MD5 checksum of the FAI file",
+    )
     fileformat = models.ForeignKey(
         "FileFormat",
         on_delete=models.CASCADE,
-        related_name="fasta_files",
+        related_name="fasta",
         help_text=(
             "ForeignKey to the FileFormat model, representing the format "
             "of the FASTA file"
-        ),
-    )
-    notes = models.CharField(
-        max_length=1000,
-        default="none",
-        help_text=(
-            "CharField with a max length of 1000, representing any notes "
-            "about the FASTA file"
         ),
     )
 
@@ -82,3 +100,14 @@ class Fasta(BaseModel):
 
     class Meta:
         ordering = ["organism", "type", "name"]
+
+    def clean(self):
+        super().clean()
+        if self.file and not self.md5sum_file:
+            raise ValidationError(
+                {"md5sum_file": "MD5 checksum must be provided for the FASTA file."},
+            )
+        if self.fai and not self.md5sum_fai:
+            raise ValidationError(
+                {"md5sum_fai": "MD5 checksum must be provided for the FAI file."},
+            )

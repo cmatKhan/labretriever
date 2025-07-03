@@ -12,29 +12,21 @@ class GenomeMap(BaseModel):
 
     library = models.ManyToManyField(
         "Library",
-        related_name="genome_maps",
+        related_name="genomemap",
         help_text=(
             "ManyToManyField to the Library model, representing the "
             "libraries of the genome map file"
         ),
     )
-    fileformat = models.ForeignKey(
-        "FileFormat",
-        on_delete=models.CASCADE,
-        related_name="genome_maps",
-        help_text=(
-            "ForeignKey to the FileFormat model, representing the format "
-            "of the genome map file"
-        ),
-    )
-    file = models.FileField(upload_to="genome_maps/")
-    notes = models.CharField(
-        max_length=1000,
-        default="none",
-        help_text=(
-            "CharField with a max length of 1000, representing any notes "
-            "about the genome map file"
-        ),
+    # This field is used to track the relationships between genome maps.
+    # Eg, a bam is a GenomeMap file type, and if that bam is processed with bedtools
+    # genomecov, then the output is also a GenomeMap file type
+    parents = models.ManyToManyField(
+        "self",
+        symmetrical=False,
+        related_name="derived",
+        blank=True,
+        help_text="Other GenomeMaps this one was derived from.",
     )
 
     def __str__(self):
