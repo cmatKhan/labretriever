@@ -1,11 +1,13 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from .base_model import BaseModel
+from .file_model import FileModel
 
 MAX_LIBRARIES_DISPLAY = 3
 
 
-class AnnotatedFeatures(BaseModel):
+class AnnotatedFeatures(BaseModel, FileModel):
     """
     Model representing annotated features files.
     For AnnotatedFeatures, this now eliminates the need for the
@@ -18,7 +20,7 @@ class AnnotatedFeatures(BaseModel):
     genomicfeatures = models.ForeignKey(
         "GenomicFeatures",
         on_delete=models.CASCADE,
-        related_name="annotated_features",
+        related_name="annotatedfeatures",
         help_text=(
             "ForeignKey to the GenomicFeatures model, representing the "
             "genomic features of the annotated features file"
@@ -26,31 +28,10 @@ class AnnotatedFeatures(BaseModel):
     )
     library = models.ManyToManyField(
         "Library",
-        related_name="annotated_features",
+        related_name="annotatedfeatures",
         help_text=(
             "ManyToManyField to the Library model, representing the "
             "libraries of the annotated features file"
-        ),
-    )
-    fileformat = models.ForeignKey(
-        "FileFormat",
-        on_delete=models.CASCADE,
-        related_name="annotated_features",
-        help_text=(
-            "ForeignKey to the FileFormat model, representing the format "
-            "of the annotated features file"
-        ),
-    )
-    file = models.FileField(
-        upload_to="annotated_features/",
-        help_text="FileField representing the annotated features file",
-    )
-    notes = models.CharField(
-        max_length=1000,
-        default="none",
-        help_text=(
-            "CharField with a max length of 1000, representing any notes "
-            "about the annotated features file"
         ),
     )
 
@@ -61,6 +42,15 @@ class AnnotatedFeatures(BaseModel):
         if self.library.count() > MAX_LIBRARIES_DISPLAY:
             libraries += "..."
         return f"AnnotatedFeatures ({self.genomicfeatures}) for {libraries}"
+
+    def clean(self):
+        super().clean()
+        if self.file and not self.md5sum:
+            raise ValidationError(
+                {
+                    "md5sum": "MD5 checksum must be provided if a file is uploaded.",
+                },
+            )
 
     class Meta:
         ordering = ["genomicfeatures", "upload_date"]

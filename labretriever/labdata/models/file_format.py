@@ -25,7 +25,7 @@ class FileFormat(BaseModel):
     validator = models.ForeignKey(
         "FileValidator",
         on_delete=models.CASCADE,
-        related_name="file_formats",
+        related_name="fileformats",
         blank=True,
         null=True,
         help_text=(

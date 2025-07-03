@@ -11,7 +11,7 @@ class Library(BaseModel):
     sample = models.ForeignKey(
         "Sample",
         on_delete=models.CASCADE,
-        related_name="libraries",
+        related_name="library",
         help_text=(
             "ForeignKey to the Sample model, representing the sample of the library"
         ),

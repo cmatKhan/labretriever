@@ -21,7 +21,7 @@ class Sample(BaseModel):
     dataset = models.ForeignKey(
         "Dataset",
         on_delete=models.CASCADE,
-        related_name="samples",
+        related_name="sample",
         help_text=(
             "ForeignKey to the Dataset model, representing the dataset of the sample"
         ),

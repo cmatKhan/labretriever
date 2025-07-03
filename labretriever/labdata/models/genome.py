@@ -11,7 +11,7 @@ class Genome(BaseModel):
     organism = models.ForeignKey(
         "Organism",
         on_delete=models.CASCADE,
-        related_name="genomes",
+        related_name="genome",
         help_text=(
             "ForeignKey to the Organism model, representing the organism of the genome"
         ),

@@ -21,7 +21,7 @@ class Dataset(BaseModel):
     assay = models.ForeignKey(
         "Assay",
         on_delete=models.CASCADE,
-        related_name="datasets",
+        related_name="dataset",
         help_text=(
             "ForeignKey to the Assay model, representing the assay of the dataset"
         ),

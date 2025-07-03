@@ -47,6 +47,14 @@ class BaseModel(models.Model):
     #       see docs -- may need to write some code to update this field
     #       for update statement when only certain fields are changed?
     modified_date = models.DateTimeField(auto_now=True)
+    notes = models.CharField(
+        max_length=1000,
+        default="none",
+        help_text=(
+            "CharField with a max length of 1000, representing any notes "
+            "about the analysis"
+        ),
+    )
 
     class Meta:
         abstract = True

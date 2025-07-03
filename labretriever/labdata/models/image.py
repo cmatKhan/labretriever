@@ -11,18 +11,18 @@ class Image(BaseModel):
     sample = models.ForeignKey(
         "Sample",
         on_delete=models.CASCADE,
-        related_name="images",
+        related_name="image",
         help_text=(
             "ForeignKey to the Sample model, representing the sample of the image"
         ),
     )
     file = models.FileField(upload_to="images/")
-    notes = models.CharField(
-        max_length=1000,
-        default="none",
+    md5sum = models.CharField(
+        max_length=32,
+        blank=True,
         help_text=(
-            "CharField with a max length of 1000, representing any notes "
-            "about the image"
+            "CharField with a max length of 32, representing the MD5 checksum "
+            "of the image file"
         ),
     )
 

@@ -21,7 +21,7 @@ class GenomicFeatures(BaseModel):
     genome = models.ForeignKey(
         "Genome",
         on_delete=models.CASCADE,
-        related_name="genomic_features",
+        related_name="genomicfeatures",
         help_text=(
             "ForeignKey to the Genome model, representing the genome "
             "of the genomic features file"
@@ -40,19 +40,25 @@ class GenomicFeatures(BaseModel):
     fileformat = models.ForeignKey(
         "FileFormat",
         on_delete=models.CASCADE,
-        related_name="genomic_features",
+        related_name="genomicfeatures",
         help_text=(
             "ForeignKey to the FileFormat model, representing the file "
             "format of the genomic features file"
         ),
     )
-    file = models.FileField(upload_to="genomic_features/")
-    notes = models.CharField(
-        max_length=1000,
-        default="none",
+    file = models.FileField(upload_to="genomicfeatures/")
+    md5sum = models.CharField(
+        max_length=32,
+        blank=True,
         help_text=(
-            "CharField with a max length of 1000, representing any notes "
-            "about the genomic features file"
+            "CharField with a max length of 32, representing the MD5 checksum "
+            "of the genomic features file"
+        ),
+    )
+    source_url = models.URLField(
+        blank=True,
+        help_text=(
+            "URLField representing the URL to the source of the genomic features file"
         ),
     )
 
