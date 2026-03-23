@@ -1,0 +1,2631 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Python API for querying and analyzing genomic datasets from HuggingFace Hub">
+      
+      
+        <meta name="author" content="ben mueller <email@email.com>, chase mateusiak <chasem@wustl.edu>, michael brent <brent@wustl.edu>">
+      
+      
+        <link rel="canonical" href="https://brentlab.github.io/labretriever/brentlab_yeastresources_collection/">
+      
+      
+        <link rel="prev" href="../huggingface_datacard/">
+      
+      
+        <link rel="next" href="../virtual_db_configuration/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>BrentLab Collection - labretriever</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#brentlab-yeast-resources-collection" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="labretriever" class="md-header__button md-logo" aria-label="labretriever" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            labretriever
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              BrentLab Collection
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/brentlab/labretriever" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    brentlab/labretriever
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../tutorials/datacard_tutorial/" class="md-tabs__link">
+          
+  
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../virtual_db/" class="md-tabs__link">
+          
+  
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../huggingface_datacard/" class="md-tabs__link">
+          
+  
+  
+  HuggingFace Configuration
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../virtual_db_configuration/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  VirtualDB Configuration
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="labretriever" class="md-nav__button md-logo" aria-label="labretriever" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    labretriever
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/brentlab/labretriever" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    brentlab/labretriever
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/datacard_tutorial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DataCard Tutorial: Exploring HuggingFace Dataset Metadata
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/cache_manager_tutorial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HfCacheManager Tutorial: Intelligent Cache Management for HuggingFace Datasets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Querying Data
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Querying Data
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/virtual_db_tutorial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VirtualDB Tutorial: SQL-First Cross-Dataset Queries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Core
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../virtual_db/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VirtualDB
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../datacard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DataCard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hf_cache_manager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HfCacheManager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Models and Configuration
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Models and Configuration
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pydantic Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fetchers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fetchers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Error Handling
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Error Handling
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../errors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Exceptions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HuggingFace Configuration
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    HuggingFace Configuration
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../huggingface_datacard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HuggingFace Dataset Card Format
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    BrentLab Collection
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    BrentLab Collection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#collection-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Collection Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#standardized-media-names" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Standardized Media Names
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Standardized Media Names">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rich-media" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rich Media
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#minimaldefined-media" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Minimal/Defined Media
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#standardized-strain-backgrounds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Standardized Strain Backgrounds
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#standard-experimental-conditions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Standard Experimental Conditions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Standard Experimental Conditions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#growth-temperature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Growth Temperature
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#growth-phase" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Growth Phase
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cultivation-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cultivation Methods
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concentration-specifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concentration Specifications
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Concentration Specifications">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples-from-the-collection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples from the Collection
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#field-naming-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Field Naming Conventions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Field Naming Conventions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#genefeature-identifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gene/Feature Identifiers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quantitative-measurements-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quantitative Measurements Examples
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#experimental-metadata-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Experimental Metadata Examples
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dataset-type-usage-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dataset Type Usage Examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dataset Type Usage Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#genomic_features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        genomic_features
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#annotated_features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        annotated_features
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#genome_map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        genome_map
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#metadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        metadata
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comparative" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        comparative
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#categorical-condition-definitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Categorical Condition Definitions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Categorical Condition Definitions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#harbison_2004-environmental-conditions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        harbison_2004 Environmental Conditions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hackett_2020-nutrient-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        hackett_2020 Nutrient Limitations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hu_2007_reimand_2010-treatment-conditions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        hu_2007_reimand_2010 Treatment Conditions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#partitioning-strategies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Partitioning Strategies
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#collection-wide-best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Collection-Wide Best Practices
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Collection-Wide Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-omit-unspecified-fields-with-a-comment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Omit unspecified fields with a comment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-document-source-publications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Document Source Publications
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-use-standard-field-roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Use Standard Field Roles
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-provide-sample_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Provide sample_id
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-specify-metadata_fields-or-applies_to" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Specify metadata_fields or applies_to
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-use-consistent-gene-identifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Use Consistent Gene Identifiers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../virtual_db_configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VirtualDB Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#collection-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Collection Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#standardized-media-names" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Standardized Media Names
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Standardized Media Names">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rich-media" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rich Media
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#minimaldefined-media" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Minimal/Defined Media
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#standardized-strain-backgrounds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Standardized Strain Backgrounds
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#standard-experimental-conditions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Standard Experimental Conditions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Standard Experimental Conditions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#growth-temperature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Growth Temperature
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#growth-phase" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Growth Phase
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cultivation-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cultivation Methods
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concentration-specifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concentration Specifications
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Concentration Specifications">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples-from-the-collection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples from the Collection
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#field-naming-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Field Naming Conventions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Field Naming Conventions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#genefeature-identifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gene/Feature Identifiers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quantitative-measurements-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quantitative Measurements Examples
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#experimental-metadata-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Experimental Metadata Examples
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dataset-type-usage-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dataset Type Usage Examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dataset Type Usage Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#genomic_features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        genomic_features
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#annotated_features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        annotated_features
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#genome_map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        genome_map
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#metadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        metadata
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comparative" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        comparative
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#categorical-condition-definitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Categorical Condition Definitions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Categorical Condition Definitions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#harbison_2004-environmental-conditions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        harbison_2004 Environmental Conditions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hackett_2020-nutrient-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        hackett_2020 Nutrient Limitations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hu_2007_reimand_2010-treatment-conditions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        hu_2007_reimand_2010 Treatment Conditions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#partitioning-strategies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Partitioning Strategies
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#collection-wide-best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Collection-Wide Best Practices
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Collection-Wide Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-omit-unspecified-fields-with-a-comment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Omit unspecified fields with a comment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-document-source-publications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Document Source Publications
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-use-standard-field-roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Use Standard Field Roles
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-provide-sample_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Provide sample_id
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-specify-metadata_fields-or-applies_to" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Specify metadata_fields or applies_to
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-use-consistent-gene-identifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Use Consistent Gene Identifiers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href=".." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../huggingface_datacard/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    HuggingFace Configuration
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/brentlab/labretriever/edit/main/docs/brentlab_yeastresources_collection.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/brentlab/labretriever/raw/main/docs/brentlab_yeastresources_collection.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0 8a5 5 0 0 1-5-5 5 5 0 0 1 5-5 5 5 0 0 1 5 5 5 5 0 0 1-5 5m0-12.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5"/></svg>
+    </a>
+  
+
+
+<h1 id="brentlab-yeast-resources-collection">BrentLab Yeast Resources Collection<a class="headerlink" href="#brentlab-yeast-resources-collection" title="Permanent link">&para;</a></h1>
+<p>This document describes the BrentLab yeast resources collection on HuggingFace as an example implementation of the <a href="../huggingface_datacard/">datacard specifications</a>. This collection demonstrates best practices for organizing transcription factor binding and perturbation datasets for <em>Saccharomyces cerevisiae</em>.</p>
+<h2 id="collection-overview">Collection Overview<a class="headerlink" href="#collection-overview" title="Permanent link">&para;</a></h2>
+<p>The BrentLab yeast resources collection contains 11 datasets related to yeast transcription factor binding and gene expression regulation:</p>
+<ol>
+<li><strong>barkai_compendium</strong> - ChEC-seq binding data across multiple GEO series</li>
+<li><strong>callingcards</strong> - Calling Cards transposon-based binding data</li>
+<li><strong>hackett_2020</strong> - TF overexpression with nutrient limitation</li>
+<li><strong>harbison_2004</strong> - ChIP-chip binding across 14 environmental conditions</li>
+<li><strong>hu_2007_reimand_2010</strong> - TF knockout expression data</li>
+<li><strong>hughes_2006</strong> - TF perturbation screen (overexpression and knockout)</li>
+<li><strong>kemmeren_2014</strong> - TF deletion expression profiling</li>
+<li><strong>mahendrawada_2025</strong> - ChEC-seq and nascent RNA-seq data</li>
+<li><strong>rossi_2021</strong> - ChIP-exo binding data</li>
+<li><strong>yeast_comparative_analysis</strong> - Cross-dataset comparative analyses</li>
+<li><strong>yeast_genome_resources</strong> - Reference genomic features</li>
+</ol>
+<h2 id="standardized-media-names">Standardized Media Names<a class="headerlink" href="#standardized-media-names" title="Permanent link">&para;</a></h2>
+<p>The collection uses standardized media names to facilitate cross-dataset queries. When specifying media in datacards, use these canonical names:</p>
+<h3 id="rich-media">Rich Media<a class="headerlink" href="#rich-media" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>YPD</strong> (Yeast extract Peptone Dextrose)</li>
+<li>Carbon source: 2% D-glucose</li>
+<li>Nitrogen sources: 1% yeast extract, 2% peptone</li>
+<li>
+<p>Standard rich medium for yeast growth</p>
+</li>
+<li>
+<p><strong>yeast_extract_peptone</strong></p>
+</li>
+<li>Base medium without specified carbon source</li>
+<li>Used with galactose (YPGal) or raffinose (YPRaff)</li>
+</ul>
+<h3 id="minimaldefined-media">Minimal/Defined Media<a class="headerlink" href="#minimaldefined-media" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>minimal</strong> or <strong>minimal_glucose</strong></li>
+<li>Minimal defined medium with glucose as carbon source</li>
+<li>
+<p>Nitrogen source varies by experiment</p>
+</li>
+<li>
+<p><strong>synthetic_complete</strong> or <strong>synthetic_complete_dextrose</strong></p>
+</li>
+<li>Defined medium with complete amino acid supplementation</li>
+<li>Carbon source: typically 2% D-glucose</li>
+<li>
+<p>Nitrogen source: yeast nitrogen base + amino acid dropout mix</p>
+</li>
+<li>
+<p><strong>synthetic_complete_minus_X</strong></p>
+</li>
+<li>Synthetic complete medium lacking specific nutrient(s)</li>
+<li>Examples: <code>synthetic_complete_minus_thiamine</code>, <code>synthetic_complete_minus_phosphate</code></li>
+<li>
+<p>Used for nutrient deprivation experiments</p>
+</li>
+<li>
+<p><strong>selective_medium</strong></p>
+</li>
+<li>Defined medium for plasmid selection</li>
+<li>Specific composition varies by selection markers</li>
+</ul>
+<h2 id="standardized-strain-backgrounds">Standardized Strain Backgrounds<a class="headerlink" href="#standardized-strain-backgrounds" title="Permanent link">&para;</a></h2>
+<p>The collection primarily uses these strain backgrounds:</p>
+<ul>
+<li><strong>BY4741</strong> - MATa his3Δ1 leu2Δ0 met15Δ0 ura3Δ0</li>
+<li>
+<p>Used in: hu_2007_reimand_2010, kemmeren_2014</p>
+</li>
+<li>
+<p><strong>W303</strong> - Common alternative strain background</p>
+</li>
+<li>
+<p>Used in: harbison_2004 (derivative Z1256)</p>
+</li>
+<li>
+<p><strong>S288C</strong> - Reference genome strain</p>
+</li>
+<li>Used in: Various datasets</li>
+</ul>
+<p>Strain background can be specified as a string or detailed object:</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Simple string</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nt">experimental_conditions</span><span class="p">:</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nt">strain_background</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">BY4741</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># Detailed specification</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="nt">experimental_conditions</span><span class="p">:</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">  </span><span class="nt">strain_background</span><span class="p">:</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="nt">genotype</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">BY4741</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="nt">mating_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MATa</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span><span class="nt">markers</span><span class="p">:</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">his3Δ1</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">leu2Δ0</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">met15Δ0</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ura3Δ0</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">    </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Open_Biosystems</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Knockout strains for nonessential transcription factors</span>
+</span></code></pre></div>
+<h2 id="standard-experimental-conditions">Standard Experimental Conditions<a class="headerlink" href="#standard-experimental-conditions" title="Permanent link">&para;</a></h2>
+<h3 id="growth-temperature">Growth Temperature<a class="headerlink" href="#growth-temperature" title="Permanent link">&para;</a></h3>
+<p>Standard growth temperature across the collection is <strong>30°C</strong> unless otherwise noted.</p>
+<p>Exceptions:
+- <strong>rossi_2021</strong>: 25°C baseline with 37°C heat shock for some samples
+- <strong>hu_2007_reimand_2010</strong>: Heat shock at 39°C for heat shock response TFs
+- <strong>callingcards</strong>: the experiments are performed at room temperature (~22-25°C)</p>
+<h3 id="growth-phase">Growth Phase<a class="headerlink" href="#growth-phase" title="Permanent link">&para;</a></h3>
+<p>Common growth phase specifications:</p>
+<p>These labels are taken from the original publications. In some cases the OD600
+is noted</p>
+<ul>
+<li><strong>early_log_phase</strong></li>
+<li><strong>mid_log_phase</strong></li>
+<li><strong>late_log_phase</strong></li>
+<li><strong>stationary_phase</strong> - eg barkai_compendium, which are allowed to grow overnight. The
+  cells are harvested at a very high density (OD600 4.0).</li>
+</ul>
+<p>Example:
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">experimental_conditions</span><span class="p">:</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">growth_phase_at_harvest</span><span class="p">:</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">stage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mid_log_phase</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">od600</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.6</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">od600_tolerance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span>
+</span></code></pre></div></p>
+<h3 id="cultivation-methods">Cultivation Methods<a class="headerlink" href="#cultivation-methods" title="Permanent link">&para;</a></h3>
+<p>Standard cultivation methods used:</p>
+<ul>
+<li><strong>liquid_culture</strong> - Standard batch culture in flasks</li>
+<li><strong>batch</strong> - Batch culture</li>
+<li><strong>plate</strong> - Growth on agar plates</li>
+<li><strong>chemostat</strong> - Continuous culture (hackett_2020)</li>
+</ul>
+<h2 id="concentration-specifications">Concentration Specifications<a class="headerlink" href="#concentration-specifications" title="Permanent link">&para;</a></h2>
+<p><strong>Always use <code>concentration_percent</code></strong> for all concentration specifications.
+Convert other units to percentage:</p>
+<ul>
+<li><strong>mg/ml to percent</strong>: divide by 10 (e.g., 5 mg/ml = 0.5%)</li>
+<li><strong>g/L to percent</strong>: divide by 10 (e.g., 6.71 g/L = 0.671%)</li>
+<li><strong>Molar to percent</strong>: convert using molecular weight</li>
+<li>Example: 100 nM rapamycin = 9.142e-6%</li>
+</ul>
+<h3 id="examples-from-the-collection">Examples from the Collection<a class="headerlink" href="#examples-from-the-collection" title="Permanent link">&para;</a></h3>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Yeast nitrogen base: 6.71 g/L = 0.671%</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">compound</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">yeast_nitrogen_base</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="nt">concentration_percent</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.671</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1"># Alpha factor: 5 mg/ml = 0.5%</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">compound</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">alpha_factor_pheromone</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">  </span><span class="nt">concentration_percent</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.5</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="c1"># Rapamycin: 100 nM = 9.142e-6%</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="nt">chemical_treatment</span><span class="p">:</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">  </span><span class="nt">compound</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rapamycin</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">  </span><span class="nt">concentration_percent</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">9.142e-6</span>
+</span></code></pre></div>
+<h2 id="field-naming-conventions">Field Naming Conventions<a class="headerlink" href="#field-naming-conventions" title="Permanent link">&para;</a></h2>
+<p>The collection follows these field naming conventions:</p>
+<h3 id="genefeature-identifiers">Gene/Feature Identifiers<a class="headerlink" href="#genefeature-identifiers" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>regulator_locus_tag</strong>: Systematic ID of regulatory factor (e.g., &ldquo;YJR060W&rdquo;)</li>
+<li><strong>regulator_symbol</strong>: Common name of regulatory factor (e.g., &ldquo;CBF1&rdquo;)</li>
+<li><strong>target_locus_tag</strong>: Systematic ID of target gene</li>
+<li><strong>target_symbol</strong>: Common name of target gene</li>
+</ul>
+<p>All locus tags and symbols join to <strong>yeast_genome_resources</strong> dataset.</p>
+<h3 id="quantitative-measurements-examples">Quantitative Measurements Examples<a class="headerlink" href="#quantitative-measurements-examples" title="Permanent link">&para;</a></h3>
+<p>Common measurement field names:</p>
+<ul>
+<li><strong>effect</strong>, <strong>log2fc</strong>, <strong>log2_ratio</strong> - Log fold change measurements</li>
+<li><strong>pvalue</strong>, <strong>pval</strong>, <strong>p_value</strong> - Statistical significance</li>
+<li><strong>padj</strong>, <strong>adj_p_value</strong> - FDR-adjusted p-values</li>
+<li><strong>binding_score</strong>, <strong>peak_score</strong> - Binding strength metrics</li>
+<li><strong>enrichment</strong> - Enrichment ratios</li>
+</ul>
+<h3 id="experimental-metadata-examples">Experimental Metadata Examples<a class="headerlink" href="#experimental-metadata-examples" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>sample_id</strong> - Unique sample identifier (integer)</li>
+<li><strong>db_id</strong> - Legacy database identifier (deprecated, do not use)</li>
+<li><strong>batch</strong> - Experimental batch identifier</li>
+<li><strong>replicate</strong> - Biological replicate number</li>
+<li><strong>time</strong> - Timepoint in timecourse experiments</li>
+</ul>
+<h2 id="dataset-type-usage-examples">Dataset Type Usage Examples<a class="headerlink" href="#dataset-type-usage-examples" title="Permanent link">&para;</a></h2>
+<h3 id="genomic_features">genomic_features<a class="headerlink" href="#genomic_features" title="Permanent link">&para;</a></h3>
+<p><strong>yeast_genome_resources</strong> provides reference annotations:
+- Gene coordinates and strand information
+- Systematic IDs (locus_tag) and common names (symbol)
+- Feature types (gene, ncRNA_gene, tRNA_gene, etc.)</p>
+<p>Used for joining regulator/target identifiers across all other datasets.</p>
+<h3 id="annotated_features">annotated_features<a class="headerlink" href="#annotated_features" title="Permanent link">&para;</a></h3>
+<p>Most common dataset type in the collection. Examples:</p>
+<ul>
+<li><strong>hackett_2020</strong>: TF overexpression with timecourse measurements</li>
+<li><strong>harbison_2004</strong>: ChIP-chip binding with condition field definitions</li>
+<li><strong>kemmeren_2014</strong>: TF deletion expression data</li>
+<li><strong>mahendrawada_2025</strong>: ChEC-seq binding scores</li>
+</ul>
+<p>Typical structure: regulator × target × measurements, with optional condition fields.</p>
+<h3 id="genome_map">genome_map<a class="headerlink" href="#genome_map" title="Permanent link">&para;</a></h3>
+<p>Position-level data, typically partitioned by sample or accession:</p>
+<ul>
+<li><strong>barkai_compendium</strong>: ChEC-seq pileup data partitioned by Series/Accession</li>
+<li><strong>rossi_2021</strong>: ChIP-exo 5&rsquo; tag coverage partitioned by sample</li>
+<li><strong>callingcards</strong>: Transposon insertion density partitioned by batch</li>
+</ul>
+<h3 id="metadata">metadata<a class="headerlink" href="#metadata" title="Permanent link">&para;</a></h3>
+<p>Separate metadata configs or embedded metadata via <code>metadata_fields</code>:</p>
+<p><strong>Separate config example</strong> (barkai_compendium):
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">config_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GSE178430_metadata</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">dataset_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">metadata</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="nt">applies_to</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;genomic_coverage&quot;</span><span class="p p-Indicator">]</span>
+</span></code></pre></div></p>
+<p><strong>Embedded metadata example</strong> (harbison_2004):
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">config_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">harbison_2004</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="nt">dataset_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">annotated_features</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span><span class="nt">metadata_fields</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;regulator_locus_tag&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;regulator_symbol&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;condition&quot;</span><span class="p p-Indicator">]</span>
+</span></code></pre></div></p>
+<h3 id="comparative">comparative<a class="headerlink" href="#comparative" title="Permanent link">&para;</a></h3>
+<p><strong>yeast_comparative_analysis</strong> provides cross-dataset analysis results:</p>
+<ul>
+<li><strong>dto config</strong>: Direct Target Overlap analysis comparing binding and perturbation experiments</li>
+<li>Uses <code>source_sample</code> role for composite identifiers</li>
+<li>Format: <code>"repo_id;config_name;sample_id"</code> (semicolon-separated)</li>
+<li>Contains 8 quantitative measures: rank thresholds, set sizes, FDR, p-values</li>
+<li>Partitioned by binding_repo_dataset and perturbation_repo_dataset</li>
+</ul>
+<p><strong>Composite Sample Identifiers</strong>:
+Comparative datasets use composite identifiers to reference samples from other datasets:
+- <code>binding_id</code>: Points to a binding experiment (e.g., <code>BrentLab/callingcards;annotated_features;1</code>)
+- <code>perturbation_id</code>: Points to a perturbation experiment (e.g., <code>BrentLab/hackett_2020;hackett_2020;200</code>)</p>
+<p><strong>Typical structure</strong>: source_sample_1 x source_sample_2 x &hellip; x measurements</p>
+<p><strong>Use case</strong>: Answer questions like &ldquo;Which binding experiments show significant overlap with perturbation effects?&rdquo;</p>
+<h2 id="categorical-condition-definitions">Categorical Condition Definitions<a class="headerlink" href="#categorical-condition-definitions" title="Permanent link">&para;</a></h2>
+<p>Many datasets define categorical experimental conditions using the <code>definitions</code> field.</p>
+<h3 id="harbison_2004-environmental-conditions">harbison_2004 Environmental Conditions<a class="headerlink" href="#harbison_2004-environmental-conditions" title="Permanent link">&para;</a></h3>
+<p>14 conditions with detailed specifications:
+- <strong>YPD</strong> (rich media baseline)
+- <strong>SM</strong> (amino acid starvation)
+- <strong>RAPA</strong> (rapamycin treatment)
+- <strong>H2O2Hi</strong>, <strong>H2O2Lo</strong> (oxidative stress)
+- <strong>HEAT</strong> (heat shock)
+- <strong>GAL</strong>, <strong>RAFF</strong> (alternative carbon sources)
+- And 6 more&hellip;</p>
+<p>Each condition definition includes media composition, temperature, growth phase, and treatments.</p>
+<h3 id="hackett_2020-nutrient-limitations">hackett_2020 Nutrient Limitations<a class="headerlink" href="#hackett_2020-nutrient-limitations" title="Permanent link">&para;</a></h3>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nt">restriction</span><span class="p">:</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span><span class="nt">definitions</span><span class="p">:</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="nt">P</span><span class="p">:</span><span class="w">  </span><span class="c1"># Phosphate limitation</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">      </span><span class="nt">media</span><span class="p">:</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">        </span><span class="nt">phosphate_source</span><span class="p">:</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">compound</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">potassium_phosphate_monobasic</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">            </span><span class="nt">concentration_percent</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.002</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">    </span><span class="nt">N</span><span class="p">:</span><span class="w">  </span><span class="c1"># Nitrogen limitation</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">      </span><span class="nt">media</span><span class="p">:</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">        </span><span class="nt">nitrogen_source</span><span class="p">:</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">compound</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ammonium_sulfate</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">            </span><span class="nt">concentration_percent</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.004</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">    </span><span class="nt">M</span><span class="p">:</span><span class="w">  </span><span class="c1"># Undefined limitation</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">      </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Not</span><span class="nv"> </span><span class="s">defined</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">paper&quot;</span>
+</span></code></pre></div>
+<h3 id="hu_2007_reimand_2010-treatment-conditions">hu_2007_reimand_2010 Treatment Conditions<a class="headerlink" href="#hu_2007_reimand_2010-treatment-conditions" title="Permanent link">&para;</a></h3>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nt">heat_shock</span><span class="p">:</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="nt">definitions</span><span class="p">:</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span><span class="nt">true</span><span class="p">:</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">      </span><span class="nt">temperature_celsius</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">39</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">      </span><span class="nt">duration_minutes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">    </span><span class="nt">false</span><span class="p">:</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">      </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Standard growth conditions at 30°C</span>
+</span></code></pre></div>
+<h2 id="partitioning-strategies">Partitioning Strategies<a class="headerlink" href="#partitioning-strategies" title="Permanent link">&para;</a></h2>
+<p>Large genome_map datasets use partitioning:</p>
+<p><strong>barkai_compendium</strong> - Two-level partitioning:
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nt">partitioning</span><span class="p">:</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="nt">partition_by</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;Series&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;Accession&quot;</span><span class="p p-Indicator">]</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="nt">path_template</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;genome_map/*/*/part-0.parquet&quot;</span>
+</span></code></pre></div></p>
+<p><strong>callingcards</strong> - Batch partitioning:
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nt">partitioning</span><span class="p">:</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span><span class="nt">partition_by</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;batch&quot;</span><span class="p p-Indicator">]</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span><span class="nt">path_template</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;genome_map/batch={batch}/*.parquet&quot;</span>
+</span></code></pre></div></p>
+<h2 id="collection-wide-best-practices">Collection-Wide Best Practices<a class="headerlink" href="#collection-wide-best-practices" title="Permanent link">&para;</a></h2>
+<h3 id="1-omit-unspecified-fields-with-a-comment">1. Omit unspecified fields with a comment<a class="headerlink" href="#1-omit-unspecified-fields-with-a-comment" title="Permanent link">&para;</a></h3>
+<p><code>labretriever</code> will handle adding &ldquo;unspecified&rdquo; to fields which are not common across
+datasets.</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># CORRECT</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="nt">experimental_conditions</span><span class="p">:</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span><span class="nt">temperature_celsius</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">  </span><span class="c1"># cultivation_method is note noted in the paper and is omitted</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="c1"># INCORRECT</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="nt">experimental_conditions</span><span class="p">:</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">  </span><span class="nt">temperature_celsius</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unspecified</span>
+</span></code></pre></div>
+<h3 id="2-document-source-publications">2. Document Source Publications<a class="headerlink" href="#2-document-source-publications" title="Permanent link">&para;</a></h3>
+<p>If the original paper used something like g/L, then convert that to
+<code>concentration_percent</code> and add a comment with the original value and units.</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nt">carbon_source</span><span class="p">:</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">compound</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">D-glucose</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">    </span><span class="c1"># Saldanha et al 2004: 10 g/L</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">    </span><span class="nt">concentration_percent</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+</span></code></pre></div>
+<h3 id="3-use-standard-field-roles">3. Use Standard Field Roles<a class="headerlink" href="#3-use-standard-field-roles" title="Permanent link">&para;</a></h3>
+<p>Apply semantic roles consistently:
+- <code>regulator_identifier</code> - for regulator fields
+- <code>target_identifier</code> - for target fields
+- <code>quantitative_measure</code> - for measurements
+- <code>experimental_condition</code> - for condition fields
+- <code>genomic_coordinate</code> - for positional data</p>
+<h3 id="4-provide-sample_id">4. Provide sample_id<a class="headerlink" href="#4-provide-sample_id" title="Permanent link">&para;</a></h3>
+<p>All annotated_features datasets should include <code>sample_id</code> to uniquely identify experimental samples. This enables cross-dataset joining and metadata management.</p>
+<h3 id="5-specify-metadata_fields-or-applies_to">5. Specify metadata_fields or applies_to<a class="headerlink" href="#5-specify-metadata_fields-or-applies_to" title="Permanent link">&para;</a></h3>
+<p>For datasets with metadata, either:
+- Use <code>metadata_fields</code> to extract from the data itself, OR
+- Create separate metadata config with <code>applies_to</code> field</p>
+<h3 id="6-use-consistent-gene-identifiers">6. Use Consistent Gene Identifiers<a class="headerlink" href="#6-use-consistent-gene-identifiers" title="Permanent link">&para;</a></h3>
+<p>All regulator/target identifiers must be joinable to <strong>yeast_genome_resources</strong>:
+- Use current systematic IDs (ORF names)
+- Include both locus_tag and symbol fields
+- Mark with appropriate roles</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/brentlab/labretriever" target="_blank" rel="noopener" title="GitHub Repository" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.code.select", "content.code.annotate", "content.action.edit", "content.action.view"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+      
+        <script src="../js/init-mermaid.js"></script>
+      
+    
+  </body>
+</html>
