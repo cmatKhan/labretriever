@@ -1,0 +1,170 @@
+site_name: labretriever
+site_description: "Python API for querying and analyzing genomic datasets from HuggingFace Hub"
+site_author: "ben mueller <email@email.com>, chase mateusiak <chasem@wustl.edu>, michael brent <brent@wustl.edu>"
+site_url: "https://brentlab.github.io/labretriever"
+repo_url: "https://github.com/brentlab/labretriever"
+repo_name: "brentlab/labretriever"
+edit_uri: "edit/main/docs/"
+watch: ['labretriever', 'docs']
+
+theme:
+  name: material
+  palette:
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - navigation.top
+    - search.highlight
+    - search.share
+    - search.suggest
+    - content.code.copy
+    - content.code.select
+    - content.code.annotate
+    - content.action.edit
+    - content.action.view
+  icon:
+    repo: fontawesome/brands/github
+    edit: material/pencil
+    view: material/eye
+
+plugins:
+  - search:
+      separator: '[\s\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+  - autorefs
+  - section-index
+  - mkdocs-jupyter:
+      remove_tag_config:
+        remove_input_tags:
+          - hide
+        remove_output_tags:
+          - hide
+      execute: false
+      allow_errors: false
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [.]
+          inventories:
+            - https://docs.python.org/3/objects.inv
+            - https://numpy.org/doc/stable/objects.inv
+            - https://pandas.pydata.org/docs/objects.inv
+          options:
+            docstring_style: sphinx
+            show_source: true
+            show_root_heading: true
+            show_root_toc_entry: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            signature_crossrefs: true
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - smarty
+  - tables
+  - toc:
+      permalink: true
+      title: On this page
+  - sane_lists
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      normalize_issue_symbols: true
+      repo_url_shorthand: true
+      user: brentlab
+      repo: labretriever
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.snippets:
+      auto_append:
+        - includes/mkdocs.md
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+      combine_header_slug: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/brentlab/labretriever
+      name: GitHub Repository
+  version:
+    provider: mike
+    default: latest
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+  - https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js
+  - js/init-mermaid.js
+
+extra_css:
+  - stylesheets/extra.css
+
+nav:
+  - Home: index.md
+  - Tutorials:
+    - "Getting Started":
+      - "DataCard: Exploring Datasets": tutorials/datacard_tutorial.ipynb
+      - "Cache Management": tutorials/cache_manager_tutorial.ipynb
+    - "Querying Data":
+      - "VirtualDB: Unified Cross-Dataset Queries": tutorials/virtual_db_tutorial.ipynb
+  - API Reference:
+    - Core:
+      - VirtualDB: virtual_db.md
+      - DataCard: datacard.md
+      - HfCacheManager: hf_cache_manager.md
+    - Models and Configuration:
+      - Pydantic Models: models.md
+      - Fetchers: fetchers.md
+    - Error Handling:
+      - Custom Exceptions: errors.md
+  - HuggingFace Configuration:
+    - HuggingFace Dataset Card Format: huggingface_datacard.md
+    - BrentLab Collection: brentlab_yeastresources_collection.md
+  - VirtualDB Configuration: virtual_db_configuration.md

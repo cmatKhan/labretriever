@@ -1,0 +1,2002 @@
+# barkai_compendium
+---
+license: mit
+language:
+- en
+tags:
+- transcription-factor
+- binding
+- chec-seq
+- genomics
+- biology
+pretty_name: Barkai ChEC-seq Compendium
+size_categories:
+  - 100M<n<1B
+experimental_conditions:
+  temperature_celsius: 30
+  cultivation_method: liquid_culture
+  growth_phase_at_harvest:
+    od600: 4.0
+    stage: overnight_stationary_phase
+  media:
+    name: synthetic_complete_dextrose
+    # the D-dextrose concentration and nitrogen_source
+    # are unspecified
+    carbon_source:
+      - compound: D-dextrose
+configs:
+- config_name: genomic_coverage
+  description: Genomic coverage data with pileup counts at specific positions
+  dataset_type: genome_map
+  default: true
+  data_files:
+  - split: train
+    path: genome_map/*/*/part-0.parquet
+  dataset_info:
+    features:
+    - name: seqnames
+      dtype: string
+      description: Chromosome or sequence name (e.g., chrI, chrII, etc.)
+    - name: start
+      dtype: int32
+      description: Start position of the genomic interval (1-based coordinates)
+    - name: end
+      dtype: int32
+      description: End position of the genomic interval (1-based coordinates)
+    - name: pileup
+      dtype: int32
+      description: Number of tags (5' of read) at this genomic position
+    partition_info:
+    - name: Series
+      dtype: string
+      description: GEO series of the dataset
+    - name: Accession
+      dtype: string
+      description: GEO accession of the specific sample
+- config_name: GSE178430_metadata
+  description: Metadata for GSE178430
+  dataset_type: metadata
+  data_files:
+  - split: train
+    path: GSE178430_metadata.parquet
+  dataset_info:
+    features:
+    - name: sample_id
+      dtype: integer
+      description: Unique sample identifier. Uniquely identifies an accession
+    - name: series
+      dtype: string
+      description: the GEO series to which this collection belongs
+    - name: accession
+      dtype: string
+      description: Sample accession identifier
+    - name: regulator_locus_tag
+      dtype: string
+      description: Systematic gene name (ORF identifier) of the tagged transcription factor
+    - name: regulator_symbol
+      dtype: string
+      description: Standard gene symbol of the tagged transcription factor
+    - name: strainid
+      dtype: string
+      description: Strain identifier used in the experiment
+    - name: instrument
+      dtype: string
+      description: Sequencing instrument used for data generation
+    - name: genotype
+      dtype: string
+      description: Full genotype description of the experimental strain
+    - name: dbd_donor_symbol
+      dtype: string
+      description: Gene symbol of the DNA-binding domain donor (for chimeric constructs)
+    - name: ortholog_donor
+      dtype: string
+      description: Ortholog donor information for cross-species constructs
+    - name: paralog_deletion_symbol
+      dtype: string
+      description: Gene symbol of deleted paralog in the strain background
+    - name: paralog_resistance_cassette
+      dtype: string
+      description: Antibiotic resistance cassette used for paralog deletion
+- config_name: GSE209631_metadata
+  description: ChEC-seq experiment metadata for transcription factor variant studies
+  dataset_type: metadata
+  data_files:
+  - split: train
+    path: GSE209631_metadata.parquet
+  dataset_info:
+    features:
+    - name: sample_id
+      dtype: integer
+      description: Unique sample identifier. Uniquely identifies an accession
+    - name: series
+      dtype: string
+      description: the GEO series to which this collection belongs
+    - name: accession
+      dtype: string
+      description: Sample accession identifier
+    - name: regulator_locus_tag
+      dtype: string
+      description: Systematic gene name (ORF identifier) of the tagged transcription factor
+      role: regulator_identifier
+    - name: regulator_symbol
+      dtype: string
+      description: Standard gene symbol of the tagged transcription factor
+      role: regulator_identifier
+    - name: variant_type
+      dtype: string
+      description: Type of transcription factor variant tested in the experiment
+- config_name: GSE222268_metadata
+  description: General experiment metadata for genomic studies
+  dataset_type: metadata
+  data_files:
+  - split: train
+    path: GSE222268_metadata.parquet
+  dataset_info:
+    features:
+    - name: sample_id
+      dtype: string
+      description: Unique identifier for the experimental sample
+    - name: series
+      dtype: string
+      description: Series or batch identifier grouping related samples
+    - name: accession
+      dtype: string
+      description: Accession number from public database (e.g., SRA, GEO)
+    - name: regulator_locus_tag
+      dtype: string
+      description: Systematic gene identifier for the transcription factor regulator
+      role: regulator_identifier
+    - name: regulator_symbol
+      dtype: string
+      description: Standard gene symbol for the transcription factor regulator
+      role: regulator_identifier
+    - name: experiment_details
+      dtype: string
+      description: Detailed description of experimental methods, parameters, or conditions
+      role: experimental_condition
+    - name: description
+      dtype:
+        class_label:
+          names: ["MNase", "ChEC-seq"]
+      description: Experiment type, either MNase or ChEC-seq
+---
+
+# callingcards
+---
+license: mit
+language:
+- en
+tags:
+- biology
+- genomics
+- yeast
+- transcription-factors
+- callingcards
+- transposon
+- binding
+- gene-expression
+pretty_name: "Calling Cards Transcription Factor Binding Dataset"
+
+experimental_conditions:
+  temperature_celsius: room
+  # growth phase and cultivation method unspecified
+  media:
+    name: synthetic_complete_minus_ura_his_leu
+    carbon_source:
+      - compound: D-galactose
+        concentration_percent: 2
+    nitrogen_source:
+      # concentration percent unspecified
+      - compound: amino_acid_dropout_mix
+        specifications:
+          - minus_ura
+          - minus_his
+          - minus_leu
+configs:
+- config_name: annotated_features
+  description: Calling Cards transcription factor binding data with enrichment scores and statistical significance
+  dataset_type: annotated_features
+  default: true
+  data_files:
+  - split: train
+    path: annotated_features/*/*.parquet
+  dataset_info:
+    features:
+    - name: id
+      dtype: string
+      description: Unique identifier for each binding measurement
+    - name: regulator_locus_tag
+      dtype: string
+      description: Systematic gene name (ORF identifier) of the transcription factor
+    - name: regulator_symbol
+      dtype: string
+      description: Standard gene symbol of the transcription factor
+    - name: target_locus_tag
+      dtype: string
+      description: Systematic gene name (ORF identifier) of the target gene
+    - name: target_symbol
+      dtype: string
+      description: Standard gene symbol of the target gene
+    - name: experiment_hops
+      dtype: float64
+      description: Number of transposon insertion events (hops) at target locus in experimental sample
+    - name: background_hops
+      dtype: float64
+      description: Number of transposon insertion events (hops) at target locus in background control
+    - name: background_total_hops
+      dtype: float64
+      description: Total number of background hops across all loci in the control sample
+    - name: experiment_total_hops
+      dtype: float64
+      description: Total number of experimental hops across all loci in the experimental sample
+    - name: callingcards_enrichment
+      dtype: float64
+      description: Enrichment score calculated as ratio of normalized experimental to background hops
+    - name: poisson_pval
+      dtype: float64
+      description: P-value from Poisson test for statistical significance of binding enrichment
+    - name: hypergeometric_pval
+      dtype: float64
+      description: P-value from hypergeometric test for statistical significance of binding enrichment
+    - name: batch
+      dtype: string
+      description: Experimental batch identifier for controlling batch effects
+
+- config_name: genome_map
+  description: Genome-wide calling cards insertion density data partitioned by batch
+  dataset_type: genome_map
+  data_files:
+  - split: train
+    path: genome_map/*/*.parquet
+  dataset_info:
+    features:
+    - name: id
+      dtype: string
+      description: Unique identifier for each genomic interval
+    - name: chr
+      dtype: string
+      description: Chromosome name (e.g., chrI, chrII, etc.)
+    - name: start
+      dtype: float64
+      description: Start position of genomic interval
+    - name: end
+      dtype: float64
+      description: End position of genomic interval
+    - name: depth
+      dtype: float64
+      description: Number of transposon insertion events (read depth) in this genomic interval
+    - name: strand
+      dtype: string
+      description: Strand information (+ or -) for the genomic interval
+    - name: batch
+      dtype: string
+      description: Experimental batch identifier
+    partitioning:
+      enabled: true
+      partition_by: ["batch"]
+      path_template: "genome_map/batch={batch}/*.parquet"
+
+- config_name: annotated_features_meta
+  description: Metadata for annotated features datasets including regulator informatioand data quality indicators
+  dataset_type: metadata
+  applies_to: ["annotated_features"]
+  data_files:
+  - split: train
+    path: annotated_features_meta.parquet
+  dataset_info:
+    features:
+    - name: db_id
+      dtype: string
+      description: Database identifier for the dataset
+      role: experimental_condition
+    - name: regulator_locus_tag
+      dtype: string
+      description: Systematic identifier for the regulatory factor
+      role: regulator_identifier
+    - name: regulator_symbol
+      dtype: string
+      description: Standard symbol for the regulatory factor
+      role: regulator_identifier
+    - name: data_usable
+      dtype: string
+      description: Indicator of whether the data is suitable for analysis
+      role: experimental_condition
+    - name: preferred_replicate
+      dtype: string
+      description: Boolean indicator for preferred biological replicate
+      role: experimental_condition
+    - name: batch
+      dtype: string
+      description: Experimental batch identifier
+      role: experimental_condition
+    - name: single_binding
+      dtype: int64
+      description: Count or score for single binding events
+      role: quantitative_measure
+    - name: composite_binding
+      dtype: int64
+      description: Count or score for composite binding events
+      role: quantitative_measure
+    - name: id
+      dtype: string
+      description: Unique identifier for the metadata record
+
+- config_name: genome_map_meta
+  description: Metadata for genome map datasets including regulator information and experimental details
+  dataset_type: metadata
+  applies_to: ["genome_map"]
+  data_files:
+  - split: train
+    path: genome_map_meta.parquet
+  dataset_info:
+    features:
+    - name: id
+      dtype: string
+      description: Unique identifier for the metadata record
+    - name: db_id
+      dtype: string
+      description: current django managed database identifier for the dataset
+      role: experimental_condition
+    - name: regulator_locus_tag
+      dtype: string
+      description: Systematic identifier for the regulatory factor
+      role: regulator_identifier
+    - name: regulator_symbol
+      dtype: string
+      description: Standard symbol for the regulatory factor
+      role: regulator_identifier
+    - name: batch
+      dtype: string
+      description: Experimental batch identifier
+      role: experimental_condition
+    - name: replicate
+      dtype: int64
+      description: Biological replicate number, within batch
+      role: experimental_condition
+    - name: notes
+      dtype: string
+      description: Additional notes or comments about the experiment
+      role: experimental_condition
+---
+
+# hackett_2020
+---
+license: mit
+language:
+- en
+tags:
+- genomics
+- yeast
+- transcription
+- perturbation
+- response
+- overexpression
+pretty_name: Hackett, 2020 Overexpression
+size_categories:
+- 1M<n<10M
+experimental_conditions:
+  temperature_celsius: 30
+  cultivation_method: chemostat
+  media:
+    name: minimal
+    carbon_source:
+      - compound: D-glucose
+        # Saldanha et al 2004: 10 g/l
+        concentration_percent: 1
+configs:
+  - config_name: hackett_2020
+    description: TF overexpression data from Hackett 2020
+    default: true
+    dataset_type: annotated_features
+    metadata_fields: ["sample_id", "regulator_locus_tag", "regulator_symbol", "time", "mechanism", "restriction", "date", "strain"]
+    data_files:
+      - split: train
+        path: hackett_2020.parquet
+    dataset_info:
+      features:
+        - name: sample_id
+          dtype: integer
+          description: >-
+            unique identifier for a specific sample. The sample ID identifies a unique
+            (regulator_locus_tag, time, mechanism, restriction, date, strain) tuple.
+        - name: db_id
+          dtype: integer
+          description: >-
+            an old unique identifer, for use internally only. Deprecated and will be removed eventually.
+            Do not use in analysis. db_id = 0, for GEV and Z3EV, means that those samples are not
+            included in the original DB.
+        - name: regulator_locus_tag
+          dtype: string
+          description: >-
+            induced transcriptional regulator systematic ID.
+            See hf/BrentLab/yeast_genome_resources
+          role: regulator_identifier
+        - name: regulator_symbol
+          dtype: string
+          description: >-
+            induced transcriptional regulator common name. If no common name exists,
+            then the `regulator_locus_tag` is used.
+          role: regulator_identifier
+        - name: target_locus_tag
+          dtype: string
+          description: >-
+            The systematic ID of the feature to which the effect/pvalue is assigned.
+            See hf/BrentLab/yeast_genome_resources
+          role: target_identifier
+        - name: target_symbol
+          dtype: string
+          description: >-
+            The common name of the feature to which the effect/pvalue is assigned.
+            If there is no common name, the `target_locus_tag` is used.
+          role: target_identifier
+        - name: time
+          dtype: float
+          description: time point (minutes)
+          role: experimental_condition
+        - name: mechanism
+          dtype:
+            class_label:
+              names: ["GEV", "ZEV"]
+          description: Synthetic TF induction system (GEV or ZEV)
+          role: experimental_condition
+          definitions:
+            GEV:
+              perturbation_method:
+                type: inducible_overexpression
+                system: GEV
+                inducer: beta-estradiol
+                description: "Galactose-inducible estrogen receptor-VP16 fusion system"
+            ZEV:
+              perturbation_method:
+                type: inducible_overexpression
+                system: ZEV
+                inducer: beta-estradiol
+                description: "Z3 (synthetic zinc finger)-estrogen receptor-VP16 fusion system"
+        - name: restriction
+          dtype:
+            class_label:
+              names: ["M", "N", "P"]
+          description: >-
+            nutrient limitation, one of P (phosphate limitation (20 mg/l).),
+            N (Nitrogen‐limited cultures were maintained at 40 mg/l ammonium sulfate) or
+            M (Not defined in the paper or on the Calico website)
+          role: experimental_condition
+          definitions:
+            P:
+              media:
+                nitrogen_source:
+                  - compound: ammonium_sulfate
+                    # Saldanha et al 2004: 5 g/l
+                    concentration_percent: 0.5
+                phosphate_source:
+                  - compound: potassium_phosphate_monobasic
+                    # Hackett et al 2020: 20 mg/l
+                    concentration_percent: 0.002
+            N:
+              media:
+                nitrogen_source:
+                  - compound: ammonium_sulfate
+                    # Hackett et al 2020: 40 mg/l
+                    concentration_percent: 0.004
+            M:
+              description: "Not defined in the paper or on the Calico website"
+        - name: date
+          dtype: string
+          description: date performed
+          role: experimental_condition
+        - name: strain
+          dtype: string
+          description: strain name
+          role: experimental_condition
+        - name: green_median
+          dtype: float
+          description: median of green (reference) channel fluorescence
+          role: quantitative_measure
+        - name: red_median
+          dtype: float
+          description: median of red (experimental) channel fluorescence
+          role: quantitative_measure
+        - name: log2_ratio
+          dtype: float
+          description: log2(red / green) subtracting value at time zero
+          role: quantitative_measure
+        - name: log2_cleaned_ratio
+          dtype: float
+          description: Non-specific stress response and prominent outliers removed
+          role: quantitative_measure
+        - name: log2_noise_model
+          dtype: float
+          description: estimated noise standard deviation
+          role: quantitative_measure
+        - name: log2_cleaned_ratio_zth2d
+          dtype: float
+          description: >-
+            cleaned timecourses hard-thresholded based on
+            multiple observations (or last observation) passing the noise model
+          role: quantitative_measure
+        - name: log2_selected_timecourses
+          dtype: float
+          description: >-
+            cleaned timecourses hard-thresholded based on single observations
+            passing noise model and impulse evaluation of biological feasibility
+          role: quantitative_measure
+        - name: log2_shrunken_timecourses
+          dtype: float
+          description: >-
+            selected timecourses with observation-level shrinkage based on
+            local FDR (false discovery rate). Most users of the data will want
+            to use this column.
+          role: quantitative_measure
+---
+
+# harbison_2004
+---
+license: mit
+language:
+  - en
+tags:
+  - genomics
+  - yeast
+  - transcription
+  - binding
+pretty_name: "Harbison, 2004 ChIP-chip"
+size_categories:
+  - 1M<n<10M
+strain_information:
+  background: W303
+  base_strain: Z1256
+configs:
+- config_name: harbison_2004
+  description: ChIP-chip transcription factor binding data with environmental conditions
+  dataset_type: annotated_features
+  default: true
+  metadata_fields: ["regulator_locus_tag", "regulator_symbol", "condition"]
+  data_files:
+  - split: train
+    path: harbison_2004.parquet
+  dataset_info:
+    features:
+    - name: condition
+      dtype:
+        class_label:
+          names: ["YPD", "SM", "RAPA", "H2O2Hi", "H2O2Lo",
+                  "Acid", "Alpha", "BUT14", "BUT90", "Thi-",
+                  "GAL", "HEAT", "Pi-", "RAFF"]
+      description: >-
+        Environmental condition of the experiment. Nearly all of the 204 regulators
+        have a YPD condition, and some have others in addition.
+      role: experimental_condition
+      definitions:
+        YPD:
+          description: Rich media baseline condition
+          # Harbison et al 2004: grown at 30°C (from HEAT condition context)
+          temperature_celsius: 30
+          cultivation_method: unspecified
+          growth_phase_at_harvest:
+            # Harbison et al 2004: OD600 ~0.8
+            od600: 0.8
+          media:
+            # Harbison et al 2004: 1% yeast extract / 2% peptone / 2% glucose
+            name: YPD
+            carbon_source:
+              - compound: D-glucose
+                concentration_percent: 2
+            nitrogen_source:
+              - compound: yeast_extract
+                concentration_percent: 1
+              - compound: peptone
+                concentration_percent: 2
+        SM:
+          description: Amino acid starvation stress condition
+          temperature_celsius: 30
+          cultivation_method: unspecified
+          growth_phase_at_harvest:
+            # Harbison et al 2004: OD600 ~0.6
+            od600: 0.6
+          media:
+            # Harbison et al 2004: synthetic complete medium
+            name: synthetic_complete
+            carbon_source: unspecified
+            nitrogen_source: unspecified
+          chemical_treatment:
+            compound: sulfometuron_methyl
+            # Harbison et al 2004: 0.2 mg/ml
+            concentration_percent: 0.02
+            duration_hours: 2
+        RAPA:
+          description: Nutrient deprivation via TOR inhibition
+          temperature_celsius: 30
+          cultivation_method: unspecified
+          growth_phase_at_harvest:
+            # Harbison et al 2004: OD600 ~0.8
+            od600: 0.8
+          media:
+            name: YPD
+            carbon_source:
+              - compound: D-glucose
+                concentration_percent: 2
+            nitrogen_source:
+              - compound: yeast_extract
+                concentration_percent: 1
+              - compound: peptone
+                concentration_percent: 2
+          chemical_treatment:
+            compound: rapamycin
+            # Harbison et al 2004: 100 nM
+            concentration_percent: 9.142e-6
+            duration_minutes: 20
+        H2O2Hi:
+          description: High oxidative stress condition
+          temperature_celsius: 30
+          cultivation_method: unspecified
+          growth_phase_at_harvest:
+            # Harbison et al 2004: OD600 ~0.5
+            od600: 0.5
+          media:
+            name: YPD
+            carbon_source:
+              - compound: D-glucose
+                concentration_percent: 2
+            nitrogen_source:
+              - compound: yeast_extract
+                concentration_percent: 1
+              - compound: peptone
+                concentration_percent: 2
+          chemical_treatment:
+            compound: hydrogen_peroxide
+            # Harbison et al 2004: 4 mM
+            concentration_percent: 0.0136
+            duration_minutes: 30
+        H2O2Lo:
+          description: Moderate oxidative stress condition
+          temperature_celsius: 30
+          cultivation_method: unspecified
+          growth_phase_at_harvest:
+            # Harbison et al 2004: OD600 ~0.5
+            od600: 0.5
+          media:
+            name: YPD
+            carbon_source:
+              - compound: D-glucose
+                concentration_percent: 2
+            nitrogen_source:
+              - compound: yeast_extract
+                concentration_percent: 1
+              - compound: peptone
+                concentration_percent: 2
+          chemical_treatment:
+            compound: hydrogen_peroxide
+            # Harbison et al 2004: 0.4 mM
+            concentration_percent: 0.00136
+            duration_minutes: 20
+        Acid:
+          description: Acidic pH stress condition
+          temperature_celsius: 30
+          cultivation_method: unspecified
+          growth_phase_at_harvest:
+            # Harbison et al 2004: OD600 ~0.5
+            od600: 0.5
+          media:
+            name: YPD
+            carbon_source:
+              - compound: D-glucose
+                concentration_percent: 2
+            nitrogen_source:
+              - compound: yeast_extract
+                concentration_percent: 1
+              - compound: peptone
+                concentration_percent: 2
+          chemical_treatment:
+            compound: succinic_acid
+            # Harbison et al 2004: 0.05 M to reach pH 4.0
+            concentration_percent: 0.59
+            target_pH: 4.0
+            duration_minutes: 30
+        Alpha:
+          description: Mating pheromone induction condition
+          temperature_celsius: 30
+          cultivation_method: unspecified
+          growth_phase_at_harvest:
+            # Harbison et al 2004: OD600 ~0.8
+            od600: 0.8
+          media:
+            name: YPD
+            carbon_source:
+              - compound: D-glucose
+                concentration_percent: 2
+            nitrogen_source:
+              - compound: yeast_extract
+                concentration_percent: 1
+              - compound: peptone
+                concentration_percent: 2
+          chemical_treatment:
+            compound: alpha_factor_pheromone
+            # Harbison et al 2004: 5 mg/ml
+            concentration_percent: 0.5
+            duration_minutes: 30
+        BUT14:
+          description: Long-term filamentation induction with butanol
+          temperature_celsius: 30
+          cultivation_method: unspecified
+          growth_phase_at_harvest:
+            # Harbison et al 2004: OD600 ~0.8
+            od600: 0.8
+          media:
+            # Harbison et al 2004: YPD containing 1% butanol
+            name: YPD
+            carbon_source:
+              - compound: D-glucose
+                concentration_percent: 2
+            nitrogen_source:
+              - compound: yeast_extract
+                concentration_percent: 1
+              - compound: peptone
+                concentration_percent: 2
+            additives:
+              - compound: butanol
+                concentration_percent: 1
+          incubation_duration_hours: 14
+        BUT90:
+          description: Short-term filamentation induction with butanol
+          temperature_celsius: 30
+          cultivation_method: unspecified
+          growth_phase_at_harvest:
+            # Harbison et al 2004: OD600 ~0.8
+            od600: 0.8
+          media:
+            # Harbison et al 2004: YPD containing 1% butanol
+            name: YPD
+            carbon_source:
+              - compound: D-glucose
+                concentration_percent: 2
+            nitrogen_source:
+              - compound: yeast_extract
+                concentration_percent: 1
+              - compound: peptone
+                concentration_percent: 2
+            additives:
+              - compound: butanol
+                concentration_percent: 1
+          incubation_duration_minutes: 90
+        "Thi-":
+          description: Vitamin B1 deprivation stress condition
+          temperature_celsius: 30
+          cultivation_method: unspecified
+          growth_phase_at_harvest:
+            # Harbison et al 2004: OD600 ~0.8
+            od600: 0.8
+          media:
+            # Harbison et al 2004: synthetic complete medium lacking thiamin
+            name: synthetic_complete_minus_thiamine
+            carbon_source: unspecified
+            nitrogen_source: unspecified
+        GAL:
+          description: Galactose-based growth medium condition
+          temperature_celsius: 30
+          cultivation_method: unspecified
+          growth_phase_at_harvest:
+            # Harbison et al 2004: OD600 ~0.8
+            od600: 0.8
+          media:
+            # Harbison et al 2004: YEP medium supplemented with galactose (2%)
+            name: yeast_extract_peptone
+            carbon_source:
+              - compound: D-galactose
+                concentration_percent: 2
+            nitrogen_source:
+              - compound: yeast_extract
+                concentration_percent: unspecified
+              - compound: peptone
+                concentration_percent: unspecified
+        HEAT:
+          description: Heat shock stress condition
+          # Harbison et al 2004: grown at 30°C, shifted to 37°C for 45 min
+          initial_temperature_celsius: 30
+          temperature_shift_celsius: 37
+          temperature_shift_duration_minutes: 45
+          cultivation_method: unspecified
+          growth_phase_at_harvest:
+            # Harbison et al 2004: OD600 ~0.5
+            od600: 0.5
+          media:
+            # Harbison et al 2004: YPD
+            name: YPD
+            carbon_source:
+              - compound: D-glucose
+                concentration_percent: 2
+            nitrogen_source:
+              - compound: yeast_extract
+                concentration_percent: 1
+              - compound: peptone
+                concentration_percent: 2
+        "Pi-":
+          description: Phosphate deprivation stress condition
+          temperature_celsius: 30
+          cultivation_method: unspecified
+          growth_phase_at_harvest:
+            # Harbison et al 2004: OD600 ~0.8
+            od600: 0.8
+          media:
+            # Harbison et al 2004: synthetic complete medium lacking phosphate
+            name: synthetic_complete_minus_phosphate
+            carbon_source: unspecified
+            nitrogen_source: unspecified
+        RAFF:
+          description: Raffinose-based growth medium condition
+          temperature_celsius: 30
+          cultivation_method: unspecified
+          growth_phase_at_harvest:
+            # Harbison et al 2004: OD600 ~0.8
+            od600: 0.8
+          media:
+            # Harbison et al 2004: YEP medium supplemented with raffinose (2%)
+            name: yeast_extract_peptone
+            carbon_source:
+              - compound: D-raffinose
+                concentration_percent: 2
+            nitrogen_source:
+              - compound: yeast_extract
+                concentration_percent: unspecified
+              - compound: peptone
+                concentration_percent: unspecified
+    - name: regulator_locus_tag
+      dtype: string
+      description: Systematic gene name (ORF identifier) of the ChIPd transcription factor
+      role: regulator_identifier
+    - name: regulator_symbol
+      dtype: string
+      description: Standard gene symbol of the ChIPd transcription factor
+      role: regulator_identifier
+    - name: target_locus_tag
+      dtype: string
+      description: Systematic gene name (ORF identifier) of the target gene measured
+      role: target_identifier
+    - name: target_symbol
+      dtype: string
+      description: Standard gene symbol of the target gene measured
+      role: target_identifier
+    - name: effect
+      dtype: float64
+      description: The chip channel ratio (effect size)
+      role: quantitative_measure
+    - name: pvalue
+      dtype: float64
+      description: pvalue of the chip channel ratio (effect)
+      role: quantitative_measure
+---
+
+# hu_2007_reimand_2010
+---
+license: mit
+language:
+  - en
+tags:
+  - genomics
+  - yeast
+  - transcription
+  - perturbation
+  - response
+  - knockout
+  - TFKO
+pretty_name: Hu 2007/Reimand 2010 TFKO
+size_categories:
+  - 1M<n<10M
+
+experimental_conditions:
+  # Hu et al 2007: Temperature not explicitly stated, assuming standard 30°C
+  temperature_celsius: 30
+  cultivation_method: batch
+  growth_phase_at_harvest: mid_log
+  media:
+    name: YPD
+    carbon_source:
+      - compound: D-glucose
+        # Standard YPD: 2% glucose
+        concentration_percent: 2
+    nitrogen_source:
+      - compound: yeast_extract
+        # Standard YPD: 1% yeast extract
+        concentration_percent: 1
+      - compound: peptone
+        # Standard YPD: 2% peptone
+        concentration_percent: 2
+
+configs:
+  - config_name: data
+    description: Regulator knockout expression data from Hu 2007 / Reimand 2010
+    dataset_type: annotated_features
+    data_files:
+    - split: train
+      path: hu_2007_reimand_2010.parquet
+    default: true
+    dataset_info:
+      features:
+        - name: sample_id
+          dtype: integer
+          description: unique identifier for a specific sample. The sample ID identifies a unique regulator_locus_tag
+        - name: db_id
+          dtype: integer
+          description: >-
+            an old unique identifer, for use internally only. Deprecated and will be removed eventually.
+            Do not use in analysis.
+        - name: regulator_locus_tag
+          dtype: string
+          description: induced transcriptional regulator systematic ID. See hf/BrentLab/yeast_genome_resources
+          role: regulator_identifier
+        - name: regulator_symbol
+          dtype: string
+          description: induced transcriptional regulator common name. If no common name exists, then the `regulator_locus_tag` is used.
+          role: regulator_identifier
+        - name: target_locus_tag
+          dtype: string
+          description: The systematic ID of the feature to which the effect/pvalue is assigned. See hf/BrentLab/yeast_genome_resources
+          role: target_identifier
+        - name: target_symbol
+          dtype: string
+          description: The common name of the feature to which the effect/pvalue is assigned. If there is no common name, the `target_locus_tag` is used.
+          role: target_identifier
+        - name: effect
+          dtype: float
+          description: >-
+            log fold change of mutant vs wt. From the remaind methods: Differential expression
+            was calculated using a moderated eBayes t-test as implemented in the Limma
+            Bioconductor package
+          role: quantitative_measure
+        - name: pval
+          dtype: float
+          description: P-values were FDR-adjusted across the whole microarray dataset to correct for multiple testing
+          role: quantitative_measure
+        - name: average_od_of_replicates
+          dtype: float
+          description: average OD of the replicates at harvest
+        - name: heat_shock
+          dtype: bool
+          description: >-
+            `True` if the regulator strain was subjected to heat shock treatment.
+            Applied to 22 transcription factors implicated in heat shock response.
+            `False` otherwise
+          role: experimental_condition
+          definitions:
+            true:
+              # Hu et al 2007: "15-min heat shock at 39°C"
+              temperature_celsius: 39
+              duration_minutes: 15
+              strain_background:
+                genotype: BY4741
+                mating_type: MATa
+                markers:
+                  - his3Δ1
+                  - leu2Δ0
+                  - met15Δ0
+                  - ura3Δ0
+                source: Open_Biosystems
+                description: Knockout strains for nonessential transcription factors
+            false:
+              description: Standard growth conditions at 30°C
+              strain_background:
+                genotype: BY4741
+                mating_type: MATa
+                markers:
+                  - his3Δ1
+                  - leu2Δ0
+                  - met15Δ0
+                  - ura3Δ0
+                source: Open_Biosystems
+                description: Knockout strains for nonessential transcription factors
+        - name: tetracycline_treatment
+          dtype: bool
+          description: >-
+            `True` if the regulator strain was treated with doxycycline to repress
+            TetO7-promoter regulated essential transcription factors. Applied to 6
+            essential transcription factors. `False` for untreated control condition.
+          role: experimental_condition
+          definitions:
+            true:
+              drug_treatment:
+                compound: doxycycline
+                # Hu et al 2007: 10 mg/ml
+                concentration_percent: 1
+                duration_hours_min: 14
+                duration_hours_max: 16
+              strain_background:
+                genotype: BY4741_derivative
+                mating_type: MATa
+                markers:
+                  - URA3::CMV-tTA
+                  - his3Δ1
+                  - leu2Δ0
+                  - met15Δ0
+                source: Open_Biosystems
+                description: Essential transcription factors with TetO7-promoter regulation
+            false:
+              description: No doxycycline treatment; TetO7 promoter active
+              strain_background:
+                genotype: BY4741_derivative
+                mating_type: MATa
+                markers:
+                  - URA3::CMV-tTA
+                  - his3Δ1
+                  - leu2Δ0
+                  - met15Δ0
+                source: Open_Biosystems
+                description: Essential transcription factors with TetO7-promoter regulation
+---
+
+# hughes_2006
+---
+license: mit
+language:
+- en
+tags:
+- biology
+- genomics
+- yeast
+- transcription-factors
+- gene-expression
+- perturbation-screen
+- overexpression
+- knockout
+- microarray
+- functional-genomics
+pretty_name: "Hughes 2006 Yeast Transcription Factor Perturbation Dataset"
+size_categories:
+- 100K<n<1M
+configs:
+- config_name: metadata
+  description: Transcription factor metadata including essentiality and QC status
+  dataset_type: metadata
+  default: true
+  applies_to: ["overexpression", "knockout"]
+  data_files:
+  - split: train
+    path: metadata.parquet
+  dataset_info:
+    features:
+    - name: sample_id
+      dtype: integer
+      description: >-
+        unique identifier for a specific sample. The sample ID identifies
+        a unique regulator_locus_tag and can be used to join to the
+        other datasets in this repo, including the metadata
+    - name: regulator_locus_tag
+      dtype: string
+      role: identifier
+      description: >-
+        Systematic gene name (ORF identifier) of the
+        transcription factor
+    - name: regulator_symbol
+      dtype: string
+      description: Standard gene symbol of the transcription factor
+    - name: found_domain
+      dtype: string
+      description: >-
+        Identified DNA-binding domain(s) or protein family classification
+    - name: sgd_description
+      dtype: string
+      description: >-
+        Functional description from Saccharomyces Genome Database (SGD)
+    - name: essential
+      dtype: bool
+      description: >-
+        Boolean indicating whether the gene is essential for viability
+    - name: oe_passed_qc
+      dtype: bool
+      description: >-
+        Boolean indicating whether overexpression experiments passed
+        quality control
+    - name: del_passed_qc
+      dtype: bool
+      description: >-
+        Boolean indicating whether deletion experiments passed
+        quality control
+
+- config_name: overexpression
+  description: Overexpression perturbation normalized log2 fold changes
+  dataset_type: annotated_features
+  data_files:
+  - split: train
+    path: overexpression.parquet
+    # temperature and growth phase are unspecified. nitrogen_source is
+    # also unspecified
+    media:
+      # Hughes et al 2006: "selective medium supplemented with 2% raffinose"
+      name: selective_medium
+      carbon_source:
+        - compound: D-raffinose
+          # Hughes et al 2006: 2% raffinose
+          concentration_percent: 2
+    induction:
+      # Hughes et al 2006: "induction with 2% galactose for 3 h"
+      inducer:
+        compound: D-galactose
+        concentration_percent: 2
+      duration_hours: 3
+  dataset_info:
+    features:
+    - name: sample_id
+      dtype: integer
+      description: >-
+        unique identifier for a specific sample. The sample ID identifies
+        a unique regulator_locus_tag and can be used to join to the
+        other datasets in this repo, including the metadata
+    - name: regulator_locus_tag
+      dtype: string
+      description: >-
+        Systematic gene name (ORF identifier) of the
+        perturbed transcription factor
+      role: regulator_identifier
+    - name: regulator_symbol
+      dtype: string
+      description: Standard gene symbol of the perturbed transcription factor
+    - name: target_locus_tag
+      dtype: string
+      description: >-
+        Systematic gene name (ORF identifier) of the
+        target gene measured
+      role: target_identifier
+    - name: target_symbol
+      dtype: string
+      description: Standard gene symbol of the target gene measured
+      role: target_identifier
+    - name: dye_plus
+      dtype: float64
+      role: quantitative_measure
+      description: >-
+        Normalized log2 fold change for positive (+) dye orientation.
+        Positive values indicate upregulation in response to overexpression.
+    - name: dye_minus
+      dtype: float64
+      role: quantitative_measure
+      description: >-
+        Normalized log2 fold change for negative (-) dye orientation.
+        Positive values indicate upregulation in response to overexpression.
+    - name: mean_norm_log2fc
+      dtype: float64
+      role: quantitative_measure
+      description: >-
+        Average log2 fold change across dye orientations,
+        providing a dye-independent estimate of gene expression
+        change upon transcription factor overexpression.
+
+- config_name: knockout
+  description: Deletion/knockout perturbation normalized log2 fold changes
+  dataset_type: annotated_features
+  data_files:
+  - split: train
+    path: knockout.parquet
+  experimental_conditions:
+    temperature_celsius: unspecified
+    cultivation_method: unspecified
+    media:
+      # Hughes et al 2006: "synthetic medium supplemented with 2% dextrose"
+      name: synthetic_medium
+      carbon_source:
+        - compound: D-glucose
+          # Hughes et al 2006: 2% dextrose
+          concentration_percent: 2
+      nitrogen_source: unspecified
+  dataset_info:
+    features:
+    - name: sample_id
+      dtype: integer
+      description: >-
+        unique identifier for a specific sample. The sample ID identifies
+        a unique regulator_locus_tag and can be used to join to the
+        other datasets in this repo, including the metadata
+    - name: regulator_locus_tag
+      dtype: string
+      description: >-
+        Systematic gene name (ORF identifier) of the perturbed
+        transcription factor
+      role: regulator_identifier
+    - name: regulator_symbol
+      dtype: string
+      description: Standard gene symbol of the perturbed transcription factor
+      role: regulator_identifier
+    - name: target_locus_tag
+      dtype: string
+      description: >-
+        Systematic gene name (ORF identifier) of the
+        target gene measured
+      role: target_identifier
+    - name: target_symbol
+      dtype: string
+      description: Standard gene symbol of the target gene measured
+      role: target_identifier
+    - name: dye_plus
+      dtype: float64
+      description: >-
+        Normalized log2 fold change for positive (+) dye orientation.
+        Positive values indicate upregulation in response to deletion.
+      role: quantitative_measure
+    - name: dye_minus
+      dtype: float64
+      description: >-
+        Normalized log2 fold change for negative (-) dye orientation.
+        Positive values indicate upregulation in response to deletion.
+      role: quantitative_measure
+    - name: mean_norm_log2fc
+      dtype: float64
+      description: >-
+        Average log2 fold change across dye orientations, providing a
+        dye-independent estimate of gene expression change upon
+        transcription factor deletion.
+      role: quantitative_measure
+---
+
+# kemmeren_2014
+---
+license: mit
+language:
+- en
+tags:
+- genomics
+- yeast
+- transcription
+- perturbation
+- response
+- knockout
+- TFKO
+pretty_name: "Kemmeren, 2014 Overexpression"
+size_categories:
+- 1M<n<10M
+
+experimental_conditions:
+  temperature_celsius: 30
+  cultivation_method: plate
+  growth_phase_at_harvest:
+    # harbison et al., specified this as early mid log phase. simplified here
+    phase: "mid_log_phase"
+    od600: 0.6
+    od600_tolerance: 0.1
+  media:
+    name: synthetic_complete
+    carbon_source:
+      - compound: D-glucose
+        # Kemmeren et al 2014: 2% D-glucose
+        concentration_percent: 2
+    nitrogen_source:
+      - compound: yeast_nitrogen_base
+        # Kemmeren et al 2014: 6.71 g/l
+        concentration_percent: 0.671
+        specifications:
+          - without_amino_acids
+          - without_carbohydrate
+          - with_ammonium_sulfate
+      - compound: amino_acid_dropout_mix
+        # Kemmeren et al 2014: 2.0 g/l
+        concentration_percent: 0.2
+configs:
+- config_name: kemmeren_2014
+  description: >-
+    Transcriptional regulator overexpression perturbation data with
+    differential expression measurements
+  dataset_type: annotated_features
+  default: true
+  metadata_fields: ["regulator_locus_tag", "regulator_symbol"]
+  data_files:
+  - split: train
+    path: kemmeren_2014.parquet
+  dataset_info:
+    features:
+    - name: sample_id
+      dtype: integer
+      description: >-
+        unique identifier for a specific sample.
+        The sample ID identifies a unique regulator.
+    - name: db_id
+      dtype: integer
+      description: >-
+        an old unique identifer, for use internally only. Deprecated and will be removed eventually.
+        Do not use in analysis. db_id = 0 for loci that were originally parsed incorrectly.
+    - name: regulator_locus_tag
+      dtype: string
+      description: >-
+        induced transcriptional regulator systematic ID.
+        See hf/BrentLab/yeast_genome_resources
+      role: regulator_identifier
+    - name: regulator_symbol
+      dtype: string
+      description: >-
+        induced transcriptional regulator common name.
+        If no common name exists, then the `regulator_locus_tag` is used.
+      role: regulator_identifier
+    - name: reporterId
+      dtype: string
+      description: probe ID as reported from the original data
+    - name: target_locus_tag
+      dtype: string
+      description: >-
+        The systematic ID of the feature to which the effect/pvalue is assigned.
+        See hf/BrentLab/yeast_genome_resources
+      role: target_identifier
+    - name: target_symbol
+      dtype: string
+      description: >-
+        The common name of the feature to which the effect/pvalue is assigned.
+        If there is no common name, the `target_locus_tag` is used.
+      role: target_identifier
+    - name: M
+      dtype: float64
+      description: log₂ fold change (mutant vs wildtype)
+      role: quantitative_measure
+    - name: Madj
+      dtype: float64
+      description: >-
+        M value with the cell cycle signal removed
+        (see paper cited in the introduction above)
+      role: quantitative_measure
+    - name: A
+      dtype: float64
+      description: >-
+        average log2 intensity of the two channels, a proxy for expression level
+        (This is a guess based on microarray convention -- not specified on holstege site)
+      role: quantitative_measure
+    - name: pval
+      dtype: float64
+      description: significance of the modeled effect (M), from limma
+      role: quantitative_measure
+    - name: variable_in_wt
+      dtype: string
+      description: >-
+        True if the given locus is variable in the WT condition.
+        Recommended to remove these from analysis. False otherwise.
+        See Holstege website for more information
+      role: experimental_condition
+    - name: multiple_probes
+      dtype: string
+      description: >-
+        True if there is more than one probe associated with
+        the same genomic locus. False otherwise
+      role: experimental_condition
+    - name: kemmeren_regulator
+      dtype: string
+      description: >-
+        True if the regulator is one of the regulators studied in the
+        original Kemmeren et al. (2014) global regulator study. False otherwise
+      role: experimental_condition
+    - name: regulator_desc
+      dtype: string
+      description: >-
+        functional description of the induced regulator
+        from the original paper supplement
+      role: experimental_condition
+    - name: functional_category
+      dtype: string
+      description: functional classification of the regulator from the original paper supplement
+      role: experimental_condition
+    - name: slides
+      dtype: string
+      description: identifier(s) for the microarray slide(s) used in this experiment
+      role: experimental_condition
+    - name: mating_type
+      dtype: string
+      description: mating type of the strain background used in the experiment
+      role: experimental_condition
+    - name: source_of_deletion_mutants
+      dtype: string
+      description: origin of the strain
+      role: experimental_condition
+    - name: primary_hybsets
+      dtype: string
+      description: identifier for the primary hybridization set to which this sample belongs
+      role: experimental_condition
+    - name: responsive_non_responsive
+      dtype: string
+      description: >-
+        classification of the regulator as responsive or not to the
+        deletion from the original paper supplement
+      role: experimental_condition
+    - name: nr_sign_changes
+      dtype: integer
+      description: >-
+        number of significant changes in expression detected for the regulator locus tag (abs(M) > log2(1.7) & pval < 0.05).
+        Note that there is a slight difference when calculating from the data provided here, I believe due to a difference in
+        the way the targets are parsed and filtered (some ORFs that have since been removed from the annotations are removed).
+        I didn't investigate this closely, though.
+      role: experimental_condition
+    - name: profile_first_published
+      dtype: string
+      description: citation or reference indicating where this expression profile was first published
+      role: experimental_condition
+    - name: chase_notes
+      dtype: string
+      description: notes added during data curation and parsing
+---
+
+# mahendrawada_2025
+---
+license: mit
+language:
+- en
+tags:
+- biology
+- genomics
+- yeast
+- transcription-factors
+- gene-expression
+- binding
+- chec
+- perturbation
+- rnaseq
+- nascent rnaseq
+pretty_name: "Mahendrawada 2025 ChEC-seq and Nascent RNA-seq data"
+size_categories:
+- 100K<n<1M
+
+configs:
+- config_name: genomic_features
+  description: Comprehensive genomic features and regulatory characteristics for yeast genes
+  dataset_type: genomic_features
+  data_files:
+  - split: train
+    path: features_mahendrawada_2025.parquet
+  dataset_info:
+    features:
+    - name: gene_id
+      dtype: string
+      description: Systematic gene name (ORF identifier) from SGD (https://yeastgenome.org/)
+    - name: SGD_id
+      dtype: string
+      description: Unique identifier for each gene from SGD (https://yeastgenome.org/)
+    - name: gene_name
+      dtype: string
+      description: Common name of each gene
+    - name: chr
+      dtype: string
+      description: Chromosome number corresponding to gene
+    - name: strand
+      dtype: string
+      description: Strandedness of the gene (+ or -)
+    - name: start
+      dtype: int64
+      description: Start position of the ORF
+    - name: end
+      dtype: int64
+      description: End position of the ORF
+    - name: TSS
+      dtype: int64
+      description: Transcription start site based on Park et al., 2014 (doi:10.1093/nar/gkt1366)
+    - name: TATA_category
+      dtype: string
+      description: TATA box classification from Donczew et al., 2020 using consensus TATAWAW (doi:10.7554/eLife.50109)
+    - name: expression
+      dtype: float64
+      description: Average signal normalized to gene length from Donczew et al., 2020 (doi:10.7554/eLife.50109)
+    - name: +1 nucleosome
+      dtype: float64
+      description: Position of +1 nucleosome from Chereji et al., 2018 (doi:10.1186/S13059-018-1398-0)
+    - name: -1 nucleosome
+      dtype: float64
+      description: Position of -1 nucleosome from Chereji et al., 2018 (doi:10.1186/S13059-018-1398-0)
+    - name: NDR Center
+      dtype: float64
+      description: Center of nucleosome depleted region from Chereji et al., 2018 (doi:10.1186/S13059-018-1398-0)
+    - name: NDR Width
+      dtype: float64
+      description: Width of nucleosome depletion region from Chereji et al., 2018 (doi:10.1186/S13059-018-1398-0)
+    - name: tail-dependence
+      dtype: string
+      description: Tail classification based on Mediator tail dependence from Warfield L, Donczew R et al., 2022 (doi:10.1016/j.molcel.2022.09.016)
+    - name: coactivator
+      dtype: string
+      description: Coactivator classification based on TFIID and/or SAGA dependence from Donczew et al., 2020 (doi:10.7554/eLife.50109)
+    - name: LCID_center
+      dtype: string
+      description: Genes near boundaries of chromosomal interacting domains from Swygert et al., 2020 (doi:10.1016/j.molcel.2018.11.020)
+    - name: Rossi_classes
+      dtype: string
+      description: Promoter classes from Rossi et al., 2021 (doi:10.1038/s41586-021-03314-8)
+    - name: RP_category
+      dtype: string
+      description: Ribosomal protein (RP) and ribosomal biogenesis (RiBi) gene classification from Zencir et al., 2020 (doi:10.1093/NAR/GKAA852)
+    - name: binding_cluster
+      dtype: string
+      description: Clusters from unsupervised K-means clustering using binary binding data of 178 transcription factors
+    - name: list_of_TFS_bound
+      dtype: string
+      description: List of transcription factors bound to gene promoter (-400 to +200 bp from TSS; Homer peak calling)
+    - name: number_of_bound_tfs
+      dtype: int64
+      description: Number of transcription factors bound to each promoter
+    - name: locus_tag
+      dtype: string
+      description: Systematic gene identifier from yeast_genome_resources dataset
+    - name: symbol
+      dtype: string
+      description: Standard gene symbol from yeast_genome_resources dataset
+
+- config_name: mahendrawada_chec_seq
+  description: ChEC-seq transcription factor binding data with peak scores (original authors' processed data)
+  default: true
+  dataset_type: annotated_features
+  metadata_fields:
+    - regulator_locus_tag
+    - regulator_symbol
+  data_files:
+  - split: train
+    path: chec_mahendrawada_2025.parquet
+  dataset_info:
+    features:
+    - name: sample_id
+      dtype: integer
+      description: >-
+        unique identifier for a specific sample, which uniquely identifies one of the 178 TFs.
+        Across datasets in this repo, the a given sample_id identifies the same regulator.
+    - name: regulator_locus_tag
+      dtype: string
+      description: Systematic gene name (ORF identifier) of the transcription factor
+    - name: regulator_symbol
+      dtype: string
+      description: Standard gene symbol of the transcription factor
+    - name: target_locus_tag
+      dtype: string
+      description: Systematic gene name (ORF identifier) of the target gene
+    - name: target_symbol
+      dtype: string
+      description: Standard gene symbol of the target gene
+    - name: peak_score
+      dtype: float64
+      description: ChEC signal around peak center (sum of ChEC signal from -150 to +150 bp from peak summit) normalized to Drosophila spike-in control
+    - name: processing_method
+      dtype: string
+      description: Method used for peak calling and quantification (original authors)
+
+- config_name: reprocessed_chec_seq
+  description: ChEC-seq transcription factor binding data reprocessed with updated peak calling methodology
+  dataset_type: annotated_features
+  data_files:
+  - split: train
+    path: chec_reprocessed_mahendrawada_2025.parquet
+  dataset_info:
+    features:
+    - name: sample_id
+      dtype: integer
+      description: >-
+        unique identifier for a specific sample, which uniquely identifies one of the 178 TFs.
+        Across datasets in this repo, the a given sample_id identifies the same regulator.
+    - name: regulator_locus_tag
+      dtype: string
+      description: Systematic gene name (ORF identifier) of the transcription factor
+    - name: regulator_symbol
+      dtype: string
+      description: Standard gene symbol of the transcription factor
+    - name: target_locus_tag
+      dtype: string
+      description: Systematic gene name (ORF identifier) of the target gene
+    - name: target_symbol
+      dtype: string
+      description: Standard gene symbol of the target gene
+    - name: enrichment
+      dtype: float64
+      description: ratio of experimental insertions to background insertions
+    - name: poisson_pval
+      dtype: float64
+      description: enrichment poisson pvalue
+
+- config_name: reprocessed_diffcontrol_5prime
+  description: Comparing two different sets of control replicates, m2025 from the Mahendrawada 2025 paper, and h2021 from a previous paper from the Hahn lab
+  dataset_type: annotated_features
+  metadata_fields:
+    - control_source
+    - condition
+    - regulator_locus_tag
+  experimental_conditions:
+    # Mahendrawada et al 2025: "30 °C culture"
+    temperature_celsius: 30
+    cultivation_method: unspecified
+    growth_phase_at_harvest:
+      # Mahendrawada et al 2025: "A600 of ~1.0"
+      od600: 1.0
+    media:
+      # Mahendrawada et al 2025: "synthetic complete (SC) media"
+      name: synthetic_complete
+      carbon_source: unspecified
+      nitrogen_source:
+        - compound: yeast_nitrogen_base
+          # Mahendrawada et al 2025: 1.7 g/L (without ammonium sulfate or amino acids (BD Difco))
+          concentration_percent: 0.17
+          specifications:
+            - without_ammonium_sulfate
+            - without_amino_acids
+        - compound: ammonium_sulfate
+          # Mahendrawada et al 2025: 5 g/L
+          concentration_percent: 0.5
+        - compound: amino_acid_dropout_mix
+          # Mahendrawada et al 2025: 0.6 g/L
+          concentration_percent: 0.06
+        - compound: adenine_sulfate
+          # Mahendrawada et al 2025: 40 μg/ml = 0.04 g/L
+          concentration_percent: 0.004
+        - compound: uracil
+          # Mahendrawada et al 2025: 2 μg/ml = 0.002 g/L
+          concentration_percent: 0.0002
+  data_files:
+  - split: train
+    path: reprocess_diffcontrol_5prime.parquet
+  dataset_info:
+    features:
+    - name: control_source
+      dtype: string
+      description: Source identifier for the control dataset (m2025 or h2021)
+    - name: condition
+      dtype: string
+      description: Experimental condition. 'standard' is YPD.
+    - name: regulator_locus_tag
+      dtype: string
+      description: Systematic gene name (ORF identifier) of the transcription factor
+    - name: target_locus_tag
+      dtype: string
+      description: Systematic gene name (ORF identifier) of the target gene
+    - name: chr
+      dtype: string
+      description: Chromosome name of the promoter/target region
+    - name: start
+      dtype: int64
+      description: Start coordinate of the promoter region
+    - name: end
+      dtype: int64
+      description: End coordinate of the promoter region
+    - name: strand
+      dtype: string
+      description: Strand orientation (+ or -) of the promoter/target
+    - name: input_vs_target_log2_fold_change
+      dtype: float64
+      description: Log2 fold change of TF-tagged sample vs control (from DESeq2)
+    - name: input_vs_target_p_value
+      dtype: float64
+      description: P-value for differential enrichment (from DESeq2)
+    - name: input_vs_target_adj_p_value
+      dtype: float64
+      description: Adjusted p-value (FDR-corrected) for differential enrichment (from DESeq2)
+
+- config_name: rna_seq
+  description: Nascent RNA-seq differential expression data following transcription factor depletion using 4TU metabolic labeling
+  dataset_type: annotated_features
+  metadata_fields:
+    - regulator_locus_tag
+    - regulator_symbol
+  data_files:
+  - split: train
+    path: rnaseq_mahendrawada_2025.parquet
+  dataset_info:
+    features:
+    - name: sample_id
+      dtype: integer
+      description: >-
+        unique identifier for a specific sample, which uniquely identifies one of the 178 TFs.
+        Across datasets in this repo, the a given sample_id identifies the same regulator.
+    - name: db_id
+      dtype: integer
+      description: >-
+        an old unique identifer, for use internally only. Deprecated and will be removed eventually.
+        Do not use in analysis.
+    - name: regulator_locus_tag
+      dtype: string
+      description: Systematic gene name (ORF identifier) of the depleted transcription factor
+    - name: regulator_symbol
+      dtype: string
+      description: Standard gene symbol of the depleted transcription factor
+    - name: target_locus_tag
+      dtype: string
+      description: Systematic gene name (ORF identifier) of the differentially expressed target gene
+    - name: target_symbol
+      dtype: string
+      description: Standard gene symbol of the differentially expressed target gene
+    - name: log2fc
+      dtype: float64
+      description: Log2 fold change (IAA/DMSO) for significantly affected genes (DESeq2, padj <0.1, FC >= 1.3)
+---
+
+# rossi_2021
+---
+license: mit
+tags:
+- transcription-factor
+- binding
+- chipexo
+- genomics
+- biology
+language:
+- en
+pretty_name: Rossi ChIP-exo 2021
+experimental_conditions:
+  temperature_celsius: 25
+  cultivation_method: unspecified
+  growth_phase_at_harvest:
+    phase: mid_log
+    od600: 0.8
+  media:
+    name: yeast_peptone_dextrose
+    carbon_source:
+      - compound: D-glucose
+        concentration_percent: unspecified
+    nitrogen_source:
+      - compound: yeast_extract
+        concentration_percent: unspecified
+      - compound: peptone
+        concentration_percent: unspecified
+
+  # Heat shock applied only to SAGA strains
+  # note that im not sure which strains this
+  # applies to -- it is a TODO to better
+  # document this
+  heat_shock:
+    induced: true
+    temperature_celsius: 37
+    duration_minutes: 6
+    pre_induction_temperature_celsius: 25
+    method: equal_volume_medium_transfer
+configs:
+- config_name: metadata
+  description: Metadata describing the tagged regulator in each experiment
+  dataset_type: metadata
+  data_files:
+  - split: train
+    path: rossi_2021_metadata.parquet
+  dataset_info:
+    features:
+    - name: regulator_locus_tag
+      dtype: string
+      description: Systematic gene name (ORF identifier) of the transcription factor
+    - name: regulator_symbol
+      dtype: string
+      description: Standard gene symbol of the transcription factor
+    - name: run_accession
+      dtype: string
+      description: GEO run accession identifier for the sample
+    - name: yeastepigenome_id
+      dtype: string
+      description: Sample identifier used by yeastepigenome.org
+- config_name: genome_map
+  description: "ChIP-exo 5' tag coverage data partitioned by sample accession"
+  dataset_type: genome_map
+  data_files:
+  - split: train
+    path: genome_map/*/*.parquet
+  dataset_info:
+    features:
+    - name: chr
+      dtype: string
+      description: Chromosome name (e.g., chrI, chrII, etc.)
+    - name: pos
+      dtype: int32
+      description: "Genomic position of the 5' tag"
+    - name: pileup
+      dtype: int32
+      description: "Depth of coverage (number of 5' tags) at this genomic position"
+- config_name: rossi_annotated_features
+  description: ChIP-exo regulator-target binding features with peak statistics
+  dataset_type: annotated_features
+  default: true
+  metadata_fields:
+    - regulator_locus_tag
+    - regulator_symbol
+    - target_locus_tag
+  data_files:
+    - split: train
+      path: yeastepigenome_annotatedfeatures.parquet
+  dataset_info:
+    features:
+      - name: sample_id
+        dtype: int32
+        description: >-
+          Unique identifier for each ChIP-exo experimental sample.
+      - name: pss_id
+        dtype: float64
+        description: >-
+          Current brentlab promotersetsig table id. This will eventually be removed.
+      - name: binding_id
+        dtype: float64
+        description: >-
+          Current brentlab binding table id. This will eventually be removed.
+      - name: yeastepigenome_id
+        dtype: float64
+        description: >-
+          Unique identifier in the yeastepigenome database.
+      - name: regulator_locus_tag
+        dtype: string
+        description: >-
+          Systematic ORF name of the regulator.
+        role: regulator_identifier
+      - name: regulator_symbol
+        dtype: string
+        description: >-
+          Common gene name of the regulator.
+        role: regulator_identifier
+      - name: target_locus_tag
+        dtype: string
+        description: >-
+          The systematic ID of the feature to which the effect/pvalue is
+          assigned. See hf/BrentLab/yeast_genome_resources
+        role: target_identifier
+      - name: target_symbol
+        dtype: string
+        description: >-
+          The common name of the feature to which the effect/pvalue is
+          assigned. If there is no common name, the `target_locus_tag` is
+          used.
+        role: target_identifier
+      - name: n_sig_peaks
+        dtype: float64
+        description: >-
+          Number of peaks in the promoter region of the the target gene
+        role: quantitative_measure
+      - name: max_fc
+        dtype: float64
+        description: >-
+          If there are multiple peaks in the promoter region, then the maximum is
+          reported. Otherwise, it is the fold change of the single peak in the
+          promoter.
+        role: quantitative_measure
+      - name: min_pval
+        dtype: float64
+        description: >-
+          The most significant p-value among peaks for this interaction.
+        role: quantitative_measure
+- config_name: reprocess_annotatedfeatures
+  description: >-
+    Annotated features reprocessed with updated peak
+    calling methodology
+  dataset_type: annotated_features
+  data_files:
+    - split: train
+      path: reprocess_annotatedfeatures.parquet
+  dataset_info:
+    features:
+      - name: regulator_locus_tag
+        dtype: string
+        description: Systematic gene name (ORF identifier) of the transcription factor
+      - name: regulator_symbol
+        dtype: string
+        description: Standard gene symbol of the transcription factor
+      - name: target_locus_tag
+        dtype: string
+        description: Systematic gene name (ORF identifier) of the target gene
+      - name: target_symbol
+        dtype: string
+        description: Standard gene symbol of the target gene
+      - name: baseMean
+        dtype: float64
+        description: Average of normalized count values, dividing by size factors, taken over all samples
+      - name: log2FoldChange
+        dtype: float64
+        description: Log2 fold change between comparison and control groups
+      - name: lfcSE
+        dtype: float64
+        description: Standard error estimate for the log2 fold change estimate
+      - name: stat
+        dtype: float64
+        description: Value of the test statistic for the gene
+      - name: pvalue
+        dtype: float64
+        description: P-value of the test for the gene
+      - name: padj
+        dtype: float64
+        description: Adjusted p-value for multiple testing for the gene
+- config_name: reprocess_annotatedfeatures_tagcounts
+  description: Another version of the reprocessed data, quantified similarly to Calling Cards
+  dataset_type: annotated_features
+  data_files:
+    - split: train
+      path: reprocess_annotatedfeatures_tagcounts.parquet
+  dataset_info:
+    features:
+      - name: regulator_locus_tag
+        dtype: string
+        description: Systematic gene name (ORF identifier) of the transcription factor
+        role: regulator_identifier
+      - name: target_locus_tag
+        dtype: string
+        description: Systematic gene name (ORF identifier) of the target gene
+        role: target_identifier
+      - name: rank
+        dtype: int64
+        description: Rank (ties method min rank) of the peak based on pvalue with ties broken by enrichment. Largest rank is most significant.
+      - name: control_count
+        dtype: int64
+        description: Number of tags in the control condition
+      - name: experimental_count
+        dtype: int64
+        description: Number of tags in the experimental condition
+      - name: mu
+        dtype: float64
+        description: Expected count under the null hypothesis (control_count + 1) * (experimental_total_tags / control_total_tags)
+      - name: enrichment
+        dtype: float64
+        description: Enrichment ratio of experimental over control. (experimental_counts / experimental_total) / (control_counts + pseudocount) / control_total
+        role: quantitative_measure
+      - name: log2_enrichment
+        dtype: float64
+        description: Log2-transformed enrichment ratio
+        role: quantitative_measure
+      - name: neg_log10_pvalue
+        dtype: float64
+        description: Negative log10 of the p-value for binding significance
+        role: quantitative_measure
+      - name: neg_log10_qvalue
+        dtype: float64
+        description: Negative log10 of the FDR-adjusted q-value
+        role: quantitative_measure
+---
+
+# yeast_genome_resources
+---
+license: mit
+pretty_name: BrentLab Yeast Genome Resources
+language:
+  - en
+dataset_info:
+  features:
+    - name: start
+      dtype: int32
+      description: Start coordinate (1-based, **inclusive**)
+    - name: end
+      dtype: int32
+      description: End coordinate (1-based, **inclusive**)
+    - name: strand
+      dtype: string
+      levels:
+        - +
+        - "-"
+      description: Strand of feature
+    - name: type
+      dtype: string
+      levels:
+        - gene
+        - ncRNA_gene
+        - tRNA_gene
+        - snoRNA_gene
+        - transposable_element_gene
+        - pseudogene
+        - telomerase_RNA_gene
+        - snRNA_gene
+        - rRNA_gene
+        - blocked_reading_frame
+      description: classification of feature
+    - name: locus_tag
+      dtype: string
+      description: Systematic ID of feature
+    - name: symbol
+      dtype: string
+      description: Common name of feature
+    - name: alias
+      dtype: string
+      description: Alternative names of feature, typically alternative symbols
+    - name: source
+      dtype: string
+      description: Annotation file version/origin of the feature
+    - name: note
+      dtype: string
+      description: Additional feature information, typically the description from the
+        SGD gff/gtf
+  partitioning:
+    keys:
+      - name: chr
+        dtype: string
+        levels:
+          - chrI
+          - chrII
+          - chrVII
+          - chrV
+          - chrIII
+          - chrIV
+          - chrVIII
+          - chrVI
+          - chrX
+          - chrIX
+          - chrXI
+          - chrXIV
+          - chrXII
+          - chrXIII
+          - chrXV
+          - chrXVI
+          - chrM
+configs:
+  - config_name: features
+    default: true
+    data_files:
+      - split: train
+        path:
+          - features/*/part-0.parquet
+---
