@@ -1,9 +1,9 @@
 site_name: labretriever
 site_description: "Python API for querying and analyzing genomic datasets from HuggingFace Hub"
 site_author: "ben mueller <email@email.com>, chase mateusiak <chasem@wustl.edu>, michael brent <brent@wustl.edu>"
-site_url: "https://brentlab.github.io/labretriever"
-repo_url: "https://github.com/brentlab/labretriever"
-repo_name: "brentlab/labretriever"
+site_url: "https://cmatKhan.github.io/labretriever"
+repo_url: "https://github.com/cmatKhan/labretriever"
+repo_name: "cmatKhan/labretriever"
 edit_uri: "edit/main/docs/"
 watch: ['labretriever', 'docs']
 
@@ -105,7 +105,7 @@ markdown_extensions:
   - pymdownx.magiclink:
       normalize_issue_symbols: true
       repo_url_shorthand: true
-      user: brentlab
+      user: cmatKhan
       repo: labretriever
   - pymdownx.mark
   - pymdownx.smartsymbols
@@ -130,7 +130,7 @@ markdown_extensions:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/brentlab/labretriever
+      link: https://github.com/cmatKhan/labretriever
       name: GitHub Repository
   version:
     provider: mike

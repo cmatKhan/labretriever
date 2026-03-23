@@ -2,7 +2,7 @@
 
 A Python package for querying and managing genomic and transcriptomic datasets hosted on [HuggingFace Hub](https://huggingface.co). It provides a unified SQL interface (via DuckDB) across heterogeneous datasets, with local caching and structured metadata exploration.
 
-See the [documentation](https://brentlab.github.io/labretriever) for full usage guides and API reference. The [BrentLab yeast resources collection](https://huggingface.co/collections/BrentLab/yeastresources) is an example of datasets designed to work with this package.
+See the [documentation](https://cmatKhan.github.io/labretriever) for full usage guides and API reference. The [BrentLab yeast resources collection](https://huggingface.co/collections/BrentLab/yeastresources) is an example of datasets designed to work with this package.
 
 ## Installation
 
@@ -36,7 +36,7 @@ df = vdb.query("SELECT * FROM harbison_meta WHERE carbon_source = $cs", cs="gluc
 ## Development
 
 ```bash
-git clone https://github.com/brentlab/labretriever
+git clone https://github.com/cmatKhan/labretriever
 cd labretriever
 poetry install
 poetry run pre-commit install

@@ -3,7 +3,7 @@ VirtualDB provides a SQL query interface across heterogeneous datasets.
 
 A developer creates huggingface repos with datacards. Datacard specifications
 specific to labretriever can be found at
-https://brentlab.github.io/labretriever/huggingface_datacard/. Next, a developer can create
+https://cmatKhan.github.io/labretriever/huggingface_datacard/. Next, a developer can create
 a virtualDB configuration file that describes which huggingface repos and datasets to
 use, a set of common fields, datasets that contain comparative analytics, and more.
 VirtualDB, this code, then uses DuckDB to construct views over Parquet files cached
