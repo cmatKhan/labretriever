@@ -146,6 +146,11 @@ def get_nested_value(data: dict | list, path: str) -> Any:
     return current
 
 
+def _quote_ident(name: str) -> str:
+    """Double-quote a SQL identifier, escaping any embedded double-quotes."""
+    return '"' + name.replace('"', '""') + '"'
+
+
 @lru_cache(maxsize=32)
 def _cached_datacard(repo_id: str, token: str | None = None) -> Any:
     """
@@ -854,7 +859,9 @@ class VirtualDB:
                 parts = expr.rsplit(" AS ", 1)
                 if len(parts) != 2:
                     continue
-                out_col = parts[1].strip()
+                # Strip double-quotes added by _quote_ident so we can
+                # compare the bare name against parquet column names.
+                out_col = parts[1].strip().strip('"')
                 # Extract the innermost source field from the CAST chain.
                 # Handles both:
                 #   CAST(CAST(<field> AS VARCHAR) AS _enum_<key>)
@@ -895,7 +902,7 @@ class VirtualDB:
             seen.add(col)
             alias = factor_col_renames.get(col)
             if alias:
-                select_parts.append(f"{qualify(col)} AS {alias}")
+                select_parts.append(f"{qualify(col)} AS {_quote_ident(alias)}")
             elif rename_sample and col == sample_col:
                 select_parts.append(f"{qualify(col)} AS sample_id")
             elif rename_sample and col == "sample_id":
@@ -937,17 +944,27 @@ class VirtualDB:
                         expr = expr.replace(f"CAST({orig} AS", f"CAST({alias} AS")
                     rewritten.append(expr)
                 derived_exprs = rewritten
-            # Qualify source column references inside CASE WHEN expressions
+            # Qualify source column references inside expressions.
+            # Covers:
+            #   - simple alias:   "field AS ..."  → "m.field AS ..."
+            #   - CAST alias:     "CAST(field AS ..." → "CAST(m.field AS ..."
+            #   - CASE WHEN:      "CASE field WHEN..." / "field = ..."
             if is_join:
                 qualified_exprs = []
                 for expr in derived_exprs:
                     for raw_col in prop_raw_cols:
                         q = qualify(raw_col)
                         if q != raw_col:
-                            # Replace bare column name in CASE WHEN patterns
-                            expr = expr.replace(
-                                f"CASE {raw_col} ", f"CASE {q} "
-                            ).replace(f" {raw_col} = ", f" {q} = ")
+                            expr = (
+                                expr
+                                # simple alias: bare field at start before " AS"
+                                .replace(f"{raw_col} AS ", f"{q} AS ")
+                                # CAST alias: field inside CAST(
+                                .replace(f"CAST({raw_col} AS", f"CAST({q} AS")
+                                # CASE WHEN patterns
+                                .replace(f"CASE {raw_col} ", f"CASE {q} ")
+                                .replace(f" {raw_col} = ", f" {q} = ")
+                            )
                     qualified_exprs.append(expr)
                 derived_exprs = qualified_exprs
             select_parts.extend(derived_exprs)
@@ -1026,7 +1043,9 @@ class VirtualDB:
             raw_select = "r.*"
 
         if extra_cols:
-            extra_select = ", ".join(f"m.{c}" for c in sorted(extra_cols))
+            extra_select = ", ".join(
+                f"m.{_quote_ident(c)}" for c in sorted(extra_cols)
+            )
             full_select = f"{raw_select}, {extra_select}"
         else:
             full_select = raw_select
@@ -1232,7 +1251,7 @@ class VirtualDB:
                 continue
             if mapping.expression is not None:
                 # Type D: expression
-                expressions.append(f"({mapping.expression}) AS {key}")
+                expressions.append(f"({mapping.expression}) AS {_quote_ident(key)}")
                 continue
 
             if mapping.field is not None and mapping.path is None:
@@ -1256,13 +1275,14 @@ class VirtualDB:
                         f"CAST({mapping.field} AS BIGINT)" if all_int else mapping.field
                     )
                     expressions.append(
-                        f"CAST(CAST({inner} AS VARCHAR)" f" AS {enum_type}) AS {key}"
+                        f"CAST(CAST({inner} AS VARCHAR)"
+                        f" AS {enum_type}) AS {_quote_ident(key)}"
                     )
                 elif key == mapping.field:
                     # no-op -- column already present as raw col
                     pass
                 else:
-                    expressions.append(f"{mapping.field} AS {key}")
+                    expressions.append(f"{mapping.field} AS {_quote_ident(key)}")
                 continue
 
             if mapping.field is not None and mapping.path is not None:
@@ -1307,7 +1327,7 @@ class VirtualDB:
         for key, label in self.config.missing_value_labels.items():
             if key not in mappings:
                 escaped = label.replace("'", "''")
-                expressions.append(f"'{escaped}' AS {key}")
+                expressions.append(f"'{escaped}' AS {_quote_ident(key)}")
 
         if not expressions and not raw_cols:
             return None
@@ -1400,7 +1420,7 @@ class VirtualDB:
             expr = f"CASE {case_sql} ELSE NULL END"
         if dtype == "numeric":
             expr = f"CAST({expr} AS DOUBLE)"
-        return f"{expr} AS {key}"
+        return f"{expr} AS {_quote_ident(key)}"
 
     def _build_path_only_expr(
         self,
@@ -1479,8 +1499,8 @@ class VirtualDB:
         """
         escaped = value.replace("'", "''")
         if dtype == "numeric":
-            return f"CAST('{escaped}' AS DOUBLE) AS {key}"
-        return f"'{escaped}' AS {key}"
+            return f"CAST('{escaped}' AS DOUBLE) AS {_quote_ident(key)}"
+        return f"'{escaped}' AS {_quote_ident(key)}"
 
     def _register_comparative_expanded_view(
         self,
