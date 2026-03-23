@@ -1470,6 +1470,86 @@ class TestExternalMetadata:
         assert "db_id" in raw_result.columns
         assert len(raw_result) == 4  # 4 data rows
 
+    def test_spaced_alias_in_join_context(self, tmp_path, monkeypatch):
+        """Field alias with spaces must be qualified (m.col) in a JOIN, not bare."""
+        import labretriever.virtual_db as vdb_module
+
+        data_df = pd.DataFrame(
+            {"sample_id": [1, 1, 2, 2], "effect": [1.5, 0.8, 2.1, 0.3]}
+        )
+        meta_df = pd.DataFrame(
+            {
+                "sample_id": [1, 2],
+                "regulator_locus_tag": ["YBR049C", "YDR463W"],
+            }
+        )
+        data_path = _write_parquet(tmp_path / "data.parquet", data_df)
+        meta_path = _write_parquet(tmp_path / "meta.parquet", meta_df)
+        parquet_files = {
+            ("TestOrg/repo", "chip_data"): [data_path],
+            ("TestOrg/repo", "sample_metadata"): [meta_path],
+        }
+
+        config = {
+            "repositories": {
+                "TestOrg/repo": {
+                    "sample_id": {"field": "sample_id"},
+                    "dataset": {
+                        "chip_data": {
+                            "db_name": "chip",
+                            # spaced alias mapped to a metadata column
+                            "Regulator locus tag": {
+                                "field": "regulator_locus_tag"
+                            },
+                        }
+                    },
+                }
+            }
+        }
+        config_file = tmp_path / "config.yaml"
+        with open(config_file, "w") as f:
+            yaml.dump(config, f)
+
+        card = MagicMock()
+        config_mock = MagicMock()
+        config_mock.metadata_fields = None
+        card.get_config.return_value = config_mock
+        card.get_metadata_fields.return_value = ["sample_id", "regulator_locus_tag"]
+        card.get_metadata_config_name.return_value = "sample_metadata"
+        card.get_data_col_names.return_value = {"sample_id", "effect"}
+        card.get_field_definitions.return_value = {}
+        card.get_experimental_conditions.return_value = {}
+        card.get_dataset_schema.return_value = DatasetSchema(
+            data_columns={"sample_id", "effect"},
+            metadata_columns={"sample_id", "regulator_locus_tag"},
+            join_columns={"sample_id"},
+            metadata_source="external",
+            external_metadata_config="sample_metadata",
+            is_partitioned=False,
+        )
+        card.get_features.return_value = [
+            FeatureInfo(name="sample_id", dtype="int64", description="id"),
+            FeatureInfo(
+                name="regulator_locus_tag", dtype="string", description="reg"
+            ),
+        ]
+
+        monkeypatch.setattr(
+            VirtualDB,
+            "_resolve_parquet_files",
+            lambda self, repo_id, cfg: parquet_files.get((repo_id, cfg), []),
+        )
+        monkeypatch.setattr(
+            vdb_module,
+            "_cached_datacard",
+            lambda repo_id, token=None: card,
+        )
+
+        v = VirtualDB(config_file)
+        df = v.query("SELECT * FROM chip_meta ORDER BY sample_id")
+        assert "Regulator locus tag" in df.columns
+        assert list(df["Regulator locus tag"]) == ["YBR049C", "YDR463W"]
+
 
 # ------------------------------------------------------------------
 # Tests: dtype='factor' (DuckDB ENUM)

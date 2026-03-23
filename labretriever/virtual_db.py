@@ -944,17 +944,27 @@ class VirtualDB:
                         expr = expr.replace(f"CAST({orig} AS", f"CAST({alias} AS")
                     rewritten.append(expr)
                 derived_exprs = rewritten
-            # Qualify source column references inside CASE WHEN expressions
+            # Qualify source column references inside expressions.
+            # Covers:
+            #   - simple alias:   "field AS ..."  → "m.field AS ..."
+            #   - CAST alias:     "CAST(field AS ..." → "CAST(m.field AS ..."
+            #   - CASE WHEN:      "CASE field WHEN..." / "field = ..."
             if is_join:
                 qualified_exprs = []
                 for expr in derived_exprs:
                     for raw_col in prop_raw_cols:
                         q = qualify(raw_col)
                         if q != raw_col:
-                            # Replace bare column name in CASE WHEN patterns
-                            expr = expr.replace(
-                                f"CASE {raw_col} ", f"CASE {q} "
-                            ).replace(f" {raw_col} = ", f" {q} = ")
+                            expr = (
+                                expr
+                                # simple alias: bare field at start before " AS"
+                                .replace(f"{raw_col} AS ", f"{q} AS ")
+                                # CAST alias: field inside CAST(
+                                .replace(f"CAST({raw_col} AS", f"CAST({q} AS")
+                                # CASE WHEN patterns
+                                .replace(f"CASE {raw_col} ", f"CASE {q} ")
+                                .replace(f" {raw_col} = ", f" {q} = ")
+                            )
                     qualified_exprs.append(expr)
                 derived_exprs = qualified_exprs
             select_parts.extend(derived_exprs)
