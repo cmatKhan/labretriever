@@ -1724,3 +1724,93 @@ class TestFactorDtype:
         # Should use _orig_1 because _orig is taken
         assert "category_orig_1" in result.columns
         assert "category" in result.columns
+
+
+class TestSpacedAliases:
+    """Column alias keys containing spaces must produce valid SQL (issue #1)."""
+
+    def _make_vdb(self, tmp_path, monkeypatch, config_extra: dict):
+        """Helper: VirtualDB with a single dataset and extra property mappings."""
+        import labretriever.virtual_db as vdb_module
+
+        df = pd.DataFrame(
+            {
+                "sample_id": [1, 2],
+                "regulator": ["GAL4", "MSN2"],
+                "condition": ["YPD", "Heat"],
+            }
+        )
+        parquet_path = tmp_path / "data.parquet"
+        files = {("TestOrg/ds", "cfg"): [_write_parquet(parquet_path, df)]}
+
+        config: dict = {
+            "repositories": {
+                "TestOrg/ds": {
+                    "dataset": {
+                        "cfg": {
+                            "db_name": "ds",
+                            "sample_id": {"field": "sample_id"},
+                            **config_extra,
+                        }
+                    }
+                }
+            }
+        }
+        config_file = tmp_path / "config.yaml"
+        with open(config_file, "w") as f:
+            yaml.dump(config, f)
+
+        card = MagicMock()
+        card.get_metadata_fields.return_value = ["sample_id", "regulator", "condition"]
+        card.get_field_definitions.return_value = {}
+        card.get_experimental_conditions.return_value = {}
+        card.get_metadata_config_name.return_value = None
+        card.get_dataset_schema.return_value = DatasetSchema(
+            data_columns={"sample_id", "regulator", "condition"},
+            metadata_columns={"sample_id", "regulator", "condition"},
+            join_columns=set(),
+            metadata_source="embedded",
+            external_metadata_config=None,
+            is_partitioned=False,
+        )
+        card.get_features.return_value = [
+            FeatureInfo(name="sample_id", dtype="int64", description="id"),
+            FeatureInfo(name="regulator", dtype="string", description="reg"),
+            FeatureInfo(name="condition", dtype="string", description="cond"),
+        ]
+
+        monkeypatch.setattr(
+            VirtualDB,
+            "_resolve_parquet_files",
+            lambda self, repo_id, cn: files.get((repo_id, cn), []),
+        )
+        monkeypatch.setattr(
+            vdb_module,
+            "_cached_datacard",
+            lambda repo_id, token=None: card,
+        )
+        return VirtualDB(config_file)
+
+    def test_field_alias_with_spaces(self, tmp_path, monkeypatch):
+        """A field alias key containing spaces should create a valid meta view."""
+        v = self._make_vdb(
+            tmp_path,
+            monkeypatch,
+            config_extra={"Regulator locus tag": {"field": "regulator"}},
+        )
+        df = v.query('SELECT * FROM ds_meta ORDER BY sample_id')
+        assert "Regulator locus tag" in df.columns
+        assert list(df["Regulator locus tag"]) == ["GAL4", "MSN2"]
+
+    def test_expression_alias_with_spaces(self, tmp_path, monkeypatch):
+        """An expression mapping with a space-containing key should work."""
+        v = self._make_vdb(
+            tmp_path,
+            monkeypatch,
+            config_extra={
+                "Growth condition": {"expression": "UPPER(condition)"},
+            },
+        )
+        df = v.query('SELECT * FROM ds_meta ORDER BY sample_id')
+        assert "Growth condition" in df.columns
+        assert set(df["Growth condition"]) == {"HEAT", "YPD"}
