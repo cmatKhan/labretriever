@@ -49,7 +49,6 @@ plugins:
   - search:
       separator: '[\s\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
   - autorefs
-  - section-index
   - mkdocs-jupyter:
       remove_tag_config:
         remove_input_tags:
