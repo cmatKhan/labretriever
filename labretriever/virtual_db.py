@@ -3,17 +3,17 @@ VirtualDB provides a SQL query interface across heterogeneous datasets.
 
 A developer creates huggingface repos with datacards. Datacard specifications
 specific to labretriever can be found at
-https://cmatKhan.github.io/labretriever/huggingface_datacard/. Next, a developer can create
-a virtualDB configuration file that describes which huggingface repos and datasets to
-use, a set of common fields, datasets that contain comparative analytics, and more.
-VirtualDB, this code, then uses DuckDB to construct views over Parquet files cached
-locally on initialization. For primary datasets, VirtualDB creates metadata
-views (one row per sample with derived columns) and full data views (measurement-level
-data joined to metadata). For comparative analysis datasets, VirtualDB creates expanded
-views that parse composite ID fields into ``_source`` (aliased to the configured
-db_name) and ``_id`` (sample identifier) columns. The expectation is that a developer
-will use this interface to write SQL queries against the views to provide an API to
-downstream users and applications.
+https://cmatKhan.github.io/labretriever/huggingface_datacard/. Next, a developer can
+create a virtualDB configuration file that describes which huggingface repos and
+datasets to use, a set of common fields, datasets that contain comparative analytics,
+and more. VirtualDB, this code, then uses DuckDB to construct views over Parquet
+files cached locally on initialization. For primary datasets, VirtualDB creates
+metadata views (one row per sample with derived columns) and full data views
+(measurement-level data joined to metadata). For comparative analysis datasets,
+VirtualDB creates expanded views that parse composite ID fields into ``_source``
+(aliased to the configured db_name) and ``_id`` (sample identifier) columns.
+The expectation is that a developer will use this interface to write SQL queries
+against the views to provide an API to downstream users and applications.
 
 Example Usage::
 
@@ -71,6 +71,7 @@ class ColumnMeta:
     :param level_definitions: For ``role="experimental_condition"`` columns
         that have per-level definitions: maps each level value to its
         description string.  ``None`` when no per-level definitions exist.
+
     """
 
     description: str | None = None
@@ -446,9 +447,7 @@ class VirtualDB:
         repo_id, config_name = self.db_name_map[db_name]
         return self.config.get_tags(repo_id, config_name)
 
-    def get_condition_field_info(
-        self, db_name: str
-    ) -> dict[str, Any] | None:
+    def get_condition_field_info(self, db_name: str) -> dict[str, Any] | None:
         """
         Return hierarchically linked property column groups for a dataset.
 
@@ -477,7 +476,7 @@ class VirtualDB:
             ``"level_descriptions"`` — ``dict[str, str]``
                 Maps each categorical level of the source field to a
                 human-readable description string retrieved from the
-                DataCard via :meth:`~labretriever.datacard.DataCard.get_field_definitions`.
+                DataCard via :meth:`~labretriever.datacard.DataCard.get_field_definitions`. # noqa: E501
                 Levels without a ``"description"`` key in their definition
                 dict default to ``"Description unavailable"``.
 
@@ -525,7 +524,7 @@ class VirtualDB:
         # "regulator_locus_tag" (field=regulator_locus_tag).
         # The group requires at least one downstream member: a Type-B col sharing
         # the same src_field, or a Type-C col (when no Type-B siblings exist).
-        linked: dict[str, list[str]] = {}
+        linked: dict[str, dict[str, list[str]]] = {}
         for prop_col, pm in mappings.items():
             if pm.field is None or pm.path is not None:
                 continue  # not Type-A
@@ -623,6 +622,7 @@ class VirtualDB:
         :returns: Dict mapping column name to :class:`ColumnMeta`, or ``None``
             if ``db_name`` is not found or has no recorded metadata.
         :rtype: dict[str, ColumnMeta] | None
+
         """
         return self._column_metadata.get(db_name)
 
@@ -634,6 +634,7 @@ class VirtualDB:
         :returns: Description string from the DataCard config, or ``None``
             if not found.
         :rtype: str | None
+
         """
         if db_name not in self.db_name_map:
             return None
@@ -1263,8 +1264,9 @@ class VirtualDB:
                                 # CAST alias: field inside CAST(
                                 .replace(f"CAST({raw_col} AS", f"CAST({q} AS")
                                 # CASE WHEN patterns
-                                .replace(f"CASE {raw_col} ", f"CASE {q} ")
-                                .replace(f" {raw_col} = ", f" {q} = ")
+                                .replace(f"CASE {raw_col} ", f"CASE {q} ").replace(
+                                    f" {raw_col} = ", f" {q} = "
+                                )
                             )
                     qualified_exprs.append(expr)
                 derived_exprs = qualified_exprs
@@ -1344,9 +1346,7 @@ class VirtualDB:
             raw_select = "r.*"
 
         if extra_cols:
-            extra_select = ", ".join(
-                f"m.{_quote_ident(c)}" for c in sorted(extra_cols)
-            )
+            extra_select = ", ".join(f"m.{_quote_ident(c)}" for c in sorted(extra_cols))
             full_select = f"{raw_select}, {extra_select}"
         else:
             full_select = raw_select

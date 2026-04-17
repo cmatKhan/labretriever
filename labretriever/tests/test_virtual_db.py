@@ -16,7 +16,7 @@ import yaml  # type: ignore
 
 from labretriever.datacard import DatasetSchema
 from labretriever.models import DatasetType, FeatureInfo, MetadataConfig
-from labretriever.virtual_db import ColumnMeta, VirtualDB
+from labretriever.virtual_db import VirtualDB
 
 # ------------------------------------------------------------------
 # Fixtures
@@ -512,7 +512,6 @@ class TestVirtualDBConfig:
             "BrentLab/harbison",
             "harbison_2004",
         )
-
 
     def test_get_dataset_description_known(self, vdb):
         """get_dataset_description returns the DataCard config description."""
@@ -1559,9 +1558,7 @@ class TestExternalMetadata:
                         "chip_data": {
                             "db_name": "chip",
                             # spaced alias mapped to a metadata column
-                            "Regulator locus tag": {
-                                "field": "regulator_locus_tag"
-                            },
+                            "Regulator locus tag": {"field": "regulator_locus_tag"},
                         }
                     },
                 }
@@ -1590,9 +1587,7 @@ class TestExternalMetadata:
         )
         card.get_features.return_value = [
             FeatureInfo(name="sample_id", dtype="int64", description="id"),
-            FeatureInfo(
-                name="regulator_locus_tag", dtype="string", description="reg"
-            ),
+            FeatureInfo(name="regulator_locus_tag", dtype="string", description="reg"),
         ]
 
         monkeypatch.setattr(
@@ -1939,7 +1934,7 @@ class TestSpacedAliases:
             monkeypatch,
             config_extra={"Regulator locus tag": {"field": "regulator"}},
         )
-        df = v.query('SELECT * FROM ds_meta ORDER BY sample_id')
+        df = v.query("SELECT * FROM ds_meta ORDER BY sample_id")
         assert "Regulator locus tag" in df.columns
         assert list(df["Regulator locus tag"]) == ["GAL4", "MSN2"]
 
@@ -1952,7 +1947,7 @@ class TestSpacedAliases:
                 "Growth condition": {"expression": "UPPER(condition)"},
             },
         )
-        df = v.query('SELECT * FROM ds_meta ORDER BY sample_id')
+        df = v.query("SELECT * FROM ds_meta ORDER BY sample_id")
         assert "Growth condition" in df.columns
         assert set(df["Growth condition"]) == {"HEAT", "YPD"}
 
@@ -1968,6 +1963,7 @@ class TestGetConditionFieldInfo:
     def test_harbison_returns_linked_group(self, vdb):
         """Harbison has two field+path mappings from 'condition' — returns one group."""
         import warnings
+
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
             info = vdb.get_condition_field_info("harbison")
@@ -1979,6 +1975,7 @@ class TestGetConditionFieldInfo:
     def test_harbison_level_descriptions_present(self, vdb):
         """Level descriptions are populated from the mock DataCard."""
         import warnings
+
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
             info = vdb.get_condition_field_info("harbison")
@@ -2001,6 +1998,7 @@ class TestGetConditionFieldInfo:
         card.get_field_definitions.return_value = defs_with_desc
 
         import warnings
+
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
             info = vdb.get_condition_field_info("harbison")
@@ -2012,6 +2010,7 @@ class TestGetConditionFieldInfo:
     def test_kemmeren_returns_none(self, vdb):
         """Kemmeren only has path-only (constant) mappings — no linked group."""
         import warnings
+
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
             info = vdb.get_condition_field_info("kemmeren")
@@ -2020,6 +2019,7 @@ class TestGetConditionFieldInfo:
     def test_unknown_db_name_returns_none(self, vdb):
         """An unrecognised dataset name returns None without raising."""
         import warnings
+
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
             info = vdb.get_condition_field_info("nonexistent_dataset")
@@ -2032,6 +2032,7 @@ class TestGetConditionFieldInfo:
         # Remove the datacard so the method cannot fetch definitions.
         vdb.datacards.pop("BrentLab/harbison", None)
         import warnings
+
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
             info = vdb.get_condition_field_info("harbison")
@@ -2042,8 +2043,9 @@ class TestGetConditionFieldInfo:
 
     def test_no_type_a_alias_returns_none(self, tmp_path, monkeypatch):
         """A dataset with no Type-A (field-only) alias mapping has no group."""
-        import labretriever.virtual_db as vdb_module
         import yaml as _yaml
+
+        import labretriever.virtual_db as vdb_module
 
         config = {
             "repositories": {
@@ -2087,7 +2089,11 @@ class TestGetConditionFieldInfo:
         card.get_metadata_fields.return_value = ["sample_id", "condition"]
         card.get_metadata_config_name.return_value = None
         card.get_data_col_names.return_value = {
-            "sample_id", "condition", "target_locus_tag", "effect", "pvalue"
+            "sample_id",
+            "condition",
+            "target_locus_tag",
+            "effect",
+            "pvalue",
         }
         card.get_dataset_schema.return_value = DatasetSchema(
             data_columns={"sample_id", "target_locus_tag", "effect", "pvalue"},
@@ -2119,20 +2125,23 @@ class TestGetConditionFieldInfo:
 
         v = VirtualDB(config_path)
         import warnings
+
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
             assert v.get_condition_field_info("test_ds") is None
 
     def test_type_a_alias_with_type_c_only_returns_group(self, tmp_path, monkeypatch):
         """
-        A dataset whose only derived columns are Type-C (repo-level, path-only) plus
-        a Type-A condition alias (field-only) forms a valid group.
+        A dataset whose only derived columns are Type-C (repo-level, path-only) plus a
+        Type-A condition alias (field-only) forms a valid group.
 
         This mirrors the chec_m2025 profile: Temperature is Type-C at the repo level,
         Experimental condition is Type-A at the dataset level.
+
         """
-        import labretriever.virtual_db as vdb_module
         import yaml as _yaml
+
+        import labretriever.virtual_db as vdb_module
 
         config = {
             "repositories": {
@@ -2181,12 +2190,18 @@ class TestGetConditionFieldInfo:
         }
         card.get_experimental_conditions.return_value = {}
         card.get_metadata_fields.return_value = [
-            "sample_id", "condition", "regulator_locus_tag"
+            "sample_id",
+            "condition",
+            "regulator_locus_tag",
         ]
         card.get_metadata_config_name.return_value = None
         card.get_data_col_names.return_value = {
-            "sample_id", "condition", "regulator_locus_tag",
-            "target_locus_tag", "effect", "pvalue",
+            "sample_id",
+            "condition",
+            "regulator_locus_tag",
+            "target_locus_tag",
+            "effect",
+            "pvalue",
         }
         card.get_dataset_schema.return_value = DatasetSchema(
             data_columns={"sample_id", "target_locus_tag", "effect", "pvalue"},
@@ -2228,6 +2243,7 @@ class TestGetConditionFieldInfo:
 
         v = VirtualDB(config_path)
         import warnings
+
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
             info = v.get_condition_field_info("test_ds2")
@@ -2291,7 +2307,8 @@ class TestGetColumnMetadata:
         assert reg.role == "regulator_identifier"
 
     def test_type_a_renamed_col_inherits_metadata(self, vdb):
-        """A Type-A rename (environmental_condition -> condition) propagates ColumnMeta."""
+        """A Type-A rename (environmental_condition -> condition) propagates
+        ColumnMeta."""
         meta = vdb.get_column_metadata("harbison")
         assert meta is not None
         # 'environmental_condition' maps field=condition, so should inherit
