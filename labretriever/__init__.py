@@ -12,9 +12,10 @@ from .models import (
     PropertyMapping,
     RepositoryConfig,
 )
-from .virtual_db import VirtualDB
+from .virtual_db import ColumnMeta, VirtualDB
 
 __all__ = [
+    "ColumnMeta",
     "DataCard",
     "HfCacheManager",
     "HfDataCardFetcher",

@@ -44,6 +44,8 @@ from __future__ import annotations
 
 import logging
 import re
+import warnings
+from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
@@ -56,6 +58,24 @@ from labretriever.datacard import DataCard, DatasetSchema
 from labretriever.models import DatasetType, MetadataConfig
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class ColumnMeta:
+    """
+    Metadata for a single column in a VirtualDB ``_meta`` view.
+
+    :param description: Human-readable description of the column.
+    :param role: Semantic role from the DataCard feature definition
+        (e.g. ``"experimental_condition"``).
+    :param level_definitions: For ``role="experimental_condition"`` columns
+        that have per-level definitions: maps each level value to its
+        description string.  ``None`` when no per-level definitions exist.
+    """
+
+    description: str | None = None
+    role: str | None = None
+    level_definitions: dict[str, str] | None = None
 
 
 class QueryError(Exception):
@@ -207,7 +227,7 @@ class VirtualDB:
         )
 
         # db_name -> (repo_id, config_name)
-        self._db_name_map = self._build_db_name_map()
+        self.db_name_map = self._build_db_name_map()
 
         # Prepared queries: name -> sql
         self._prepared_queries: dict[str, str] = {}
@@ -216,6 +236,7 @@ class VirtualDB:
         self._validate_datacards()
         self._update_cache()
         self._register_all_views()
+        self._build_column_metadata()
 
     # ------------------------------------------------------------------
     # Public API
@@ -402,7 +423,7 @@ class VirtualDB:
         :return: Sorted list of dataset names
 
         """
-        return sorted(self._db_name_map)
+        return sorted(self.db_name_map)
 
     def get_tags(self, db_name: str) -> dict[str, str]:
         """
@@ -420,10 +441,208 @@ class VirtualDB:
             tags or the name is not found.
 
         """
-        if db_name not in self._db_name_map:
+        if db_name not in self.db_name_map:
             return {}
-        repo_id, config_name = self._db_name_map[db_name]
+        repo_id, config_name = self.db_name_map[db_name]
         return self.config.get_tags(repo_id, config_name)
+
+    def get_condition_field_info(
+        self, db_name: str
+    ) -> dict[str, Any] | None:
+        """
+        Return hierarchically linked property column groups for a dataset.
+
+        Some datasets expose multiple derived property columns in their
+        ``_meta`` view (e.g. ``"Carbon source"`` and ``"Temperature"``) that
+        are both extracted from the same per-sample experimental-condition
+        field via field+path ``PropertyMapping`` entries in the VirtualDB
+        configuration.  Because these columns are co-derived from the same
+        source field, the values that can appear in one column are constrained
+        by the value selected in another (selecting ``Carbon source =
+        glucose`` limits which ``Temperature`` values are meaningful).
+
+        This method identifies such groups and enriches them with per-level
+        descriptions from the DataCard, making it straightforward for
+        downstream tools to build conditional filter interfaces.
+
+        :param db_name: Dataset name as returned by :meth:`get_datasets`.
+        :type db_name: str
+        :returns: A dict keyed by source parquet field name.  Each value is
+            a dict with two keys:
+
+            ``"property_cols"`` — ``list[str]``
+                The derived property column names that appear in the
+                ``{db_name}_meta`` view and share this source field.
+
+            ``"level_descriptions"`` — ``dict[str, str]``
+                Maps each categorical level of the source field to a
+                human-readable description string retrieved from the
+                DataCard via :meth:`~labretriever.datacard.DataCard.get_field_definitions`.
+                Levels without a ``"description"`` key in their definition
+                dict default to ``"Description unavailable"``.
+
+            Returns ``None`` when the dataset has no linked property groups
+            (no Type-A field-only mapping exists, or there are no other
+            property columns to serve as downstream members),
+            or when ``db_name`` is not found.
+        :rtype: dict[str, Any] | None
+
+        Example::
+
+            info = vdb.get_condition_field_info("harbison")
+            if info is not None:
+                for src_field, group in info.items():
+                    print(f"Source field '{src_field}' links:")
+                    print(f"  property columns: {group['property_cols']}")
+                    for level, desc in group["level_descriptions"].items():
+                        print(f"  {level}: {desc}")
+
+        """
+        warnings.warn(
+            "get_condition_field_info is deprecated; use get_column_metadata instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        if db_name not in self.db_name_map:
+            return None
+
+        repo_id, config_name = self.db_name_map[db_name]
+        mappings = self.config.get_property_mappings(repo_id, config_name)
+
+        # Collect Type-C (path-only) columns — repo-level experimental condition
+        # extractions.  These are shared downstream members for any Type-A anchor
+        # that has at least one co-occurring Type-B sibling or Type-C companion.
+        type_c_cols = [
+            prop_col
+            for prop_col, pm in mappings.items()
+            if pm.field is None and pm.path is not None
+        ]
+
+        # Build per-src_field groups anchored by Type-A (field-only) mappings.
+        # A Type-A mapping is a condition anchor only when its prop_col name
+        # differs from pm.field — this distinguishes semantic aliases like
+        # "Experimental condition" (field=condition) from identity renames like
+        # "regulator_locus_tag" (field=regulator_locus_tag).
+        # The group requires at least one downstream member: a Type-B col sharing
+        # the same src_field, or a Type-C col (when no Type-B siblings exist).
+        linked: dict[str, list[str]] = {}
+        for prop_col, pm in mappings.items():
+            if pm.field is None or pm.path is not None:
+                continue  # not Type-A
+            # Exclude identity renames: prop_col and pm.field are the same name,
+            # possibly differing only in case or whitespace (e.g. "Regulator locus tag"
+            # -> "regulator_locus_tag").  Normalise both sides before comparing.
+            if prop_col.lower().replace(" ", "_") == pm.field.lower().replace(" ", "_"):
+                continue
+            src_field = pm.field
+            type_b_for_field = [
+                col
+                for col, m in mappings.items()
+                if m.field == src_field and m.path is not None
+            ]
+            type_c_for_group = [c for c in type_c_cols if c not in type_b_for_field]
+            downstream = type_b_for_field + type_c_for_group
+            if downstream:
+                linked[src_field] = {
+                    "prop_cols": downstream,
+                    "type_b_cols": type_b_for_field,
+                }
+
+        card = self.datacards.get(repo_id)
+
+        # Fallback: when no Type-A aliases exist but there are Type-C downstream
+        # cols, use the DataCard's condition_fields (role=experimental_condition)
+        # as implicit anchors.  Use the first condition field only; multiple
+        # condition fields sharing identical downstream cols would produce
+        # duplicate input IDs in the UI.
+        # Fallback: DataCard condition_fields as implicit anchors.  All Type-C
+        # cols are downstream; none are Type-B (no per-level field derivation).
+        if not linked and type_c_cols and card is not None:
+            try:
+                schema = card.extract_metadata_schema(config_name)
+                cond_fields = schema.get("condition_fields", [])
+                if cond_fields:
+                    linked[cond_fields[0]] = {
+                        "prop_cols": list(type_c_cols),
+                        "type_b_cols": [],
+                    }
+            except Exception:
+                pass
+
+        if not linked:
+            return None
+
+        # Resolve the config name to try for field definitions.  For datasets
+        # with external metadata, the definitions live in the _meta config rather
+        # than the primary annotated-features config, so prefer that when present.
+        meta_config_name = self._external_meta_configs.get(db_name, config_name)
+
+        result: dict[str, Any] = {}
+        for src_field, col_info in linked.items():
+            prop_cols = col_info["prop_cols"]
+            type_b_cols = col_info["type_b_cols"]
+            level_descriptions: dict[str, str] = {}
+            if card is not None:
+                for _cfg in (meta_config_name, config_name):
+                    try:
+                        defs = card.get_field_definitions(_cfg, src_field)
+                        if defs:
+                            for level_val, definition in defs.items():
+                                desc = (
+                                    definition.get(
+                                        "description", "Description unavailable"
+                                    )
+                                    if isinstance(definition, dict)
+                                    else "Description unavailable"
+                                )
+                                level_descriptions[str(level_val)] = desc
+                            break  # found definitions — stop trying configs
+                    except Exception:
+                        logger.debug(
+                            "No field definitions for %s/%s field '%s'",
+                            db_name,
+                            _cfg,
+                            src_field,
+                        )
+            result[src_field] = {
+                "property_cols": prop_cols,
+                "type_b_cols": type_b_cols,
+                "level_descriptions": level_descriptions,
+            }
+        return result
+
+    def get_column_metadata(self, db_name: str) -> dict[str, ColumnMeta] | None:
+        """
+        Return per-column metadata for a primary dataset.
+
+        Metadata is collected from the DataCard during VirtualDB construction
+        and includes the feature description, semantic role, and per-level
+        definitions for ``experimental_condition`` columns.
+
+        :param db_name: Dataset name as registered in the VirtualDB config.
+        :returns: Dict mapping column name to :class:`ColumnMeta`, or ``None``
+            if ``db_name`` is not found or has no recorded metadata.
+        :rtype: dict[str, ColumnMeta] | None
+        """
+        return self._column_metadata.get(db_name)
+
+    def get_dataset_description(self, db_name: str) -> str | None:
+        """
+        Return the DataCard config description for a dataset.
+
+        :param db_name: Dataset name as registered in the VirtualDB config.
+        :returns: Description string from the DataCard config, or ``None``
+            if not found.
+        :rtype: str | None
+        """
+        if db_name not in self.db_name_map:
+            return None
+        repo_id, config_name = self.db_name_map[db_name]
+        card = self.datacards.get(repo_id)
+        if card is None:
+            return None
+        cfg = card.get_config(config_name)
+        return cfg.description if cfg is not None else None
 
     # ------------------------------------------------------------------
     # Initialisation phases
@@ -433,19 +652,19 @@ class VirtualDB:
         """
         Fetch (or load from cache) the DataCard for every distinct repo.
 
-        Populates ``self._datacards`` keyed by ``repo_id``. Failures are
+        Populates ``self.datacards`` keyed by ``repo_id``. Failures are
         logged as warnings and the repo is omitted from the dict so that
         subsequent phases can skip it gracefully.
 
         """
-        self._datacards: dict[str, DataCard] = {}
+        self.datacards: dict[str, DataCard] = {}
         seen_repos: set[str] = set()
-        for repo_id, _ in self._db_name_map.values():
+        for repo_id, _ in self.db_name_map.values():
             if repo_id in seen_repos:
                 continue
             seen_repos.add(repo_id)
             try:
-                self._datacards[repo_id] = _cached_datacard(repo_id, token=self.token)
+                self.datacards[repo_id] = _cached_datacard(repo_id, token=self.token)
             except Exception as exc:
                 logger.warning(
                     "Could not load datacard for repo '%s': %s",
@@ -471,14 +690,14 @@ class VirtualDB:
         # db_name -> external metadata config_name (for applies_to datasets)
         self._external_meta_configs: dict[str, str] = {}
 
-        for db_name, (repo_id, config_name) in self._db_name_map.items():
+        for db_name, (repo_id, config_name) in self.db_name_map.items():
             repo_cfg = self.config.repositories.get(repo_id)
             ds_cfg = (
                 repo_cfg.dataset.get(config_name)
                 if repo_cfg and repo_cfg.dataset
                 else None
             )
-            card = self._datacards.get(repo_id)
+            card = self.datacards.get(repo_id)
 
             # Validate comparative dataset_type agreement.
             if ds_cfg and ds_cfg.links:
@@ -532,12 +751,12 @@ class VirtualDB:
 
         """
         self._parquet_files: dict[str, list[str]] = {}
-        for db_name, (repo_id, config_name) in self._db_name_map.items():
+        for db_name, (repo_id, config_name) in self.db_name_map.items():
             files = self._resolve_parquet_files(repo_id, config_name)
             self._parquet_files[db_name] = files
 
         for db_name, ext_config_name in self._external_meta_configs.items():
-            repo_id, _ = self._db_name_map[db_name]
+            repo_id, _ = self.db_name_map[db_name]
             files = self._resolve_parquet_files(repo_id, ext_config_name)
             self._parquet_files[f"__{db_name}_meta"] = files
 
@@ -552,7 +771,7 @@ class VirtualDB:
         """
         # 1. Raw per-dataset views (internal __<db_name>_parquet
         # plus public <db_name> for primary datasets only)
-        for db_name, (repo_id, config_name) in self._db_name_map.items():
+        for db_name, (repo_id, config_name) in self.db_name_map.items():
             comparative = self._is_comparative(repo_id, config_name)
             self._register_raw_view(
                 db_name,
@@ -590,24 +809,106 @@ class VirtualDB:
             self._external_meta_views[db_name] = meta_view
 
         # 3. Metadata views for primary datasets (<db_name>_meta)
-        for db_name, (repo_id, config_name) in self._db_name_map.items():
+        for db_name, (repo_id, config_name) in self.db_name_map.items():
             if not self._is_comparative(repo_id, config_name):
                 self._register_meta_view(db_name, repo_id, config_name)
 
         # 4. Replace primary raw views with join to _meta so
         # derived columns (e.g. carbon_source) are available
-        for db_name, (repo_id, config_name) in self._db_name_map.items():
+        for db_name, (repo_id, config_name) in self.db_name_map.items():
             if not self._is_comparative(repo_id, config_name):
                 self._enrich_raw_view(db_name)
 
         # 5. Comparative expanded views (pre-parsed composite IDs)
-        for db_name, (repo_id, config_name) in self._db_name_map.items():
+        for db_name, (repo_id, config_name) in self.db_name_map.items():
             repo_cfg = self.config.repositories.get(repo_id)
             if not repo_cfg or not repo_cfg.dataset:
                 continue
             ds_cfg = repo_cfg.dataset.get(config_name)
             if ds_cfg and ds_cfg.links:
                 self._register_comparative_expanded_view(db_name, ds_cfg)
+
+    def _build_column_metadata(self) -> None:
+        """
+        Collect per-column metadata from DataCards for all primary datasets.
+
+        Populates ``self._column_metadata`` keyed by ``db_name``.  For each
+        primary (non-comparative) dataset, features are gathered from the
+        primary DataCard config and, when present, from the external metadata
+        config (``_external_meta_configs``).  Property mappings are then
+        walked to propagate metadata to output column names that differ from
+        the underlying DataCard feature names (e.g. Type-A renames).
+
+        """
+        self._column_metadata: dict[str, dict[str, ColumnMeta]] = {}
+
+        for db_name, (repo_id, config_name) in self.db_name_map.items():
+            if self._is_comparative(repo_id, config_name):
+                continue
+
+            card = self.datacards.get(repo_id)
+            if card is None:
+                continue
+
+            # Collect features from primary config and external meta config.
+            feature_meta: dict[str, ColumnMeta] = {}
+            configs_to_check: list[str] = [config_name]
+            ext_cfg_name = self._external_meta_configs.get(db_name)
+            if ext_cfg_name:
+                configs_to_check.append(ext_cfg_name)
+
+            for cfg in configs_to_check:
+                try:
+                    features = card.get_features(cfg)
+                except Exception:
+                    continue
+                for feat in features:
+                    level_defs: dict[str, str] | None = None
+                    if feat.role == "experimental_condition" and feat.definitions:
+                        level_defs = {
+                            str(lv): (
+                                d.get("description", "")
+                                if isinstance(d, dict)
+                                else str(d)
+                            )
+                            for lv, d in feat.definitions.items()
+                        }
+                    feature_meta[feat.name] = ColumnMeta(
+                        description=feat.description,
+                        role=feat.role,
+                        level_definitions=level_defs,
+                    )
+
+            # Propagate metadata to Type-A rename output column names.
+            # Type-A: field-only mapping (no path, no expression) — the output col
+            # is a rename or alias of the source feature and inherits its metadata.
+            # Type-B (field+path) and Type-C (path-only) produce derived columns
+            # with independent semantics and do not inherit the source's role.
+            try:
+                mappings = self.config.get_property_mappings(repo_id, config_name)
+            except Exception:
+                mappings = {}
+
+            for out_col, pm in mappings.items():
+                if out_col in feature_meta:
+                    continue  # already recorded under this name
+                # Only propagate for Type-A (field-only, no path, no expression).
+                if pm.field is None or pm.path is not None or pm.expression is not None:
+                    continue
+                src = pm.field
+                if src in feature_meta:
+                    feature_meta[out_col] = feature_meta[src]
+
+            # Register stub ColumnMeta for Type-B and Type-C derived output columns.
+            # These have no FeatureInfo of their own but exist in the _meta view.
+            # A stub entry (role=None, level_definitions=None) ensures callers can
+            # discover all queryable columns, e.g. to build cascade filter effects.
+            for out_col in mappings:
+                if out_col not in feature_meta:
+                    feature_meta[out_col] = ColumnMeta()
+
+            if feature_meta:
+                self._column_metadata[db_name] = feature_meta
 
     # ------------------------------------------------------------------
     # db_name mapping
@@ -1082,7 +1383,7 @@ class VirtualDB:
         :return: Actual column name for the sample identifier
 
         """
-        repo_id, config_name = self._db_name_map[db_name]
+        repo_id, config_name = self.db_name_map[db_name]
         return self.config.get_sample_id_field(repo_id, config_name)
 
     def _resolve_metadata_fields(
@@ -1101,7 +1402,7 @@ class VirtualDB:
 
         """
         try:
-            card = self._datacards.get(repo_id) or _cached_datacard(
+            card = self.datacards.get(repo_id) or _cached_datacard(
                 repo_id, token=self.token
             )
             return card.get_metadata_fields(config_name)
@@ -1234,7 +1535,7 @@ class VirtualDB:
         card = None
         if mappings:
             try:
-                card = self._datacards.get(repo_id) or _cached_datacard(
+                card = self.datacards.get(repo_id) or _cached_datacard(
                     repo_id, token=self.token
                 )
             except Exception as exc:
@@ -1597,7 +1898,7 @@ class VirtualDB:
 
         """
         names = []
-        for db_name, (repo_id, config_name) in self._db_name_map.items():
+        for db_name, (repo_id, config_name) in self.db_name_map.items():
             if not self._is_comparative(repo_id, config_name):
                 if self._view_exists(db_name):
                     names.append(db_name)
@@ -1613,7 +1914,7 @@ class VirtualDB:
 
     def _get_db_name_for(self, repo_id: str, config_name: str) -> str | None:
         """Resolve db_name for a (repo_id, config_name) pair."""
-        for db_name, (r, c) in self._db_name_map.items():
+        for db_name, (r, c) in self.db_name_map.items():
             if r == repo_id and c == config_name:
                 return db_name
         return None
@@ -1621,7 +1922,7 @@ class VirtualDB:
     def __repr__(self) -> str:
         """String representation."""
         n_repos = len(self.config.repositories)
-        n_datasets = len(self._db_name_map)
+        n_datasets = len(self.db_name_map)
         n_views = len(self._list_views())
         return (
             f"VirtualDB({n_repos} repos, "
