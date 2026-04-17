@@ -144,7 +144,9 @@ class TestHfCacheManagerCacheManagement:
 
     def setup_method(self):
         """Set up test fixtures."""
-        with patch("labretriever.hf_cache_manager.DataCard.__init__", return_value=None):
+        with patch(
+            "labretriever.hf_cache_manager.DataCard.__init__", return_value=None
+        ):
             self.conn = duckdb.connect(":memory:")
             self.repo_id = "test/repo"
             self.cache_manager = HfCacheManager(self.repo_id, self.conn)
@@ -343,7 +345,9 @@ class TestHfCacheManagerErrorHandling:
 
     def setup_method(self):
         """Set up test fixtures."""
-        with patch("labretriever.hf_cache_manager.DataCard.__init__", return_value=None):
+        with patch(
+            "labretriever.hf_cache_manager.DataCard.__init__", return_value=None
+        ):
             self.conn = duckdb.connect(":memory:")
             self.repo_id = "test/repo"
             self.cache_manager = HfCacheManager(self.repo_id, self.conn)
@@ -374,7 +378,9 @@ class TestHfCacheManagerIntegration:
 
     def setup_method(self):
         """Set up test fixtures."""
-        with patch("labretriever.hf_cache_manager.DataCard.__init__", return_value=None):
+        with patch(
+            "labretriever.hf_cache_manager.DataCard.__init__", return_value=None
+        ):
             self.conn = duckdb.connect(":memory:")
             self.repo_id = "test/repo"
             self.cache_manager = HfCacheManager(self.repo_id, self.conn)
@@ -566,7 +572,9 @@ class TestSourceSampleValidation:
         mock_config.config_name = "test_config"
         mock_config.dataset_info = mock_dataset_info
 
-        with patch("labretriever.hf_cache_manager.DataCard.__init__", return_value=None):
+        with patch(
+            "labretriever.hf_cache_manager.DataCard.__init__", return_value=None
+        ):
             cache_manager = HfCacheManager(self.repo_id, self.conn)
             cache_manager.get_config = Mock(return_value=mock_config)  # type: ignore
 
@@ -603,7 +611,9 @@ class TestSourceSampleValidation:
         mock_config.config_name = "test_config"
         mock_config.dataset_info = mock_dataset_info
 
-        with patch("labretriever.hf_cache_manager.DataCard.__init__", return_value=None):
+        with patch(
+            "labretriever.hf_cache_manager.DataCard.__init__", return_value=None
+        ):
             cache_manager = HfCacheManager(self.repo_id, self.conn)
             cache_manager.get_config = Mock(return_value=mock_config)  # type: ignore
 
@@ -647,7 +657,9 @@ class TestSourceSampleValidation:
         mock_config.config_name = "test_config"
         mock_config.dataset_info = mock_dataset_info
 
-        with patch("labretriever.hf_cache_manager.DataCard.__init__", return_value=None):
+        with patch(
+            "labretriever.hf_cache_manager.DataCard.__init__", return_value=None
+        ):
             cache_manager = HfCacheManager(self.repo_id, self.conn)
             cache_manager.get_config = Mock(return_value=mock_config)  # type: ignore
 
@@ -689,7 +701,9 @@ class TestSourceSampleValidation:
         mock_config.config_name = "test_config"
         mock_config.dataset_info = mock_dataset_info
 
-        with patch("labretriever.hf_cache_manager.DataCard.__init__", return_value=None):
+        with patch(
+            "labretriever.hf_cache_manager.DataCard.__init__", return_value=None
+        ):
             cache_manager = HfCacheManager(self.repo_id, self.conn)
             cache_manager.get_config = Mock(return_value=mock_config)  # type: ignore
 
@@ -730,7 +744,9 @@ class TestSourceSampleValidation:
         mock_config.config_name = "test_config"
         mock_config.dataset_info = mock_dataset_info
 
-        with patch("labretriever.hf_cache_manager.DataCard.__init__", return_value=None):
+        with patch(
+            "labretriever.hf_cache_manager.DataCard.__init__", return_value=None
+        ):
             cache_manager = HfCacheManager(self.repo_id, self.conn)
             cache_manager.get_config = Mock(return_value=mock_config)  # type: ignore
 
@@ -773,7 +789,9 @@ class TestSourceSampleValidation:
         mock_config.config_name = "test_config"
         mock_config.dataset_info = mock_dataset_info
 
-        with patch("labretriever.hf_cache_manager.DataCard.__init__", return_value=None):
+        with patch(
+            "labretriever.hf_cache_manager.DataCard.__init__", return_value=None
+        ):
             cache_manager = HfCacheManager(self.repo_id, self.conn)
             cache_manager.get_config = Mock(return_value=mock_config)  # type: ignore
 

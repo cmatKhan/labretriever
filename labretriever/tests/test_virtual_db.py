@@ -317,6 +317,29 @@ def _make_mock_datacard(repo_id):
         card.get_experimental_conditions.return_value = {}
         card.get_metadata_fields.return_value = METADATA_FIELDS["harbison_2004"]
         card.get_metadata_config_name.return_value = None
+        card.get_features.return_value = [
+            FeatureInfo(
+                name="condition",
+                dtype="string",
+                description="Experimental condition identifier",
+                role="experimental_condition",
+                definitions={
+                    lv: {"description": f"{lv} condition"}
+                    for lv in HARBISON_CONDITION_DEFS
+                },
+            ),
+            FeatureInfo(
+                name="regulator_locus_tag",
+                dtype="string",
+                description="Regulator locus tag",
+                role="regulator_identifier",
+            ),
+            FeatureInfo(
+                name="regulator_symbol",
+                dtype="string",
+                description="Regulator gene symbol",
+            ),
+        ]
         # Harbison: embedded metadata, condition is data col used for
         # derived properties; metadata_cols are the three metadata fields
         harbison_meta_cols = set(METADATA_FIELDS["harbison_2004"])
@@ -357,6 +380,7 @@ def _make_mock_datacard(repo_id):
         config_mock.model_extra = {}
         card.get_config.return_value = config_mock
         card.get_field_definitions.return_value = {}
+        card.extract_metadata_schema.return_value = {"condition_fields": []}
         dataset_card_mock = MagicMock()
         dataset_card_mock.model_extra = {
             "experimental_conditions": KEMMEREN_EXP_CONDITIONS,
@@ -364,6 +388,19 @@ def _make_mock_datacard(repo_id):
         card.dataset_card = dataset_card_mock
         card.get_metadata_fields.return_value = METADATA_FIELDS["kemmeren_2014"]
         card.get_metadata_config_name.return_value = None
+        card.get_features.return_value = [
+            FeatureInfo(
+                name="regulator_locus_tag",
+                dtype="string",
+                description="Regulator locus tag",
+                role="regulator_identifier",
+            ),
+            FeatureInfo(
+                name="regulator_symbol",
+                dtype="string",
+                description="Regulator gene symbol",
+            ),
+        ]
         kemmeren_meta_cols = set(METADATA_FIELDS["kemmeren_2014"])
         card.get_data_col_names.return_value = {
             "sample_id",
@@ -397,6 +434,7 @@ def _make_mock_datacard(repo_id):
         card.get_metadata_config_name.return_value = None
         card.get_data_col_names.return_value = set()
         card.get_dataset_schema.return_value = None
+        card.get_features.return_value = []
 
     return card
 
@@ -433,6 +471,7 @@ class TestVirtualDBConfig:
         monkeypatch.setattr(VirtualDB, "_validate_datacards", lambda self: None)
         monkeypatch.setattr(VirtualDB, "_update_cache", lambda self: None)
         monkeypatch.setattr(VirtualDB, "_register_all_views", lambda self: None)
+        monkeypatch.setattr(VirtualDB, "_build_column_metadata", lambda self: None)
         v = VirtualDB(config_path)
         assert v.config is not None
         assert v.token is None
@@ -443,6 +482,7 @@ class TestVirtualDBConfig:
         monkeypatch.setattr(VirtualDB, "_validate_datacards", lambda self: None)
         monkeypatch.setattr(VirtualDB, "_update_cache", lambda self: None)
         monkeypatch.setattr(VirtualDB, "_register_all_views", lambda self: None)
+        monkeypatch.setattr(VirtualDB, "_build_column_metadata", lambda self: None)
         v = VirtualDB(config_path, token="tok123")
         assert v.token == "tok123"
 
@@ -458,19 +498,38 @@ class TestVirtualDBConfig:
         assert "views)" in r
 
     def test_db_name_map(self, config_path, monkeypatch):
-        """Test that _db_name_map resolves db_name correctly."""
+        """Test that db_name_map resolves db_name correctly."""
         monkeypatch.setattr(VirtualDB, "_load_datacards", lambda self: None)
         monkeypatch.setattr(VirtualDB, "_validate_datacards", lambda self: None)
         monkeypatch.setattr(VirtualDB, "_update_cache", lambda self: None)
         monkeypatch.setattr(VirtualDB, "_register_all_views", lambda self: None)
+        monkeypatch.setattr(VirtualDB, "_build_column_metadata", lambda self: None)
         v = VirtualDB(config_path)
-        assert "harbison" in v._db_name_map
-        assert "kemmeren" in v._db_name_map
-        assert "dto" in v._db_name_map
-        assert v._db_name_map["harbison"] == (
+        assert "harbison" in v.db_name_map
+        assert "kemmeren" in v.db_name_map
+        assert "dto" in v.db_name_map
+        assert v.db_name_map["harbison"] == (
             "BrentLab/harbison",
             "harbison_2004",
         )
+
+    def test_get_dataset_description_known(self, vdb):
+        """get_dataset_description returns the DataCard config description."""
+        # The harbison mock card returns a MagicMock config; set description.
+        card = vdb.datacards["BrentLab/harbison"]
+        card.get_config.return_value.description = "Harbison 2004 ChIP-chip study"
+        desc = vdb.get_dataset_description("harbison")
+        assert desc == "Harbison 2004 ChIP-chip study"
+
+    def test_get_dataset_description_unknown(self, vdb):
+        """get_dataset_description returns None for an unknown db_name."""
+        assert vdb.get_dataset_description("nonexistent") is None
+
+    def test_get_dataset_description_no_description(self, vdb):
+        """get_dataset_description returns None when the config description is None."""
+        card = vdb.datacards["BrentLab/harbison"]
+        card.get_config.return_value.description = None
+        assert vdb.get_dataset_description("harbison") is None
 
 
 # ------------------------------------------------------------------
@@ -607,6 +666,7 @@ class TestTags:
         monkeypatch.setattr(VirtualDB, "_validate_datacards", lambda self: None)
         monkeypatch.setattr(VirtualDB, "_update_cache", lambda self: None)
         monkeypatch.setattr(VirtualDB, "_register_all_views", lambda self: None)
+        monkeypatch.setattr(VirtualDB, "_build_column_metadata", lambda self: None)
         p = tmp_path / "config.yaml"
         p.write_text(yaml_str)
         return VirtualDB(str(p))
@@ -1498,9 +1558,7 @@ class TestExternalMetadata:
                         "chip_data": {
                             "db_name": "chip",
                             # spaced alias mapped to a metadata column
-                            "Regulator locus tag": {
-                                "field": "regulator_locus_tag"
-                            },
+                            "Regulator locus tag": {"field": "regulator_locus_tag"},
                         }
                     },
                 }
@@ -1529,9 +1587,7 @@ class TestExternalMetadata:
         )
         card.get_features.return_value = [
             FeatureInfo(name="sample_id", dtype="int64", description="id"),
-            FeatureInfo(
-                name="regulator_locus_tag", dtype="string", description="reg"
-            ),
+            FeatureInfo(name="regulator_locus_tag", dtype="string", description="reg"),
         ]
 
         monkeypatch.setattr(
@@ -1878,7 +1934,7 @@ class TestSpacedAliases:
             monkeypatch,
             config_extra={"Regulator locus tag": {"field": "regulator"}},
         )
-        df = v.query('SELECT * FROM ds_meta ORDER BY sample_id')
+        df = v.query("SELECT * FROM ds_meta ORDER BY sample_id")
         assert "Regulator locus tag" in df.columns
         assert list(df["Regulator locus tag"]) == ["GAL4", "MSN2"]
 
@@ -1891,6 +1947,403 @@ class TestSpacedAliases:
                 "Growth condition": {"expression": "UPPER(condition)"},
             },
         )
-        df = v.query('SELECT * FROM ds_meta ORDER BY sample_id')
+        df = v.query("SELECT * FROM ds_meta ORDER BY sample_id")
         assert "Growth condition" in df.columns
         assert set(df["Growth condition"]) == {"HEAT", "YPD"}
+
+
+# ------------------------------------------------------------------
+# Tests: get_condition_field_info
+# ------------------------------------------------------------------
+
+
+class TestGetConditionFieldInfo:
+    """Tests for VirtualDB.get_condition_field_info()."""
+
+    def test_harbison_returns_linked_group(self, vdb):
+        """Harbison has two field+path mappings from 'condition' — returns one group."""
+        import warnings
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", DeprecationWarning)
+            info = vdb.get_condition_field_info("harbison")
+        assert info is not None
+        assert "condition" in info
+        group = info["condition"]
+        assert set(group["property_cols"]) == {"carbon_source", "temperature_celsius"}
+
+    def test_harbison_level_descriptions_present(self, vdb):
+        """Level descriptions are populated from the mock DataCard."""
+        import warnings
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", DeprecationWarning)
+            info = vdb.get_condition_field_info("harbison")
+        assert info is not None
+        descs = info["condition"]["level_descriptions"]
+        # The mock DataCard returns HARBISON_CONDITION_DEFS which have no
+        # "description" key, so all levels fall back to the default string.
+        for level in ("YPD", "Galactose", "Acid"):
+            assert level in descs
+            assert descs[level] == "Description unavailable"
+
+    def test_harbison_level_descriptions_with_description_key(self, vdb, monkeypatch):
+        """When a definition dict contains 'description', it is used verbatim."""
+        defs_with_desc = {
+            "YPD": {"description": "Rich media baseline", "temperature_celsius": 30},
+            "Galactose": {"description": "Galactose carbon source"},
+        }
+        # Patch the mock DataCard's get_field_definitions for harbison
+        card = vdb.datacards["BrentLab/harbison"]
+        card.get_field_definitions.return_value = defs_with_desc
+
+        import warnings
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", DeprecationWarning)
+            info = vdb.get_condition_field_info("harbison")
+        assert info is not None
+        descs = info["condition"]["level_descriptions"]
+        assert descs["YPD"] == "Rich media baseline"
+        assert descs["Galactose"] == "Galactose carbon source"
+
+    def test_kemmeren_returns_none(self, vdb):
+        """Kemmeren only has path-only (constant) mappings — no linked group."""
+        import warnings
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", DeprecationWarning)
+            info = vdb.get_condition_field_info("kemmeren")
+        assert info is None
+
+    def test_unknown_db_name_returns_none(self, vdb):
+        """An unrecognised dataset name returns None without raising."""
+        import warnings
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", DeprecationWarning)
+            info = vdb.get_condition_field_info("nonexistent_dataset")
+        assert info is None
+
+    def test_datacard_missing_returns_group_without_descriptions(
+        self, vdb, monkeypatch
+    ):
+        """When the DataCard is unavailable, property_cols are still returned."""
+        # Remove the datacard so the method cannot fetch definitions.
+        vdb.datacards.pop("BrentLab/harbison", None)
+        import warnings
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", DeprecationWarning)
+            info = vdb.get_condition_field_info("harbison")
+        assert info is not None
+        group = info["condition"]
+        assert set(group["property_cols"]) == {"carbon_source", "temperature_celsius"}
+        assert group["level_descriptions"] == {}
+
+    def test_no_type_a_alias_returns_none(self, tmp_path, monkeypatch):
+        """A dataset with no Type-A (field-only) alias mapping has no group."""
+        import yaml as _yaml
+
+        import labretriever.virtual_db as vdb_module
+
+        config = {
+            "repositories": {
+                "BrentLab/test": {
+                    "dataset": {
+                        "test_ds": {
+                            "db_name": "test_ds",
+                            "sample_id": {"field": "sample_id"},
+                            # Only one field+path mapping
+                            "carbon_source": {
+                                "field": "condition",
+                                "path": "media.carbon_source.compound",
+                            },
+                        }
+                    }
+                }
+            }
+        }
+        config_path = tmp_path / "cfg.yaml"
+        with open(config_path, "w") as f:
+            _yaml.dump(config, f)
+
+        df = pd.DataFrame(
+            {
+                "sample_id": [1],
+                "condition": ["YPD"],
+                "target_locus_tag": ["YAL001C"],
+                "effect": [1.0],
+                "pvalue": [0.05],
+            }
+        )
+        pq_path = tmp_path / "test_ds.parquet"
+        _write_parquet(pq_path, df)
+
+        card = MagicMock()
+        card.get_config.return_value = MagicMock(
+            metadata_fields=["sample_id", "condition"]
+        )
+        card.get_field_definitions.return_value = {}
+        card.get_experimental_conditions.return_value = {}
+        card.get_metadata_fields.return_value = ["sample_id", "condition"]
+        card.get_metadata_config_name.return_value = None
+        card.get_data_col_names.return_value = {
+            "sample_id",
+            "condition",
+            "target_locus_tag",
+            "effect",
+            "pvalue",
+        }
+        card.get_dataset_schema.return_value = DatasetSchema(
+            data_columns={"sample_id", "target_locus_tag", "effect", "pvalue"},
+            metadata_columns={"sample_id", "condition"},
+            join_columns=set(),
+            metadata_source="embedded",
+            external_metadata_config=None,
+            is_partitioned=False,
+        )
+        card.get_features.return_value = [
+            FeatureInfo(name="sample_id", dtype="int64", description="id"),
+            FeatureInfo(
+                name="condition",
+                dtype="string",
+                description="Experimental condition",
+                role="experimental_condition",
+            ),
+        ]
+
+        def _fake_resolve(self, repo_id, config_name):
+            return [str(pq_path)] if repo_id == "BrentLab/test" else []
+
+        monkeypatch.setattr(VirtualDB, "_resolve_parquet_files", _fake_resolve)
+        monkeypatch.setattr(
+            vdb_module,
+            "_cached_datacard",
+            lambda repo_id, token=None: card,
+        )
+
+        v = VirtualDB(config_path)
+        import warnings
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", DeprecationWarning)
+            assert v.get_condition_field_info("test_ds") is None
+
+    def test_type_a_alias_with_type_c_only_returns_group(self, tmp_path, monkeypatch):
+        """
+        A dataset whose only derived columns are Type-C (repo-level, path-only) plus a
+        Type-A condition alias (field-only) forms a valid group.
+
+        This mirrors the chec_m2025 profile: Temperature is Type-C at the repo level,
+        Experimental condition is Type-A at the dataset level.
+
+        """
+        import yaml as _yaml
+
+        import labretriever.virtual_db as vdb_module
+
+        config = {
+            "repositories": {
+                "BrentLab/test2": {
+                    # Type-C: repo-level path-only mapping
+                    "temperature_celsius": {
+                        "path": "experimental_conditions.temperature_celsius",
+                        "dtype": "string",
+                    },
+                    "dataset": {
+                        "test_ds2": {
+                            "db_name": "test_ds2",
+                            "sample_id": {"field": "sample_id"},
+                            "regulator_locus_tag": {"field": "regulator_locus_tag"},
+                            # Type-A: condition alias (prop_col != pm.field)
+                            "experimental_condition": {"field": "condition"},
+                        }
+                    },
+                }
+            }
+        }
+        config_path = tmp_path / "cfg2.yaml"
+        with open(config_path, "w") as f:
+            _yaml.dump(config, f)
+
+        df = pd.DataFrame(
+            {
+                "sample_id": [1, 2],
+                "condition": ["cond_A", "cond_B"],
+                "regulator_locus_tag": ["YAL001C", "YAL002C"],
+                "target_locus_tag": ["YBL001C", "YBL002C"],
+                "effect": [1.0, -1.0],
+                "pvalue": [0.01, 0.05],
+            }
+        )
+        pq_path = tmp_path / "test_ds2.parquet"
+        _write_parquet(pq_path, df)
+
+        card = MagicMock()
+        card.get_config.return_value = MagicMock(
+            metadata_fields=["sample_id", "condition", "regulator_locus_tag"]
+        )
+        card.get_field_definitions.return_value = {
+            "cond_A": {"description": "Condition A description"},
+            "cond_B": {},
+        }
+        card.get_experimental_conditions.return_value = {}
+        card.get_metadata_fields.return_value = [
+            "sample_id",
+            "condition",
+            "regulator_locus_tag",
+        ]
+        card.get_metadata_config_name.return_value = None
+        card.get_data_col_names.return_value = {
+            "sample_id",
+            "condition",
+            "regulator_locus_tag",
+            "target_locus_tag",
+            "effect",
+            "pvalue",
+        }
+        card.get_dataset_schema.return_value = DatasetSchema(
+            data_columns={"sample_id", "target_locus_tag", "effect", "pvalue"},
+            metadata_columns={"sample_id", "condition", "regulator_locus_tag"},
+            join_columns=set(),
+            metadata_source="embedded",
+            external_metadata_config=None,
+            is_partitioned=False,
+        )
+        card.get_features.return_value = [
+            FeatureInfo(name="sample_id", dtype="int64", description="id"),
+            FeatureInfo(
+                name="condition",
+                dtype="string",
+                description="Experimental condition",
+                role="experimental_condition",
+                definitions={
+                    "cond_A": {"description": "Condition A description"},
+                    "cond_B": {},
+                },
+            ),
+            FeatureInfo(
+                name="regulator_locus_tag",
+                dtype="string",
+                description="Regulator locus tag",
+                role="regulator_identifier",
+            ),
+        ]
+
+        def _fake_resolve(self, repo_id, config_name):
+            return [str(pq_path)] if repo_id == "BrentLab/test2" else []
+
+        monkeypatch.setattr(VirtualDB, "_resolve_parquet_files", _fake_resolve)
+        monkeypatch.setattr(
+            vdb_module,
+            "_cached_datacard",
+            lambda repo_id, token=None: card,
+        )
+
+        v = VirtualDB(config_path)
+        import warnings
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", DeprecationWarning)
+            info = v.get_condition_field_info("test_ds2")
+        assert info is not None
+        assert "condition" in info
+        group = info["condition"]
+        assert group["property_cols"] == ["temperature_celsius"]
+        assert group["level_descriptions"]["cond_A"] == "Condition A description"
+        assert group["level_descriptions"]["cond_B"] == "Description unavailable"
+
+
+# ------------------------------------------------------------------
+# Tests: get_column_metadata
+# ------------------------------------------------------------------
+
+
+class TestGetColumnMetadata:
+    """Tests for VirtualDB.get_column_metadata()."""
+
+    def test_unknown_db_name_returns_none(self, vdb):
+        """Returns None for an unrecognised dataset name."""
+        assert vdb.get_column_metadata("nonexistent") is None
+
+    def test_returns_dict_for_harbison(self, vdb):
+        """Returns a dict of ColumnMeta for a known primary dataset."""
+        meta = vdb.get_column_metadata("harbison")
+        assert isinstance(meta, dict)
+        assert len(meta) > 0
+
+    def test_condition_col_has_experimental_condition_role(self, vdb):
+        """'condition' feature has role=experimental_condition."""
+        meta = vdb.get_column_metadata("harbison")
+        assert meta is not None
+        assert "condition" in meta
+        assert meta["condition"].role == "experimental_condition"
+
+    def test_condition_col_has_level_definitions(self, vdb):
+        """'condition' feature has level_definitions from DataCard definitions."""
+        meta = vdb.get_column_metadata("harbison")
+        assert meta is not None
+        cond = meta["condition"]
+        assert cond.level_definitions is not None
+        # The mock DataCard definitions have a "description" key
+        for level in ("YPD", "Galactose", "Acid"):
+            assert level in cond.level_definitions
+            assert cond.level_definitions[level] == f"{level} condition"
+
+    def test_condition_col_description(self, vdb):
+        """'condition' feature description is populated from FeatureInfo."""
+        meta = vdb.get_column_metadata("harbison")
+        assert meta is not None
+        assert meta["condition"].description == "Experimental condition identifier"
+
+    def test_non_condition_col_has_no_level_definitions(self, vdb):
+        """A column without role=experimental_condition has level_definitions=None."""
+        meta = vdb.get_column_metadata("harbison")
+        assert meta is not None
+        assert "regulator_locus_tag" in meta
+        reg = meta["regulator_locus_tag"]
+        assert reg.level_definitions is None
+        assert reg.role == "regulator_identifier"
+
+    def test_type_a_renamed_col_inherits_metadata(self, vdb):
+        """A Type-A rename (environmental_condition -> condition) propagates
+        ColumnMeta."""
+        meta = vdb.get_column_metadata("harbison")
+        assert meta is not None
+        # 'environmental_condition' maps field=condition, so should inherit
+        # condition's ColumnMeta
+        assert "environmental_condition" in meta
+        ec = meta["environmental_condition"]
+        assert ec.role == "experimental_condition"
+        assert ec.level_definitions is not None
+
+    def test_kemmeren_no_condition_cols(self, vdb):
+        """Kemmeren has no experimental_condition features — no level_definitions."""
+        meta = vdb.get_column_metadata("kemmeren")
+        assert meta is not None
+        for col_meta in meta.values():
+            assert col_meta.level_definitions is None
+
+    def test_comparative_dataset_not_in_metadata(self, vdb):
+        """Comparative datasets (dto) are excluded from column metadata."""
+        assert vdb.get_column_metadata("dto") is None
+
+    def test_condition_col_no_definitions_has_none_level_defs(self, vdb):
+        """A condition col with no definitions dict has level_definitions=None."""
+        # Override harbison features to return a condition col without definitions
+        card = vdb.datacards["BrentLab/harbison"]
+        card.get_features.return_value = [
+            FeatureInfo(
+                name="condition",
+                dtype="string",
+                description="Experimental condition identifier",
+                role="experimental_condition",
+                definitions=None,
+            ),
+        ]
+        # Re-run _build_column_metadata to pick up the change
+        vdb._build_column_metadata()
+        meta = vdb.get_column_metadata("harbison")
+        assert meta is not None
+        assert meta["condition"].level_definitions is None
