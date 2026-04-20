@@ -863,6 +863,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#citations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Citations
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1600,6 +1611,17 @@
     <span class="md-ellipsis">
       
         A realistic example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#citations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Citations
       
     </span>
   </a>
@@ -2695,7 +2717,7 @@ print(f"Config saved to: {temp_config}")</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Config saved to: /tmp/tmprqfwuqr8/vdb_config.yaml
+<pre>Config saved to: /tmp/tmp2k9hi3gb/vdb_config.yaml
 </pre>
 </div>
 </div>
@@ -2759,10 +2781,10 @@ print(repr(vdb))</div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
 <pre>/home/chase/code/labretriever/.venv/lib/python3.11/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
   from .autonotebook import tqdm as notebook_tqdm
-Fetching 1 files: 100%|██████████| 1/1 [00:00&lt;00:00, 15033.35it/s]
-Fetching 1 files: 100%|██████████| 1/1 [00:00&lt;00:00, 14463.12it/s]
-Fetching 1 files: 100%|██████████| 1/1 [00:00&lt;00:00, 6990.51it/s]
-Fetching 36 files: 100%|██████████| 36/36 [00:00&lt;00:00, 15934.46it/s]
+Fetching 1 files: 100%|██████████| 1/1 [00:00&lt;00:00, 10155.70it/s]
+Fetching 1 files: 100%|██████████| 1/1 [00:00&lt;00:00, 8240.28it/s]
+Fetching 1 files: 100%|██████████| 1/1 [00:00&lt;00:00, 6502.80it/s]
+Fetching 36 files: 100%|██████████| 36/36 [00:00&lt;00:00, 10365.55it/s]
 Key 'carbon_source' not found at path 'media.carbon_source' (current keys: ['name'])
 Key 'carbon_source' not found at path 'media.carbon_source' (current keys: ['name'])
 Key 'carbon_source' not found at path 'media.carbon_source' (current keys: ['name'])
@@ -3364,7 +3386,7 @@ print("Common fields:", vdb.get_common_fields())</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=467eb5f4">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=185c59b7">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3387,7 +3409,7 @@ should be filtered together.</p>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=bd1816bf">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=bd2e988a">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3449,7 +3471,7 @@ kemmeren: 'variable_in_wt' links ['carbon_source', 'temperature_celsius']
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>/tmp/ipykernel_284211/1092681254.py:6: DeprecationWarning: get_condition_field_info is deprecated; use get_column_metadata instead.
+<pre>/tmp/ipykernel_69931/1092681254.py:6: DeprecationWarning: get_condition_field_info is deprecated; use get_column_metadata instead.
   info = vdb.get_condition_field_info(dataset)
 </pre>
 </div>
@@ -3622,8 +3644,8 @@ p.unlink(missing_ok=True)
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>Fetching 1 files: 100%|██████████| 1/1 [00:00&lt;00:00, 20560.31it/s]
-Fetching 1 files: 100%|██████████| 1/1 [00:00&lt;00:00, 6853.44it/s]
+<pre>Fetching 1 files: 100%|██████████| 1/1 [00:00&lt;00:00, 11244.78it/s]
+Fetching 1 files: 100%|██████████| 1/1 [00:00&lt;00:00, 7219.11it/s]
 Key 'carbon_source' not found at path 'media.carbon_source' (current keys: ['name'])
 Key 'carbon_source' not found at path 'media.carbon_source' (current keys: ['name'])
 Key 'carbon_source' not found at path 'media.carbon_source' (current keys: ['name'])
@@ -3636,8 +3658,8 @@ Key 'carbon_source' not found at path 'media.carbon_source' (current keys: ['nam
 <pre>harbison2 carbon_source values:
   carbon_source
 0   D-galactose
-1       glucose
-2   D-raffinose
+1   D-raffinose
+2       glucose
 3   unspecified
 
 kemmeren2 carbon_source values:
@@ -3742,46 +3764,46 @@ df_meta</div>
 <tbody>
 <tr>
 <th>0</th>
-<td>14</td>
-<td>H2O2Lo</td>
-<td>YBR049C</td>
-<td>REB1</td>
+<td>136</td>
+<td>YPD</td>
+<td>YGR040W</td>
+<td>KSS1</td>
 <td>glucose</td>
 <td>37.0</td>
 </tr>
 <tr>
 <th>1</th>
-<td>73</td>
-<td>H2O2Hi</td>
-<td>YDR423C</td>
-<td>CAD1</td>
+<td>94</td>
+<td>YPD</td>
+<td>YER130C</td>
+<td>COM2</td>
 <td>glucose</td>
 <td>37.0</td>
 </tr>
 <tr>
 <th>2</th>
-<td>44</td>
-<td>RAPA</td>
-<td>YDL170W</td>
-<td>UGA3</td>
+<td>293</td>
+<td>H2O2Lo</td>
+<td>YOL028C</td>
+<td>YAP7</td>
 <td>glucose</td>
 <td>37.0</td>
 </tr>
 <tr>
 <th>3</th>
-<td>287</td>
-<td>RAPA</td>
-<td>YNL314W</td>
-<td>DAL82</td>
+<td>325</td>
+<td>YPD</td>
+<td>YPL075W</td>
+<td>GCR1</td>
 <td>glucose</td>
 <td>37.0</td>
 </tr>
 <tr>
 <th>4</th>
-<td>277</td>
+<td>80</td>
 <td>YPD</td>
-<td>YNL103W</td>
-<td>MET4</td>
+<td>YDR520C</td>
+<td>URC2</td>
 <td>glucose</td>
 <td>37.0</td>
 </tr>
@@ -3886,71 +3908,71 @@ vdb.query(
 <tbody>
 <tr>
 <th>0</th>
-<td>14</td>
-<td>13.0</td>
+<td>15</td>
+<td>14.0</td>
 <td>YBR049C</td>
 <td>REB1</td>
-<td>H2O2Lo</td>
+<td>YPD</td>
 <td>YPR204W</td>
 <td>YPR204W</td>
-<td>0.784496</td>
-<td>0.535665</td>
+<td>0.852889</td>
+<td>0.769430</td>
 <td>glucose</td>
 <td>37.0</td>
 </tr>
 <tr>
 <th>1</th>
-<td>14</td>
-<td>13.0</td>
+<td>15</td>
+<td>14.0</td>
 <td>YBR049C</td>
 <td>REB1</td>
-<td>H2O2Lo</td>
+<td>YPD</td>
 <td>YPR203W</td>
 <td>YPR203W</td>
-<td>1.450915</td>
-<td>0.959556</td>
+<td>1.249003</td>
+<td>0.112376</td>
 <td>glucose</td>
 <td>37.0</td>
 </tr>
 <tr>
 <th>2</th>
-<td>14</td>
-<td>13.0</td>
+<td>15</td>
+<td>14.0</td>
 <td>YBR049C</td>
 <td>REB1</td>
-<td>H2O2Lo</td>
+<td>YPD</td>
 <td>YPR202W</td>
 <td>YPR202W</td>
-<td>1.450915</td>
-<td>0.959556</td>
+<td>1.249003</td>
+<td>0.112376</td>
 <td>glucose</td>
 <td>37.0</td>
 </tr>
 <tr>
 <th>3</th>
-<td>14</td>
-<td>13.0</td>
+<td>15</td>
+<td>14.0</td>
 <td>YBR049C</td>
 <td>REB1</td>
-<td>H2O2Lo</td>
+<td>YPD</td>
 <td>YPR201W</td>
 <td>ARR3</td>
-<td>0.925863</td>
-<td>0.453672</td>
+<td>1.513707</td>
+<td>0.168133</td>
 <td>glucose</td>
 <td>37.0</td>
 </tr>
 <tr>
 <th>4</th>
-<td>14</td>
-<td>13.0</td>
+<td>15</td>
+<td>14.0</td>
 <td>YBR049C</td>
 <td>REB1</td>
-<td>H2O2Lo</td>
+<td>YPD</td>
 <td>YPR200C</td>
 <td>ARR2</td>
-<td>0.925863</td>
-<td>0.453672</td>
+<td>1.513707</td>
+<td>0.168133</td>
 <td>glucose</td>
 <td>37.0</td>
 </tr>
@@ -4066,7 +4088,7 @@ vdb.query("glucose_regs", cs="glucose", min_n=2)</div>
 </tr>
 <tr>
 <th>2</th>
-<td>STE12</td>
+<td>DIG1</td>
 <td>4</td>
 </tr>
 <tr>
@@ -4076,7 +4098,7 @@ vdb.query("glucose_regs", cs="glucose", min_n=2)</div>
 </tr>
 <tr>
 <th>4</th>
-<td>RTG3</td>
+<td>STE12</td>
 <td>4</td>
 </tr>
 <tr>
@@ -4086,27 +4108,27 @@ vdb.query("glucose_regs", cs="glucose", min_n=2)</div>
 </tr>
 <tr>
 <th>58</th>
-<td>ASH1</td>
+<td>HAP4</td>
 <td>2</td>
 </tr>
 <tr>
 <th>59</th>
-<td>DAL81</td>
+<td>YAP3</td>
 <td>2</td>
 </tr>
 <tr>
 <th>60</th>
-<td>HAP2</td>
+<td>GLN3</td>
 <td>2</td>
 </tr>
 <tr>
 <th>61</th>
-<td>MCM1</td>
+<td>DAL81</td>
 <td>2</td>
 </tr>
 <tr>
 <th>62</th>
-<td>GLN3</td>
+<td>MGA1</td>
 <td>2</td>
 </tr>
 </tbody>
@@ -4354,113 +4376,113 @@ vdb.query("""
 <tbody>
 <tr>
 <th>0</th>
-<td>189</td>
-<td>YPD</td>
-<td>YJR140C</td>
-<td>HIR3</td>
-<td>glucose</td>
-<td>37.0</td>
-<td>0.0</td>
-<td>0.003987</td>
-</tr>
-<tr>
-<th>1</th>
-<td>209</td>
-<td>YPD</td>
-<td>YKL109W</td>
-<td>HAP4</td>
-<td>glucose</td>
-<td>37.0</td>
-<td>0.0</td>
-<td>0.002839</td>
-</tr>
-<tr>
-<th>2</th>
-<td>83</td>
-<td>YPD</td>
-<td>YEL009C</td>
-<td>GCN4</td>
-<td>glucose</td>
-<td>37.0</td>
-<td>0.0</td>
-<td>0.037585</td>
-</tr>
-<tr>
-<th>3</th>
-<td>119</td>
-<td>H2O2Lo</td>
-<td>YGL073W</td>
-<td>HSF1</td>
-<td>glucose</td>
-<td>37.0</td>
-<td>0.0</td>
-<td>0.266561</td>
-</tr>
-<tr>
-<th>4</th>
-<td>249</td>
-<td>YPD</td>
-<td>YMR016C</td>
-<td>SOK2</td>
-<td>glucose</td>
-<td>37.0</td>
-<td>0.0</td>
-<td>0.120648</td>
-</tr>
-<tr>
-<th>5</th>
-<td>55</td>
-<td>YPD</td>
-<td>YDR146C</td>
-<td>SWI5</td>
-<td>glucose</td>
-<td>37.0</td>
-<td>0.0</td>
-<td>0.015389</td>
-</tr>
-<tr>
-<th>6</th>
-<td>255</td>
-<td>H2O2Lo</td>
-<td>YMR037C</td>
-<td>MSN2</td>
-<td>glucose</td>
-<td>37.0</td>
-<td>0.0</td>
-<td>0.186860</td>
-</tr>
-<tr>
-<th>7</th>
-<td>8</td>
-<td>H2O2Lo</td>
+<td>7</td>
+<td>H2O2Hi</td>
 <td>YBL103C</td>
 <td>RTG3</td>
 <td>glucose</td>
 <td>37.0</td>
 <td>0.0</td>
-<td>0.035347</td>
+<td>0.260226</td>
+</tr>
+<tr>
+<th>1</th>
+<td>317</td>
+<td>YPD</td>
+<td>YOR372C</td>
+<td>NDD1</td>
+<td>glucose</td>
+<td>37.0</td>
+<td>0.0</td>
+<td>0.015880</td>
+</tr>
+<tr>
+<th>2</th>
+<td>273</td>
+<td>H2O2Hi</td>
+<td>YNL068C</td>
+<td>FKH2</td>
+<td>glucose</td>
+<td>37.0</td>
+<td>0.0</td>
+<td>0.139295</td>
+</tr>
+<tr>
+<th>3</th>
+<td>17</td>
+<td>BUT14</td>
+<td>YBR083W</td>
+<td>TEC1</td>
+<td>glucose</td>
+<td>37.0</td>
+<td>0.0</td>
+<td>0.094389</td>
+</tr>
+<tr>
+<th>4</th>
+<td>317</td>
+<td>YPD</td>
+<td>YOR372C</td>
+<td>NDD1</td>
+<td>glucose</td>
+<td>37.0</td>
+<td>0.0</td>
+<td>0.024633</td>
+</tr>
+<tr>
+<th>5</th>
+<td>261</td>
+<td>Alpha</td>
+<td>YMR043W</td>
+<td>MCM1</td>
+<td>glucose</td>
+<td>37.0</td>
+<td>0.0</td>
+<td>0.018293</td>
+</tr>
+<tr>
+<th>6</th>
+<td>308</td>
+<td>YPD</td>
+<td>YOR140W</td>
+<td>SFL1</td>
+<td>glucose</td>
+<td>37.0</td>
+<td>0.0</td>
+<td>0.027873</td>
+</tr>
+<tr>
+<th>7</th>
+<td>235</td>
+<td>SM</td>
+<td>YLR451W</td>
+<td>LEU3</td>
+<td>unspecified</td>
+<td>37.0</td>
+<td>0.0</td>
+<td>0.088086</td>
 </tr>
 <tr>
 <th>8</th>
-<td>224</td>
-<td>YPD</td>
-<td>YLR131C</td>
-<td>ACE2</td>
+<td>301</td>
+<td>H2O2Hi</td>
+<td>YOR028C</td>
+<td>CIN5</td>
 <td>glucose</td>
 <td>37.0</td>
 <td>0.0</td>
-<td>0.024163</td>
+<td>0.100408</td>
 </tr>
 <tr>
 <th>9</th>
-<td>75</td>
-<td>YPD</td>
-<td>YDR423C</td>
-<td>CAD1</td>
+<td>261</td>
+<td>Alpha</td>
+<td>YMR043W</td>
+<td>MCM1</td>
 <td>glucose</td>
 <td>37.0</td>
 <td>0.0</td>
-<td>0.004344</td>
+<td>0.054081</td>
 </tr>
 </tbody>
 </table>
@@ -4560,73 +4582,73 @@ vdb.query("""
 <tbody>
 <tr>
 <th>0</th>
-<td>114</td>
-<td>AFT1</td>
+<td>118</td>
+<td>HSF1</td>
 <td>0.0</td>
-<td>471</td>
+<td>88</td>
 </tr>
 <tr>
 <th>1</th>
-<td>314</td>
-<td>HAP5</td>
-<td>0.0</td>
-<td>1347</td>
-</tr>
-<tr>
-<th>2</th>
-<td>221</td>
-<td>CHA4</td>
-<td>0.0</td>
-<td>894</td>
-</tr>
-<tr>
-<th>3</th>
-<td>36</td>
-<td>MBP1</td>
-<td>0.0</td>
-<td>166</td>
-</tr>
-<tr>
-<th>4</th>
-<td>9</td>
-<td>RTG3</td>
-<td>0.0</td>
-<td>57</td>
-</tr>
-<tr>
-<th>5</th>
-<td>330</td>
-<td>CUP9</td>
-<td>0.0</td>
-<td>1409</td>
-</tr>
-<tr>
-<th>6</th>
-<td>303</td>
-<td>CIN5</td>
-<td>0.0</td>
-<td>1280</td>
-</tr>
-<tr>
-<th>7</th>
 <td>15</td>
 <td>REB1</td>
 <td>0.0</td>
 <td>100_242</td>
 </tr>
 <tr>
-<th>8</th>
+<th>2</th>
+<td>31</td>
+<td>RPN4</td>
+<td>0.0</td>
+<td>229</td>
+</tr>
+<tr>
+<th>3</th>
+<td>162</td>
+<td>XBP1</td>
+<td>0.0</td>
+<td>741</td>
+</tr>
+<tr>
+<th>4</th>
+<td>303</td>
+<td>CIN5</td>
+<td>0.0</td>
+<td>1369</td>
+</tr>
+<tr>
+<th>5</th>
+<td>314</td>
+<td>HAP5</td>
+<td>0.0</td>
+<td>1488</td>
+</tr>
+<tr>
+<th>6</th>
+<td>36</td>
+<td>MBP1</td>
+<td>0.0</td>
+<td>212</td>
+</tr>
+<tr>
+<th>7</th>
 <td>240</td>
 <td>YAP1</td>
 <td>0.0</td>
-<td>996</td>
+<td>1092</td>
+</tr>
+<tr>
+<th>8</th>
+<td>330</td>
+<td>CUP9</td>
+<td>0.0</td>
+<td>1551</td>
 </tr>
 <tr>
 <th>9</th>
-<td>118</td>
-<td>HSF1</td>
+<td>9</td>
+<td>RTG3</td>
 <td>0.0</td>
-<td>13</td>
+<td>48</td>
 </tr>
 </tbody>
 </table>
@@ -4727,7 +4749,7 @@ vdb.query("""
 <tr>
 <th>0</th>
 <td>SWI1</td>
-<td>45.0</td>
+<td>10.0</td>
 <td>ZEV</td>
 <td>P</td>
 <td>3</td>
@@ -4735,7 +4757,7 @@ vdb.query("""
 <tr>
 <th>1</th>
 <td>SWI1</td>
-<td>15.0</td>
+<td>90.0</td>
 <td>ZEV</td>
 <td>P</td>
 <td>3</td>
@@ -4743,7 +4765,7 @@ vdb.query("""
 <tr>
 <th>2</th>
 <td>SWI1</td>
-<td>30.0</td>
+<td>20.0</td>
 <td>ZEV</td>
 <td>P</td>
 <td>3</td>
@@ -4751,7 +4773,7 @@ vdb.query("""
 <tr>
 <th>3</th>
 <td>SWI1</td>
-<td>5.0</td>
+<td>45.0</td>
 <td>ZEV</td>
 <td>P</td>
 <td>3</td>
@@ -4759,7 +4781,7 @@ vdb.query("""
 <tr>
 <th>4</th>
 <td>SWI1</td>
-<td>0.0</td>
+<td>15.0</td>
 <td>ZEV</td>
 <td>P</td>
 <td>3</td>
@@ -4767,7 +4789,7 @@ vdb.query("""
 <tr>
 <th>5</th>
 <td>SWI1</td>
-<td>10.0</td>
+<td>30.0</td>
 <td>ZEV</td>
 <td>P</td>
 <td>3</td>
@@ -4775,7 +4797,7 @@ vdb.query("""
 <tr>
 <th>6</th>
 <td>SWI1</td>
-<td>90.0</td>
+<td>5.0</td>
 <td>ZEV</td>
 <td>P</td>
 <td>3</td>
@@ -4783,23 +4805,23 @@ vdb.query("""
 <tr>
 <th>7</th>
 <td>SWI1</td>
-<td>20.0</td>
+<td>0.0</td>
 <td>ZEV</td>
 <td>P</td>
 <td>3</td>
 </tr>
 <tr>
 <th>8</th>
-<td>GCN4</td>
-<td>45.0</td>
+<td>RDS2</td>
+<td>30.0</td>
 <td>ZEV</td>
 <td>P</td>
 <td>2</td>
 </tr>
 <tr>
 <th>9</th>
-<td>GCN4</td>
-<td>30.0</td>
+<td>RDS2</td>
+<td>10.0</td>
 <td>ZEV</td>
 <td>P</td>
 <td>2</td>
@@ -4807,16 +4829,16 @@ vdb.query("""
 <tr>
 <th>10</th>
 <td>MAC1</td>
-<td>0.0</td>
+<td>5.0</td>
 <td>GEV</td>
 <td>P</td>
 <td>2</td>
 </tr>
 <tr>
 <th>11</th>
-<td>RDS2</td>
-<td>5.0</td>
-<td>ZEV</td>
+<td>MAC1</td>
+<td>45.0</td>
+<td>GEV</td>
 <td>P</td>
 <td>2</td>
 </tr>
@@ -4830,54 +4852,22 @@ vdb.query("""
 </tr>
 <tr>
 <th>13</th>
-<td>MAC1</td>
+<td>GCN4</td>
 <td>15.0</td>
-<td>GEV</td>
+<td>ZEV</td>
 <td>P</td>
 <td>2</td>
 </tr>
 <tr>
 <th>14</th>
 <td>MAC1</td>
-<td>45.0</td>
+<td>15.0</td>
 <td>GEV</td>
 <td>P</td>
 <td>2</td>
 </tr>
 <tr>
 <th>15</th>
-<td>RDS2</td>
-<td>30.0</td>
-<td>ZEV</td>
-<td>P</td>
-<td>2</td>
-</tr>
-<tr>
-<th>16</th>
-<td>RDS2</td>
-<td>0.0</td>
-<td>ZEV</td>
-<td>P</td>
-<td>2</td>
-</tr>
-<tr>
-<th>17</th>
-<td>GCN4</td>
-<td>0.0</td>
-<td>ZEV</td>
-<td>P</td>
-<td>2</td>
-</tr>
-<tr>
-<th>18</th>
-<td>RDS2</td>
-<td>15.0</td>
-<td>ZEV</td>
-<td>P</td>
-<td>2</td>
-</tr>
-<tr>
-<th>19</th>
 <td>MAC1</td>
 <td>30.0</td>
 <td>GEV</td>
@@ -4885,7 +4875,7 @@ vdb.query("""
 <td>2</td>
 </tr>
 <tr>
-<th>20</th>
+<th>16</th>
 <td>MAC1</td>
 <td>90.0</td>
 <td>GEV</td>
@@ -4893,16 +4883,48 @@ vdb.query("""
 <td>2</td>
 </tr>
 <tr>
-<th>21</th>
-<td>RDS2</td>
+<th>17</th>
+<td>GCN4</td>
 <td>45.0</td>
 <td>ZEV</td>
 <td>P</td>
 <td>2</td>
 </tr>
 <tr>
-<th>22</th>
+<th>18</th>
 <td>GCN4</td>
+<td>30.0</td>
+<td>ZEV</td>
+<td>P</td>
+<td>2</td>
+</tr>
+<tr>
+<th>19</th>
+<td>MAC1</td>
+<td>0.0</td>
+<td>GEV</td>
+<td>P</td>
+<td>2</td>
+</tr>
+<tr>
+<th>20</th>
+<td>RDS2</td>
+<td>5.0</td>
+<td>ZEV</td>
+<td>P</td>
+<td>2</td>
+</tr>
+<tr>
+<th>21</th>
+<td>GCN4</td>
+<td>0.0</td>
+<td>ZEV</td>
+<td>P</td>
+<td>2</td>
+</tr>
+<tr>
+<th>22</th>
+<td>RDS2</td>
 <td>15.0</td>
 <td>ZEV</td>
 <td>P</td>
@@ -4911,7 +4933,7 @@ vdb.query("""
 <tr>
 <th>23</th>
 <td>RDS2</td>
-<td>10.0</td>
+<td>90.0</td>
 <td>ZEV</td>
 <td>P</td>
 <td>2</td>
@@ -4919,24 +4941,24 @@ vdb.query("""
 <tr>
 <th>24</th>
 <td>RDS2</td>
-<td>90.0</td>
+<td>0.0</td>
 <td>ZEV</td>
 <td>P</td>
 <td>2</td>
 </tr>
 <tr>
 <th>25</th>
-<td>GCN4</td>
-<td>90.0</td>
+<td>RDS2</td>
+<td>45.0</td>
 <td>ZEV</td>
 <td>P</td>
 <td>2</td>
 </tr>
 <tr>
 <th>26</th>
-<td>MAC1</td>
-<td>5.0</td>
-<td>GEV</td>
+<td>GCN4</td>
+<td>90.0</td>
+<td>ZEV</td>
 <td>P</td>
 <td>2</td>
 </tr>
@@ -5028,19 +5050,6 @@ vdb.query("""
 <tbody>
 <tr>
 <th>0</th>
-<td>1620</td>
-<td>20161117</td>
-<td>ZEV</td>
-<td>YPL016W</td>
-<td>SWI1</td>
-<td>P</td>
-<td>SMY2266a</td>
-<td>20.0</td>
-<td>glucose</td>
-<td>30.0</td>
-</tr>
-<tr>
-<th>1</th>
 <td>1636</td>
 <td>20161117</td>
 <td>ZEV</td>
@@ -5048,6 +5057,19 @@ vdb.query("""
 <td>SWI1</td>
 <td>P</td>
 <td>SMY2266c</td>
+<td>20.0</td>
+<td>glucose</td>
+<td>30.0</td>
+</tr>
+<tr>
+<th>1</th>
+<td>1620</td>
+<td>20161117</td>
+<td>ZEV</td>
+<td>YPL016W</td>
+<td>SWI1</td>
+<td>P</td>
+<td>SMY2266a</td>
 <td>20.0</td>
 <td>glucose</td>
 <td>30.0</td>
@@ -5126,7 +5148,7 @@ print(replicated_hackett_regulators)</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>['RDS2', 'GCN4', 'MAC1', 'SWI1']
+<pre>['GCN4', 'RDS2', 'MAC1', 'SWI1']
 </pre>
 </div>
 </div>
@@ -5170,7 +5192,7 @@ print(replicated_hackett_regulators)</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>['RDS2', 'GCN4', 'MAC1', 'SWI1', 'GEV']
+<pre>['GCN4', 'RDS2', 'MAC1', 'SWI1', 'GEV']
 </pre>
 </div>
 </div>
@@ -5530,44 +5552,44 @@ print(hackett_harbison_dto.head())</div>
 4        448             ACA1  15.0       ZEV   
 
                                      binding_id  \
-0       BrentLab/harbison_2004;harbison_2004;88   
-1  BrentLab/callingcards;annotated_features;146   
-2       BrentLab/harbison_2004;harbison_2004;88   
-3  BrentLab/callingcards;annotated_features;146   
-4  BrentLab/callingcards;annotated_features;189   
+0  BrentLab/callingcards;annotated_features;189   
+1       BrentLab/harbison_2004;harbison_2004;88   
+2  BrentLab/callingcards;annotated_features;156   
+3  BrentLab/callingcards;annotated_features;126   
+4  BrentLab/callingcards;annotated_features;146   
 
                           perturbation_id  binding_rank_threshold  \
-0  BrentLab/hackett_2020;hackett_2020;448                   122.0   
-1  BrentLab/hackett_2020;hackett_2020;448                    35.0   
-2  BrentLab/hackett_2020;hackett_2020;448                   334.0   
-3  BrentLab/hackett_2020;hackett_2020;448                   452.0   
-4  BrentLab/hackett_2020;hackett_2020;448                   632.0   
+0  BrentLab/hackett_2020;hackett_2020;448                   194.0   
+1  BrentLab/hackett_2020;hackett_2020;448                   122.0   
+2  BrentLab/hackett_2020;hackett_2020;448                   374.0   
+3  BrentLab/hackett_2020;hackett_2020;448                   437.0   
+4  BrentLab/hackett_2020;hackett_2020;448                    35.0   
 
    perturbation_rank_threshold  binding_set_size  perturbation_set_size  \
-0                        218.0             122.0                  218.0   
-1                        407.0              35.0                  407.0   
-2                          1.0             334.0                 5524.0   
-3                          1.0             454.0                 5591.0   
-4                          1.0             634.0                 5591.0   
+0                         19.0             194.0                   19.0   
+1                        218.0             122.0                  218.0   
+2                          1.0             376.0                 5591.0   
+3                          1.0             442.0                 5591.0   
+4                        407.0              35.0                  407.0   
 
     dto_fdr  dto_empirical_pvalue pr_ranking_column  \
-0  0.612736                 0.917            log2fc   
-1  0.116834                 0.000            log2fc   
+0  0.037017                 0.000            log2fc   
+1  0.612736                 0.917            log2fc   
 2  0.000000                 1.000            pvalue   
 3  0.000000                 1.000            pvalue   
-4  0.000000                 1.000            pvalue   
+4  0.116834                 0.000            log2fc   
 
               binding_repo_dataset  perturbation_repo_dataset binding_id_id  \
-0      harbison_2004-harbison_2004  hackett_2020-hackett_2020            88   
-1  callingcards-annotated_features  hackett_2020-hackett_2020           146   
-2      harbison_2004-harbison_2004  hackett_2020-hackett_2020            88   
-3  callingcards-annotated_features  hackett_2020-hackett_2020           146   
-4  callingcards-annotated_features  hackett_2020-hackett_2020           189   
+0  callingcards-annotated_features  hackett_2020-hackett_2020           189   
+1      harbison_2004-harbison_2004  hackett_2020-hackett_2020            88   
+2  callingcards-annotated_features  hackett_2020-hackett_2020           156   
+3  callingcards-annotated_features  hackett_2020-hackett_2020           126   
+4  callingcards-annotated_features  hackett_2020-hackett_2020           146   
 
                           binding_id_source perturbation_id_id  \
-0                                  harbison                448   
-1  BrentLab/callingcards;annotated_features                448   
-2                                  harbison                448   
+0  BrentLab/callingcards;annotated_features                448   
+1                                  harbison                448   
+2  BrentLab/callingcards;annotated_features                448   
 3  BrentLab/callingcards;annotated_features                448   
 4  BrentLab/callingcards;annotated_features                448   
 
@@ -5583,8 +5605,21 @@ print(hackett_harbison_dto.head())</div>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=cell-26">
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cell-citation-md">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="citations">Citations<a class="anchor-link" href="#citations">¶</a></h2><p>Citation metadata is defined in the HuggingFace dataset card YAML, not in the VirtualDB configuration file. <code>get_citation()</code> reads from the fetched DataCard, so it returns a value only when the upstream dataset card includes a <code>citation:</code> field.</p>
+<p>Citations follow the same override hierarchy as experimental conditions: a dataset-level citation (on a specific config) overrides a repository-level citation. <code>get_citation()</code> handles the fallback automatically.</p>
+<p>If the dataset card has no citation defined at either level, <code>get_citation()</code> returns <code>None</code>.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=cell-citation-code">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5602,10 +5637,61 @@ print(hackett_harbison_dto.head())</div>
 </div>
 </clipboard-copy>
 </div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Retrieve the citation for each dataset.</span>
+<span class="c1"># Returns None when no citation field is present in the upstream DataCard.</span>
+<span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="n">vdb</span><span class="o">.</span><span class="n">get_datasets</span><span class="p">():</span>
+    <span class="n">citation</span> <span class="o">=</span> <span class="n">vdb</span><span class="o">.</span><span class="n">get_citation</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">ds</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">citation</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-23"># Retrieve the citation for each dataset.
+# Returns None when no citation field is present in the upstream DataCard.
+for ds in vdb.get_datasets():
+    citation = vdb.get_citation(ds)
+    print(f"{ds}: {citation}")</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>dto: None
+hackett: https://doi.org/10.15252/msb.20199174
+harbison: https://doi.org/10.1038/nature02800
+kemmeren: https://doi.org/10.1016/j.cell.2014.02.054
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=cell-26">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [24]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-24">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Clean up temp file</span>
 <span class="n">temp_config</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">missing_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-23"># Clean up temp file
+<div class="clipboard-copy-txt" id="cell-24"># Clean up temp file
 temp_config.unlink(missing_ok=True)</div>
 </div>
 </div>
