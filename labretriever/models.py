@@ -118,6 +118,11 @@ class DatasetConfig(BaseModel):
     )
     data_files: list[DataFileInfo] = Field(..., description="Data file information")
     dataset_info: DatasetInfo = Field(..., description="Dataset structure information")
+    citation: str | None = Field(
+        default=None,
+        description="Dataset-specific citation that overrides "
+        "repository-level citation",
+    )
 
     model_config = ConfigDict(extra="allow")
 
@@ -170,6 +175,9 @@ class DatasetCard(BaseModel):
     """
 
     configs: list[DatasetConfig] = Field(..., description="Dataset configurations")
+    citation: str | None = Field(
+        default=None, description="Repository-level citation for all datasets"
+    )
 
     model_config = ConfigDict(extra="allow")
 

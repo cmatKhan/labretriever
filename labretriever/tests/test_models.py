@@ -545,6 +545,65 @@ class TestDatasetCard:
         assert len(metadata_configs) == 1
         assert metadata_configs[0].dataset_type == DatasetType.METADATA
 
+    def test_dataset_card_citation_field(self):
+        """Test that DatasetCard accepts citation field."""
+        card_data = {
+            "citation": "Repository-level citation for all datasets",
+            "configs": [
+                {
+                    "config_name": "data",
+                    "description": "Test dataset",
+                    "dataset_type": "annotated_features",
+                    "data_files": [{"path": "data.parquet"}],
+                    "dataset_info": {
+                        "features": [
+                            {"name": "id", "dtype": "string", "description": "ID"}
+                        ]
+                    },
+                }
+            ],
+        }
+        card = DatasetCard(**card_data)
+        assert card.citation == "Repository-level citation for all datasets"
+
+    def test_dataset_config_citation_field(self):
+        """Test that DatasetConfig accepts citation field."""
+        config = DatasetConfig(
+            config_name="special_dataset",
+            description="Dataset with specific citation",
+            dataset_type=DatasetType.ANNOTATED_FEATURES,
+            citation="Dataset-specific citation that overrides repository level",
+            data_files=[DataFileInfo(path="special.parquet")],
+            dataset_info=DatasetInfo(
+                features=[FeatureInfo(name="id", dtype="string", description="ID")]
+            ),
+        )
+        assert (
+            config.citation
+            == "Dataset-specific citation that overrides repository level"
+        )
+
+    def test_citation_fields_optional(self):
+        """Test that citation fields are optional and default to None."""
+        # DatasetCard without citation
+        card = DatasetCard(
+            configs=[
+                DatasetConfig(
+                    config_name="data",
+                    description="Data",
+                    dataset_type=DatasetType.ANNOTATED_FEATURES,
+                    data_files=[DataFileInfo(path="data.parquet")],
+                    dataset_info=DatasetInfo(
+                        features=[
+                            FeatureInfo(name="id", dtype="string", description="ID")
+                        ]
+                    ),
+                )
+            ]
+        )
+        assert card.citation is None
+        assert card.configs[0].citation is None
+
 
 class TestExtractedMetadata:
     """Tests for ExtractedMetadata model."""
