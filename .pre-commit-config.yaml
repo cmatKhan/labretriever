@@ -68,6 +68,7 @@ repos:
     rev: v0.12.0
     hooks:
       - id: markdownlint
+        exclude: ^CHANGELOG\.md$
 
 # sets up .pre-commit-ci.yaml to ensure pre-commit dependencies stay up to date
 ci:

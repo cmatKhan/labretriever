@@ -1,5 +1,33 @@
 # Changelog
 
+## [0.2.0] - 2026-04-20
+
+### Added
+
+- `citation` field on `DatasetConfig` (dataset-level) and `DatasetCard`
+  (repository-level) models. Dataset-level citation overrides the
+  repository-level citation when present.
+- `DataCard.get_citation(config_name=None)` - returns the citation at the
+  appropriate hierarchy level.
+- `DataCard.info(config_name=None)` - unified introspection method replacing
+  the former `get_repository_info()` and `summary()`. Called without arguments
+  it returns repository-level metadata (license, citation, tags, config list,
+  file counts). Called with a configuration name it returns dataset-level detail
+  (description, features, citation, experimental conditions, metadata schema).
+- `VirtualDB.get_citation(db_name)` - returns the citation for the dataset
+  registered under `db_name`, delegating to `DataCard.get_citation`.
+- SQL column-alias qualification fix: field aliases with spaces (e.g.
+  `"Regulator locus tag"`) are now correctly qualified with their table prefix
+  (`m.` or `d.`) in JOIN contexts, resolving an ambiguous-column error when
+  both data and metadata parquets share a column name.
+
+### Changed
+
+- `DataCard.get_repository_info()` removed; use `DataCard.info()` instead.
+- `DataCard.summary()` removed; use `DataCard.info()` instead. The `configs`
+  key in the returned dict provides the per-configuration listing that
+  `summary()` previously formatted as a string.
+
 ## [0.1.0] - 2026-04-16
 
 ### Added
