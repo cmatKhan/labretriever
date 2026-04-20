@@ -452,8 +452,33 @@ class DataCard:
             is_partitioned=is_partitioned,
         )
 
-    def get_repository_info(self) -> dict[str, Any]:
-        """Get general repository information."""
+    def info(self, config_name: str | None = None) -> dict[str, Any]:
+        """
+        Return repository or dataset-level information from the datacard.
+
+        When called without arguments, returns repository-level metadata
+        including license, tags, citation, and a summary of all configurations.
+        When called with a configuration name, returns detailed information
+        for that specific dataset.
+
+        :param config_name: Optional configuration name. If None, returns
+            repository-level info. If provided, returns dataset-level info.
+        :return: Dict of metadata fields. Repository-level keys: ``repo_id``,
+            ``pretty_name``, ``license``, ``citation``, ``tags``, ``language``,
+            ``size_categories``, ``num_configs``, ``total_files``,
+            ``last_modified``, ``has_default_config``, ``configs``.
+            Dataset-level keys: ``config_name``, ``description``,
+            ``dataset_type``, ``default``, ``citation``, ``features``,
+            ``experimental_conditions``, ``metadata_schema``.
+        :raises DataCardError: If ``config_name`` is provided but not found.
+
+        """
+        if config_name is None:
+            return self._repo_info()
+        return self._dataset_info(config_name)
+
+    def _repo_info(self) -> dict[str, Any]:
+        """Return repository-level metadata."""
         card = self.dataset_card
 
         try:
@@ -468,14 +493,48 @@ class DataCard:
             "repo_id": self.repo_id,
             "pretty_name": card.pretty_name,
             "license": card.license,
+            "citation": card.citation,
             "tags": card.tags,
             "language": card.language,
             "size_categories": card.size_categories,
             "num_configs": len(card.configs),
-            "dataset_types": [config.dataset_type.value for config in card.configs],
             "total_files": total_files,
             "last_modified": last_modified,
-            "has_default_config": self.dataset_card.default_config is not None,
+            "has_default_config": card.default_config is not None,
+            "configs": [
+                {
+                    "config_name": c.config_name,
+                    "dataset_type": c.dataset_type.value,
+                    "default": c.default,
+                    "description": c.description,
+                }
+                for c in card.configs
+            ],
+        }
+
+    def _dataset_info(self, config_name: str) -> dict[str, Any]:
+        """Return dataset-level metadata for a specific configuration."""
+        config = self.get_config(config_name)
+        if not config:
+            raise DataCardError(f"Configuration '{config_name}' not found")
+
+        return {
+            "config_name": config.config_name,
+            "description": config.description,
+            "dataset_type": config.dataset_type.value,
+            "default": config.default,
+            "citation": self.get_citation(config_name),
+            "features": [
+                {
+                    "name": f.name,
+                    "dtype": f.dtype,
+                    "description": f.description,
+                    "role": f.role,
+                }
+                for f in config.dataset_info.features
+            ],
+            "experimental_conditions": self.get_experimental_conditions(config_name),
+            "metadata_schema": self.extract_metadata_schema(config_name),
         }
 
     def extract_metadata_schema(self, config_name: str) -> dict[str, Any]:
@@ -642,6 +701,47 @@ class DataCard:
 
         return merged
 
+    def get_citation(self, config_name: str | None = None) -> str | None:
+        """
+        Get citation with proper hierarchy handling.
+
+        Returns citation at the appropriate level:
+        - If config_name is None: returns repository-level citation only
+        - If config_name is provided: returns dataset-level citation if defined,
+          otherwise repository-level citation
+
+        Dataset-level citations override repository-level citations, similar to
+        how experimental_conditions work.
+
+        :param config_name: Optional config name. If provided, checks for
+          dataset-specific citation
+        :return: Citation string or None if no citation defined
+
+        Example:
+            >>> # Get repository-level citation
+            >>> repo_citation = card.get_citation()
+            >>>
+            >>> # Get citation for specific dataset (may override repo-level)
+            >>> dataset_citation = card.get_citation('harbison_2004')
+
+        """
+        # Get repository-level citation (from DatasetCard)
+        repo_citation = self.dataset_card.citation
+
+        # If no config specified, return repository-level only
+        if config_name is None:
+            return repo_citation
+
+        # Get dataset-level citation
+        config = self.get_config(config_name)
+        if not config:
+            raise DataCardError(f"Configuration '{config_name}' not found")
+
+        dataset_citation = config.citation
+
+        # Dataset-level overrides repository-level
+        return dataset_citation if dataset_citation is not None else repo_citation
+
     def get_field_definitions(
         self, config_name: str, field_name: str
     ) -> dict[str, Any]:
@@ -692,30 +792,3 @@ class DataCard:
 
         # Return definitions if present, otherwise empty dict
         return feature.definitions if feature.definitions else {}
-
-    def summary(self) -> str:
-        """Get a human-readable summary of the dataset."""
-        card = self.dataset_card
-        info = self.get_repository_info()
-
-        lines = [
-            f"Dataset: {card.pretty_name or self.repo_id}",
-            f"Repository: {self.repo_id}",
-            f"License: {card.license or 'Not specified'}",
-            f"Configurations: {len(card.configs)}",
-            f"Dataset Types: {', '.join(info['dataset_types'])}",
-        ]
-
-        if card.tags:
-            lines.append(f"Tags: {', '.join(card.tags)}")
-
-        # Add config summaries
-        lines.append("\nConfigurations:")
-        for config in card.configs:
-            default_mark = " (default)" if config.default else ""
-            lines.append(
-                f"  - {config.config_name}: {config.dataset_type.value}{default_mark}"
-            )
-            lines.append(f"    {config.description}")
-
-        return "\n".join(lines)

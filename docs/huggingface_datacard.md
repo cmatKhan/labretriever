@@ -154,6 +154,44 @@ configs:
         role: quantitative_measure
 ```
 
+## Citation
+
+Citation information can be specified at two levels with dataset-level overriding repository-level, similar to experimental conditions:
+
+1. **Repository-level** `citation`: A citation that applies to all datasets in the repository.
+   Use when all datasets in the repository come from the same publication or source.
+2. **Dataset-level** `citation`: A citation specific to an individual dataset configuration.
+   Use when different datasets within the same repository come from different publications.
+
+The dataset-level citation takes precedence over the repository-level citation, allowing for flexibility when repositories contain datasets from multiple sources.
+
+**Example:**
+```yaml
+# Repository-level citation (applies to all datasets unless overridden)
+citation: "Harbison CT, et al. Transcriptional regulatory code of a eukaryotic genome. Nature. 2004;431(7004):99-104."
+
+configs:
+- config_name: harbison_2004
+  description: ChIP-chip binding data from Harbison et al. 2004
+  dataset_type: annotated_features
+  # Uses repository-level citation since no dataset-specific citation provided
+  data_files:
+    - split: train
+      path: harbison_data.parquet
+  dataset_info:
+    # ... feature definitions ...
+
+- config_name: reprocessed_binding
+  description: Reprocessed version using updated analysis pipeline
+  dataset_type: annotated_features
+  # Dataset-specific citation overrides repository-level
+  citation: "Smith J, et al. Reanalysis of Harbison ChIP-chip data with improved methods. Bioinformatics. 2023;39(10):1234-1245."
+  data_files:
+    - split: train
+      path: reprocessed_data.parquet
+  dataset_info:
+    # ... feature definitions ...
+
 ## Feature Definitions
 
 Each config must include detailed feature definitions in `dataset_info.features`:

@@ -293,7 +293,7 @@ class TestDataCard:
     @patch("labretriever.datacard.HfDataCardFetcher")
     @patch("labretriever.datacard.HfRepoStructureFetcher")
     @patch("labretriever.datacard.HfSizeInfoFetcher")
-    def test_get_repository_info_success(
+    def test_info_repo_level(
         self,
         mock_size_fetcher,
         mock_structure_fetcher,
@@ -302,7 +302,7 @@ class TestDataCard:
         sample_dataset_card_data,
         sample_repo_structure,
     ):
-        """Test getting repository information."""
+        """Test info() without arguments returns repository-level metadata."""
         mock_card_fetcher_instance = Mock()
         mock_structure_fetcher_instance = Mock()
         mock_card_fetcher.return_value = mock_card_fetcher_instance
@@ -313,24 +313,32 @@ class TestDataCard:
 
         datacard = DataCard(test_repo_id)
 
-        info = datacard.get_repository_info()
+        info = datacard.info()
 
         assert info["repo_id"] == test_repo_id
         assert info["pretty_name"] == "Test Genomics Dataset"
         assert info["license"] == "mit"
         assert info["num_configs"] == 4
-        assert "genomic_features" in info["dataset_types"]
-        assert "annotated_features" in info["dataset_types"]
-        assert "genome_map" in info["dataset_types"]
-        assert "metadata" in info["dataset_types"]
         assert info["total_files"] == 5
         assert info["last_modified"] == "2023-12-01T10:30:00Z"
         assert info["has_default_config"] is True
+        config_types = [c["dataset_type"] for c in info["configs"]]
+        assert "genomic_features" in config_types
+        assert "annotated_features" in config_types
+        assert "genome_map" in config_types
+        assert "metadata" in config_types
+        config_names = [c["config_name"] for c in info["configs"]]
+        assert "genomic_features" in config_names
+        assert "binding_data" in config_names
+        assert "genome_map_data" in config_names
+        assert "experiment_metadata" in config_names
+        default_configs = [c for c in info["configs"] if c["default"]]
+        assert len(default_configs) == 1
 
     @patch("labretriever.datacard.HfDataCardFetcher")
     @patch("labretriever.datacard.HfRepoStructureFetcher")
     @patch("labretriever.datacard.HfSizeInfoFetcher")
-    def test_get_repository_info_fetch_error(
+    def test_info_repo_level_fetch_error(
         self,
         mock_size_fetcher,
         mock_structure_fetcher,
@@ -338,7 +346,7 @@ class TestDataCard:
         test_repo_id,
         sample_dataset_card_data,
     ):
-        """Test getting repository info when structure fetch fails."""
+        """Test info() degrades gracefully when structure fetch fails."""
         mock_card_fetcher_instance = Mock()
         mock_structure_fetcher_instance = Mock()
         mock_card_fetcher.return_value = mock_card_fetcher_instance
@@ -351,7 +359,7 @@ class TestDataCard:
 
         datacard = DataCard(test_repo_id)
 
-        info = datacard.get_repository_info()
+        info = datacard.info()
 
         assert info["repo_id"] == test_repo_id
         assert info["total_files"] is None
@@ -360,7 +368,7 @@ class TestDataCard:
     @patch("labretriever.datacard.HfDataCardFetcher")
     @patch("labretriever.datacard.HfRepoStructureFetcher")
     @patch("labretriever.datacard.HfSizeInfoFetcher")
-    def test_summary(
+    def test_info_dataset_level(
         self,
         mock_size_fetcher,
         mock_structure_fetcher,
@@ -369,7 +377,7 @@ class TestDataCard:
         sample_dataset_card_data,
         sample_repo_structure,
     ):
-        """Test getting a summary of the dataset."""
+        """Test info(config_name) returns dataset-level metadata."""
         mock_card_fetcher_instance = Mock()
         mock_structure_fetcher_instance = Mock()
         mock_card_fetcher.return_value = mock_card_fetcher_instance
@@ -380,17 +388,40 @@ class TestDataCard:
 
         datacard = DataCard(test_repo_id)
 
-        summary = datacard.summary()
+        info = datacard.info("genomic_features")
 
-        assert "Dataset: Test Genomics Dataset" in summary
-        assert f"Repository: {test_repo_id}" in summary
-        assert "License: mit" in summary
-        assert "Configurations: 4" in summary
-        assert "genomic_features" in summary
-        assert "binding_data" in summary
-        assert "genome_map_data" in summary
-        assert "experiment_metadata" in summary
-        assert "(default)" in summary  # genomic_features is marked as default
+        assert info["config_name"] == "genomic_features"
+        assert info["dataset_type"] == "genomic_features"
+        assert info["default"] is True
+        assert isinstance(info["description"], str)
+        assert isinstance(info["features"], list)
+        assert all("name" in f for f in info["features"])
+        assert "experimental_conditions" in info
+        assert "metadata_schema" in info
+
+    @patch("labretriever.datacard.HfDataCardFetcher")
+    @patch("labretriever.datacard.HfRepoStructureFetcher")
+    @patch("labretriever.datacard.HfSizeInfoFetcher")
+    def test_info_dataset_level_not_found(
+        self,
+        mock_size_fetcher,
+        mock_structure_fetcher,
+        mock_card_fetcher,
+        test_repo_id,
+        sample_dataset_card_data,
+    ):
+        """Test info() raises DataCardError for unknown config name."""
+        mock_card_fetcher_instance = Mock()
+        mock_structure_fetcher_instance = Mock()
+        mock_card_fetcher.return_value = mock_card_fetcher_instance
+        mock_structure_fetcher.return_value = mock_structure_fetcher_instance
+
+        mock_card_fetcher_instance.fetch.return_value = sample_dataset_card_data
+
+        datacard = DataCard(test_repo_id)
+
+        with pytest.raises(DataCardError):
+            datacard.info("nonexistent_config")
 
     @patch("labretriever.datacard.HfDataCardFetcher")
     @patch("labretriever.datacard.HfRepoStructureFetcher")
@@ -908,3 +939,173 @@ class TestGetDatasetSchema:
         result = datacard.get_dataset_schema("nonexistent")
 
         assert result is None
+
+
+class TestGetCitation:
+    """Tests for DataCard.get_citation()."""
+
+    @patch("labretriever.datacard.HfDataCardFetcher")
+    @patch("labretriever.datacard.HfRepoStructureFetcher")
+    @patch("labretriever.datacard.HfSizeInfoFetcher")
+    def test_repository_level_citation_only(
+        self,
+        mock_size_fetcher,
+        mock_structure_fetcher,
+        mock_card_fetcher,
+        test_repo_id,
+    ):
+        """Test getting repository-level citation when no dataset-specific citation
+        exists."""
+        card_data = {
+            "citation": "Repository citation for all datasets",
+            "configs": [
+                {
+                    "config_name": "test_config",
+                    "description": "Test config",
+                    "dataset_type": "annotated_features",
+                    "data_files": [{"path": "data.parquet"}],
+                    "dataset_info": {
+                        "features": [
+                            {"name": "id", "dtype": "string", "description": "ID"}
+                        ]
+                    },
+                }
+            ],
+        }
+
+        mock_fetcher_instance = Mock()
+        mock_card_fetcher.return_value = mock_fetcher_instance
+        mock_fetcher_instance.fetch.return_value = card_data
+
+        datacard = DataCard(test_repo_id)
+
+        # Repository-level citation
+        repo_citation = datacard.get_citation()
+        assert repo_citation == "Repository citation for all datasets"
+
+        # Dataset-specific should fall back to repository-level
+        dataset_citation = datacard.get_citation("test_config")
+        assert dataset_citation == "Repository citation for all datasets"
+
+    @patch("labretriever.datacard.HfDataCardFetcher")
+    @patch("labretriever.datacard.HfRepoStructureFetcher")
+    @patch("labretriever.datacard.HfSizeInfoFetcher")
+    def test_dataset_overrides_repository_citation(
+        self,
+        mock_size_fetcher,
+        mock_structure_fetcher,
+        mock_card_fetcher,
+        test_repo_id,
+    ):
+        """Test that dataset-level citation overrides repository-level citation."""
+        card_data = {
+            "citation": "Repository citation for all datasets",
+            "configs": [
+                {
+                    "config_name": "special_dataset",
+                    "description": "Special dataset with its own citation",
+                    "dataset_type": "annotated_features",
+                    "citation": "Special dataset citation that overrides repo citation",
+                    "data_files": [{"path": "special.parquet"}],
+                    "dataset_info": {
+                        "features": [
+                            {"name": "id", "dtype": "string", "description": "ID"}
+                        ]
+                    },
+                },
+                {
+                    "config_name": "normal_dataset",
+                    "description": "Normal dataset without citation",
+                    "dataset_type": "annotated_features",
+                    "data_files": [{"path": "normal.parquet"}],
+                    "dataset_info": {
+                        "features": [
+                            {"name": "id", "dtype": "string", "description": "ID"}
+                        ]
+                    },
+                },
+            ],
+        }
+
+        mock_fetcher_instance = Mock()
+        mock_card_fetcher.return_value = mock_fetcher_instance
+        mock_fetcher_instance.fetch.return_value = card_data
+
+        datacard = DataCard(test_repo_id)
+
+        # Repository-level citation
+        repo_citation = datacard.get_citation()
+        assert repo_citation == "Repository citation for all datasets"
+
+        # Dataset with specific citation should override repository
+        special_citation = datacard.get_citation("special_dataset")
+        assert (
+            special_citation == "Special dataset citation that overrides repo citation"
+        )
+
+        # Dataset without specific citation should fall back to repository
+        normal_citation = datacard.get_citation("normal_dataset")
+        assert normal_citation == "Repository citation for all datasets"
+
+    @patch("labretriever.datacard.HfDataCardFetcher")
+    @patch("labretriever.datacard.HfRepoStructureFetcher")
+    @patch("labretriever.datacard.HfSizeInfoFetcher")
+    def test_no_citation_returns_none(
+        self,
+        mock_size_fetcher,
+        mock_structure_fetcher,
+        mock_card_fetcher,
+        test_repo_id,
+    ):
+        """Test that None is returned when no citation is defined at any level."""
+        card_data = {
+            "configs": [
+                {
+                    "config_name": "test_config",
+                    "description": "Test config",
+                    "dataset_type": "annotated_features",
+                    "data_files": [{"path": "data.parquet"}],
+                    "dataset_info": {
+                        "features": [
+                            {"name": "id", "dtype": "string", "description": "ID"}
+                        ]
+                    },
+                }
+            ],
+        }
+
+        mock_fetcher_instance = Mock()
+        mock_card_fetcher.return_value = mock_fetcher_instance
+        mock_fetcher_instance.fetch.return_value = card_data
+
+        datacard = DataCard(test_repo_id)
+
+        # No citation at any level should return None
+        repo_citation = datacard.get_citation()
+        assert repo_citation is None
+
+        dataset_citation = datacard.get_citation("test_config")
+        assert dataset_citation is None
+
+    @patch("labretriever.datacard.HfDataCardFetcher")
+    @patch("labretriever.datacard.HfRepoStructureFetcher")
+    @patch("labretriever.datacard.HfSizeInfoFetcher")
+    def test_unknown_config_raises_error(
+        self,
+        mock_size_fetcher,
+        mock_structure_fetcher,
+        mock_card_fetcher,
+        test_repo_id,
+        sample_dataset_card_data,
+    ):
+        """Test that unknown config name raises DataCardError."""
+        mock_fetcher_instance = Mock()
+        mock_card_fetcher.return_value = mock_fetcher_instance
+        mock_fetcher_instance.fetch.return_value = sample_dataset_card_data
+
+        datacard = DataCard(test_repo_id)
+
+        with pytest.raises(
+            DataCardError, match="Configuration 'nonexistent' not found"
+        ):
+            datacard.get_citation("nonexistent")

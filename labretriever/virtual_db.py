@@ -645,6 +645,26 @@ class VirtualDB:
         cfg = card.get_config(config_name)
         return cfg.description if cfg is not None else None
 
+    def get_citation(self, db_name: str) -> str | None:
+        """
+        Return the citation for a dataset.
+
+        The dataset-level citation takes precedence over the repository-level
+        citation. If neither is defined, returns ``None``.
+
+        :param db_name: Dataset name as registered in the VirtualDB config.
+        :returns: Citation string, or ``None`` if no citation is defined.
+        :rtype: str | None
+
+        """
+        if db_name not in self.db_name_map:
+            return None
+        repo_id, config_name = self.db_name_map[db_name]
+        card = self.datacards.get(repo_id)
+        if card is None:
+            return None
+        return card.get_citation(config_name)
+
     # ------------------------------------------------------------------
     # Initialisation phases
     # ------------------------------------------------------------------
