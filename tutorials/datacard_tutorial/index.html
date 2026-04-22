@@ -716,10 +716,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#7-citations" class="md-nav__link">
+  <a href="#7-doi-and-citation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        7. Citations
+        7. DOI and Citation
       
     </span>
   </a>
@@ -1564,10 +1564,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#7-citations" class="md-nav__link">
+  <a href="#7-doi-and-citation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        7. Citations
+        7. DOI and Citation
       
     </span>
   </a>
@@ -2561,18 +2561,19 @@ for cfg in repo_info["configs"]:
 repo_id             : BrentLab/harbison_2004
 pretty_name         : Harbison, 2004 ChIP-chip
 license             : mit
-citation            : https://doi.org/10.1038/nature02800
+doi                 : https://doi.org/10.1038/nature02800
+citation            : Harbison CT, Gordon DB, Lee TI, Rinaldi NJ, Macisaac KD, et al. 2004. Transcriptional regulatory code of a eukaryotic genome. Nature.
 tags                : ['genomics', 'yeast', 'transcription', 'binding']
 language            : ['en']
 size_categories     : ['1M&lt;n&lt;10M']
 num_configs         : 1
 total_files         : 7
-last_modified       : 2026-04-20T14:31:25+00:00
+last_modified       : 2026-04-22T00:18:32+00:00
 has_default_config  : True
 
 Configurations:
   - harbison_2004: annotated_features (default)
-    ChIP-chip transcription factor binding data with environmental conditions
+    ChIP-chip data, primarily in standard YPD batch culture, but selected TFs were also tested in specific conditions where they were expected to be active.
 </pre>
 </div>
 </div>
@@ -2648,7 +2649,7 @@ Configuration details:
 • harbison_2004:
   Type: annotated_features
   Default: True
-  Description: ChIP-chip transcription factor binding data with environmental conditions
+  Description: ChIP-chip data, primarily in standard YPD batch culture, but selected TFs were also tested in specific conditions where they were expected to be active.
   Features: 7
 </pre>
 </div>
@@ -3370,12 +3371,14 @@ Field definitions available for: ['condition']
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="7-citations">7. Citations<a class="anchor-link" href="#7-citations">¶</a></h2><p>Datasets in labretriever can carry citation metadata at two levels:</p>
+<h2 id="7-doi-and-citation">7. DOI and Citation<a class="anchor-link" href="#7-doi-and-citation">¶</a></h2><p>Dataset cards carry publication metadata in two separate fields:</p>
 <ul>
-<li><strong>Repository-level</strong>: a single citation that applies to all configurations in the repository.</li>
-<li><strong>Dataset-level</strong>: a per-configuration citation that overrides the repository-level citation when present.</li>
+<li><strong><code>doi</code></strong>: a URL or DOI string pointing to the primary publication.</li>
+<li><strong><code>citation</code></strong>: a full bibliographic citation string.</li>
 </ul>
-<p><code>get_citation()</code> with no argument returns the repository-level citation. Passing a configuration name returns the dataset-level citation if one is defined, falling back to the repository-level citation otherwise.</p>
+<p>Both are available at the repository level and can be overridden at the individual
+config level. <code>card.info()</code> returns both fields. <code>get_citation()</code> handles the
+config-level fallback to repository-level automatically.</p>
 </div>
 </div>
 </div>
@@ -3398,15 +3401,15 @@ Field definitions available for: ['condition']
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Repository-level citation (applies to all configurations)</span>
-<span class="n">repo_citation</span> <span class="o">=</span> <span class="n">card</span><span class="o">.</span><span class="n">get_citation</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Repository citation:"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">repo_citation</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Repository-level doi and citation from info()</span>
+<span class="n">repo_info</span> <span class="o">=</span> <span class="n">card</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"DOI:     "</span><span class="p">,</span> <span class="n">repo_info</span><span class="p">[</span><span class="s2">"doi"</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Citation:"</span><span class="p">,</span> <span class="n">repo_info</span><span class="p">[</span><span class="s2">"citation"</span><span class="p">])</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-13"># Repository-level citation (applies to all configurations)
-repo_citation = card.get_citation()
-print("Repository citation:")
-print(repo_citation)</div>
+<div class="clipboard-copy-txt" id="cell-13"># Repository-level doi and citation from info()
+repo_info = card.info()
+print("DOI:     ", repo_info["doi"])
+print("Citation:", repo_info["citation"])</div>
 </div>
 </div>
 </div>
@@ -3418,8 +3421,8 @@ print(repo_citation)</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Repository citation:
-https://doi.org/10.1038/nature02800
+<pre>DOI:      https://doi.org/10.1038/nature02800
+Citation: Harbison CT, Gordon DB, Lee TI, Rinaldi NJ, Macisaac KD, et al. 2004. Transcriptional regulatory code of a eukaryotic genome. Nature.
 </pre>
 </div>
 </div>
@@ -3445,17 +3448,17 @@ https://doi.org/10.1038/nature02800
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Dataset-level citation for a specific configuration.</span>
-<span class="c1"># If no dataset-level citation is defined, falls back to the repository-level citation.</span>
-<span class="n">dataset_citation</span> <span class="o">=</span> <span class="n">card</span><span class="o">.</span><span class="n">get_citation</span><span class="p">(</span><span class="s1">'harbison_2004'</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Dataset citation (harbison_2004):"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">dataset_citation</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Dataset-level doi and citation from info(config_name)</span>
+<span class="c1"># Falls back to repository-level when no config-level value is defined.</span>
+<span class="n">dataset_info</span> <span class="o">=</span> <span class="n">card</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"harbison_2004"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"DOI:     "</span><span class="p">,</span> <span class="n">dataset_info</span><span class="p">[</span><span class="s2">"doi"</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Citation:"</span><span class="p">,</span> <span class="n">dataset_info</span><span class="p">[</span><span class="s2">"citation"</span><span class="p">])</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-14"># Dataset-level citation for a specific configuration.
-# If no dataset-level citation is defined, falls back to the repository-level citation.
-dataset_citation = card.get_citation('harbison_2004')
-print("Dataset citation (harbison_2004):")
-print(dataset_citation)</div>
+<div class="clipboard-copy-txt" id="cell-14"># Dataset-level doi and citation from info(config_name)
+# Falls back to repository-level when no config-level value is defined.
+dataset_info = card.info("harbison_2004")
+print("DOI:     ", dataset_info["doi"])
+print("Citation:", dataset_info["citation"])</div>
 </div>
 </div>
 </div>
@@ -3467,8 +3470,8 @@ print(dataset_citation)</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Dataset citation (harbison_2004):
-https://doi.org/10.1038/nature02800
+<pre>DOI:      https://doi.org/10.1038/nature02800
+Citation: Harbison CT, Gordon DB, Lee TI, Rinaldi NJ, Macisaac KD, et al. 2004. Transcriptional regulatory code of a eukaryotic genome. Nature.
 </pre>
 </div>
 </div>

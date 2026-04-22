@@ -864,10 +864,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#citations" class="md-nav__link">
+  <a href="#dataset-metadata-doi-citation-and-description" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Citations
+        Dataset Metadata: DOI, Citation, and Description
       
     </span>
   </a>
@@ -1618,10 +1618,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#citations" class="md-nav__link">
+  <a href="#dataset-metadata-doi-citation-and-description" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Citations
+        Dataset Metadata: DOI, Citation, and Description
       
     </span>
   </a>
@@ -2486,7 +2486,7 @@ datasets for use with <code>VirtualDB</code>.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [1]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [72]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-1">
@@ -2508,6 +2508,7 @@ datasets for use with <code>VirtualDB</code>.</p>
 <span class="s2">      organism: yeast</span>
 <span class="s2">    dataset:</span>
 <span class="s2">      harbison_2004:</span>
+<span class="s2">        description: locally overwritten harbison 2004 description</span>
 <span class="s2">        db_name: harbison</span>
 <span class="s2">        sample_id:</span>
 <span class="s2">          field: sample_id</span>
@@ -2612,6 +2613,7 @@ repositories:
       organism: yeast
     dataset:
       harbison_2004:
+        description: locally overwritten harbison 2004 description
         db_name: harbison
         sample_id:
           field: sample_id
@@ -2717,7 +2719,7 @@ print(f"Config saved to: {temp_config}")</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Config saved to: /tmp/tmp2k9hi3gb/vdb_config.yaml
+<pre>Config saved to: /tmp/tmpnvjo7et9/vdb_config.yaml
 </pre>
 </div>
 </div>
@@ -2742,7 +2744,7 @@ necessary data, and registers all views immediately.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [73]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-2">
@@ -2779,12 +2781,10 @@ print(repr(vdb))</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>/home/chase/code/labretriever/.venv/lib/python3.11/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
-  from .autonotebook import tqdm as notebook_tqdm
-Fetching 1 files: 100%|██████████| 1/1 [00:00&lt;00:00, 10155.70it/s]
-Fetching 1 files: 100%|██████████| 1/1 [00:00&lt;00:00, 8240.28it/s]
-Fetching 1 files: 100%|██████████| 1/1 [00:00&lt;00:00, 6502.80it/s]
-Fetching 36 files: 100%|██████████| 36/36 [00:00&lt;00:00, 10365.55it/s]
+<pre>Fetching 1 files: 100%|██████████| 1/1 [00:00&lt;00:00, 10951.19it/s]
+Fetching 1 files: 100%|██████████| 1/1 [00:00&lt;00:00, 14463.12it/s]
+Fetching 1 files: 100%|██████████| 1/1 [00:00&lt;00:00, 22192.08it/s]
+Fetching 36 files: 100%|██████████| 36/36 [00:00&lt;00:00, 10641.69it/s]
 Key 'carbon_source' not found at path 'media.carbon_source' (current keys: ['name'])
 Key 'carbon_source' not found at path 'media.carbon_source' (current keys: ['name'])
 Key 'carbon_source' not found at path 'media.carbon_source' (current keys: ['name'])
@@ -2831,7 +2831,7 @@ Key 'temperature_celsius' not found at path 'temperature_celsius' (current keys:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [74]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-3">
@@ -2896,7 +2896,7 @@ any dataset.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [75]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-4">
@@ -2982,7 +2982,7 @@ including derived columns from config property mappings (e.g., <code>carbon_sour
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [76]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-5">
@@ -3035,7 +3035,7 @@ for name in vdb.tables():
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [77]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-6">
@@ -3064,7 +3064,7 @@ vdb.describe("harbison_meta")</div>
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[6]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[77]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div>
 <style scoped="">
@@ -3168,7 +3168,7 @@ vdb.describe("harbison_meta")</div>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [78]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-7">
@@ -3195,7 +3195,7 @@ vdb.describe("harbison")</div>
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[7]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[78]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div>
 <style scoped="">
@@ -3349,7 +3349,7 @@ vdb.describe("harbison")</div>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [79]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-8">
@@ -3414,7 +3414,7 @@ should be filtered together.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [80]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-9">
@@ -3471,7 +3471,7 @@ kemmeren: 'variable_in_wt' links ['carbon_source', 'temperature_celsius']
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>/tmp/ipykernel_69931/1092681254.py:6: DeprecationWarning: get_condition_field_info is deprecated; use get_column_metadata instead.
+<pre>/tmp/ipykernel_2767185/1092681254.py:6: DeprecationWarning: get_condition_field_info is deprecated; use get_column_metadata instead.
   info = vdb.get_condition_field_info(dataset)
 </pre>
 </div>
@@ -3504,7 +3504,7 @@ from kemmeren. Without <code>missing_value_labels</code>, kemmeren would have no
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [81]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-10">
@@ -3644,8 +3644,8 @@ p.unlink(missing_ok=True)
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>Fetching 1 files: 100%|██████████| 1/1 [00:00&lt;00:00, 11244.78it/s]
-Fetching 1 files: 100%|██████████| 1/1 [00:00&lt;00:00, 7219.11it/s]
+<pre>Fetching 1 files: 100%|██████████| 1/1 [00:00&lt;00:00, 24528.09it/s]
+Fetching 1 files: 100%|██████████| 1/1 [00:00&lt;00:00, 8594.89it/s]
 Key 'carbon_source' not found at path 'media.carbon_source' (current keys: ['name'])
 Key 'carbon_source' not found at path 'media.carbon_source' (current keys: ['name'])
 Key 'carbon_source' not found at path 'media.carbon_source' (current keys: ['name'])
@@ -3658,9 +3658,9 @@ Key 'carbon_source' not found at path 'media.carbon_source' (current keys: ['nam
 <pre>harbison2 carbon_source values:
   carbon_source
 0   D-galactose
-1   D-raffinose
+1   unspecified
 2       glucose
-3   unspecified
+3   D-raffinose
 
 kemmeren2 carbon_source values:
   carbon_source
@@ -3700,7 +3700,7 @@ arguments.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [82]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-11">
@@ -3733,7 +3733,7 @@ df_meta</div>
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[11]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[82]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div>
 <style scoped="">
@@ -3764,47 +3764,47 @@ df_meta</div>
 <tbody>
 <tr>
 <th>0</th>
-<td>136</td>
-<td>YPD</td>
-<td>YGR040W</td>
-<td>KSS1</td>
+<td>248</td>
+<td>BUT14</td>
+<td>YMR016C</td>
+<td>SOK2</td>
 <td>glucose</td>
 <td>37.0</td>
 </tr>
 <tr>
 <th>1</th>
-<td>94</td>
-<td>YPD</td>
-<td>YER130C</td>
-<td>COM2</td>
+<td>50</td>
+<td>H2O2Lo</td>
+<td>YDR043C</td>
+<td>NRG1</td>
 <td>glucose</td>
 <td>37.0</td>
 </tr>
 <tr>
 <th>2</th>
-<td>293</td>
-<td>H2O2Lo</td>
-<td>YOL028C</td>
-<td>YAP7</td>
+<td>92</td>
+<td>YPD</td>
+<td>YER088C</td>
+<td>DOT6</td>
 <td>glucose</td>
 <td>37.0</td>
 </tr>
 <tr>
 <th>3</th>
-<td>325</td>
-<td>YPD</td>
-<td>YPL075W</td>
-<td>GCR1</td>
+<td>251</td>
+<td>H2O2Hi</td>
+<td>YMR021C</td>
+<td>MAC1</td>
 <td>glucose</td>
 <td>37.0</td>
 </tr>
 <tr>
 <th>4</th>
-<td>80</td>
-<td>YPD</td>
-<td>YDR520C</td>
-<td>URC2</td>
-<td>glucose</td>
+<td>184</td>
+<td>SM</td>
+<td>YJR060W</td>
+<td>CBF1</td>
+<td>unspecified</td>
 <td>37.0</td>
 </tr>
 </tbody>
@@ -3833,7 +3833,7 @@ DuckDB's <code>$name</code> syntax.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [12]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [83]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-12">
@@ -3872,7 +3872,7 @@ vdb.query(
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[12]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[83]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div>
 <style scoped="">
@@ -3908,71 +3908,71 @@ vdb.query(
 <tbody>
 <tr>
 <th>0</th>
-<td>15</td>
-<td>14.0</td>
+<td>14</td>
+<td>13.0</td>
 <td>YBR049C</td>
 <td>REB1</td>
-<td>YPD</td>
+<td>H2O2Lo</td>
 <td>YPR204W</td>
 <td>YPR204W</td>
-<td>0.852889</td>
-<td>0.769430</td>
+<td>0.784496</td>
+<td>0.535665</td>
 <td>glucose</td>
 <td>37.0</td>
 </tr>
 <tr>
 <th>1</th>
-<td>15</td>
-<td>14.0</td>
+<td>14</td>
+<td>13.0</td>
 <td>YBR049C</td>
 <td>REB1</td>
-<td>YPD</td>
+<td>H2O2Lo</td>
 <td>YPR203W</td>
 <td>YPR203W</td>
-<td>1.249003</td>
-<td>0.112376</td>
+<td>1.450915</td>
+<td>0.959556</td>
 <td>glucose</td>
 <td>37.0</td>
 </tr>
 <tr>
 <th>2</th>
-<td>15</td>
-<td>14.0</td>
+<td>14</td>
+<td>13.0</td>
 <td>YBR049C</td>
 <td>REB1</td>
-<td>YPD</td>
+<td>H2O2Lo</td>
 <td>YPR202W</td>
 <td>YPR202W</td>
-<td>1.249003</td>
-<td>0.112376</td>
+<td>1.450915</td>
+<td>0.959556</td>
 <td>glucose</td>
 <td>37.0</td>
 </tr>
 <tr>
 <th>3</th>
-<td>15</td>
-<td>14.0</td>
+<td>14</td>
+<td>13.0</td>
 <td>YBR049C</td>
 <td>REB1</td>
-<td>YPD</td>
+<td>H2O2Lo</td>
 <td>YPR201W</td>
 <td>ARR3</td>
-<td>1.513707</td>
-<td>0.168133</td>
+<td>0.925863</td>
+<td>0.453672</td>
 <td>glucose</td>
 <td>37.0</td>
 </tr>
 <tr>
 <th>4</th>
-<td>15</td>
-<td>14.0</td>
+<td>14</td>
+<td>13.0</td>
 <td>YBR049C</td>
 <td>REB1</td>
-<td>YPD</td>
+<td>H2O2Lo</td>
 <td>YPR200C</td>
 <td>ARR2</td>
-<td>1.513707</td>
-<td>0.168133</td>
+<td>0.925863</td>
+<td>0.453672</td>
 <td>glucose</td>
 <td>37.0</td>
 </tr>
@@ -4002,7 +4002,7 @@ Then call it by name via <code>query()</code>.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [13]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [84]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-13">
@@ -4051,7 +4051,7 @@ vdb.query("glucose_regs", cs="glucose", min_n=2)</div>
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[13]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[84]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div>
 <style scoped="">
@@ -4088,17 +4088,17 @@ vdb.query("glucose_regs", cs="glucose", min_n=2)</div>
 </tr>
 <tr>
 <th>2</th>
-<td>DIG1</td>
+<td>RTG3</td>
 <td>4</td>
 </tr>
 <tr>
 <th>3</th>
-<td>HSF1</td>
+<td>STE12</td>
 <td>4</td>
 </tr>
 <tr>
 <th>4</th>
-<td>STE12</td>
+<td>DIG1</td>
 <td>4</td>
 </tr>
 <tr>
@@ -4108,27 +4108,27 @@ vdb.query("glucose_regs", cs="glucose", min_n=2)</div>
 </tr>
 <tr>
 <th>58</th>
-<td>HAP4</td>
+<td>MAC1</td>
 <td>2</td>
 </tr>
 <tr>
 <th>59</th>
-<td>YAP3</td>
+<td>UME6</td>
 <td>2</td>
 </tr>
 <tr>
 <th>60</th>
-<td>GLN3</td>
+<td>YAP5</td>
 <td>2</td>
 </tr>
 <tr>
 <th>61</th>
-<td>DAL81</td>
+<td>GCN4</td>
 <td>2</td>
 </tr>
 <tr>
 <th>62</th>
-<td>MGA1</td>
+<td>XBP1</td>
 <td>2</td>
 </tr>
 </tbody>
@@ -4165,7 +4165,7 @@ parsing composite IDs.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [14]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [85]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-14">
@@ -4192,7 +4192,7 @@ vdb.query("SELECT * FROM dto_expanded LIMIT 3")</div>
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[14]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[85]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div>
 <style scoped="">
@@ -4298,7 +4298,7 @@ vdb.query("SELECT * FROM dto_expanded LIMIT 3")</div>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [15]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [86]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-15">
@@ -4343,7 +4343,7 @@ vdb.query("""
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[15]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[86]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div>
 <style scoped="">
@@ -4376,113 +4376,113 @@ vdb.query("""
 <tbody>
 <tr>
 <th>0</th>
-<td>7</td>
-<td>H2O2Hi</td>
-<td>YBL103C</td>
-<td>RTG3</td>
+<td>185</td>
+<td>YPD</td>
+<td>YJR060W</td>
+<td>CBF1</td>
 <td>glucose</td>
 <td>37.0</td>
 <td>0.0</td>
-<td>0.260226</td>
+<td>0.172777</td>
 </tr>
 <tr>
 <th>1</th>
-<td>317</td>
+<td>325</td>
 <td>YPD</td>
-<td>YOR372C</td>
-<td>NDD1</td>
+<td>YPL075W</td>
+<td>GCR1</td>
 <td>glucose</td>
 <td>37.0</td>
 <td>0.0</td>
-<td>0.015880</td>
+<td>0.053818</td>
 </tr>
 <tr>
 <th>2</th>
-<td>273</td>
+<td>342</td>
 <td>H2O2Hi</td>
+<td>YPR065W</td>
+<td>ROX1</td>
+<td>glucose</td>
+<td>37.0</td>
+<td>0.0</td>
+<td>0.225431</td>
+</tr>
+<tr>
+<th>3</th>
+<td>13</td>
+<td>H2O2Hi</td>
+<td>YBR049C</td>
+<td>REB1</td>
+<td>glucose</td>
+<td>37.0</td>
+<td>0.0</td>
+<td>0.087161</td>
+</tr>
+<tr>
+<th>4</th>
+<td>225</td>
+<td>YPD</td>
+<td>YLR176C</td>
+<td>RFX1</td>
+<td>glucose</td>
+<td>37.0</td>
+<td>0.0</td>
+<td>0.018598</td>
+</tr>
+<tr>
+<th>5</th>
+<td>253</td>
+<td>Acid</td>
+<td>YMR037C</td>
+<td>MSN2</td>
+<td>glucose</td>
+<td>37.0</td>
+<td>0.0</td>
+<td>0.246422</td>
+</tr>
+<tr>
+<th>6</th>
+<td>274</td>
+<td>H2O2Lo</td>
 <td>YNL068C</td>
 <td>FKH2</td>
 <td>glucose</td>
 <td>37.0</td>
 <td>0.0</td>
-<td>0.139295</td>
-</tr>
-<tr>
-<th>3</th>
-<td>17</td>
-<td>BUT14</td>
-<td>YBR083W</td>
-<td>TEC1</td>
-<td>glucose</td>
-<td>37.0</td>
-<td>0.0</td>
-<td>0.094389</td>
-</tr>
-<tr>
-<th>4</th>
-<td>317</td>
-<td>YPD</td>
-<td>YOR372C</td>
-<td>NDD1</td>
-<td>glucose</td>
-<td>37.0</td>
-<td>0.0</td>
-<td>0.024633</td>
-</tr>
-<tr>
-<th>5</th>
-<td>261</td>
-<td>Alpha</td>
-<td>YMR043W</td>
-<td>MCM1</td>
-<td>glucose</td>
-<td>37.0</td>
-<td>0.0</td>
-<td>0.018293</td>
-</tr>
-<tr>
-<th>6</th>
-<td>308</td>
-<td>YPD</td>
-<td>YOR140W</td>
-<td>SFL1</td>
-<td>glucose</td>
-<td>37.0</td>
-<td>0.0</td>
-<td>0.027873</td>
+<td>0.101357</td>
 </tr>
 <tr>
 <th>7</th>
-<td>235</td>
-<td>SM</td>
-<td>YLR451W</td>
-<td>LEU3</td>
-<td>unspecified</td>
+<td>200</td>
+<td>YPD</td>
+<td>YKL043W</td>
+<td>PHD1</td>
+<td>glucose</td>
 <td>37.0</td>
 <td>0.0</td>
-<td>0.088086</td>
+<td>0.191958</td>
 </tr>
 <tr>
 <th>8</th>
-<td>301</td>
-<td>H2O2Hi</td>
-<td>YOR028C</td>
-<td>CIN5</td>
-<td>glucose</td>
+<td>86</td>
+<td>SM</td>
+<td>YER040W</td>
+<td>GLN3</td>
+<td>unspecified</td>
 <td>37.0</td>
 <td>0.0</td>
-<td>0.100408</td>
+<td>0.273712</td>
 </tr>
 <tr>
 <th>9</th>
-<td>261</td>
-<td>Alpha</td>
-<td>YMR043W</td>
-<td>MCM1</td>
+<td>185</td>
+<td>YPD</td>
+<td>YJR060W</td>
+<td>CBF1</td>
 <td>glucose</td>
 <td>37.0</td>
 <td>0.0</td>
-<td>0.054081</td>
+<td>0.126503</td>
 </tr>
 </tbody>
 </table>
@@ -4498,7 +4498,7 @@ vdb.query("""
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [16]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [87]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-16">
@@ -4553,7 +4553,7 @@ vdb.query("""
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[16]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[87]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div>
 <style scoped="">
@@ -4582,73 +4582,73 @@ vdb.query("""
 <tbody>
 <tr>
 <th>0</th>
-<td>118</td>
+<td>75</td>
+<td>CAD1</td>
+<td>0.0</td>
+<td>360</td>
+</tr>
+<tr>
+<th>1</th>
+<td>8</td>
+<td>RTG3</td>
+<td>0.0</td>
+<td>46</td>
+</tr>
+<tr>
+<th>2</th>
+<td>55</td>
+<td>SWI5</td>
+<td>0.0</td>
+<td>284</td>
+</tr>
+<tr>
+<th>3</th>
+<td>283</td>
+<td>RAP1</td>
+<td>0.0</td>
+<td>211</td>
+</tr>
+<tr>
+<th>4</th>
+<td>224</td>
+<td>ACE2</td>
+<td>0.0</td>
+<td>992</td>
+</tr>
+<tr>
+<th>5</th>
+<td>119</td>
 <td>HSF1</td>
 <td>0.0</td>
 <td>88</td>
 </tr>
 <tr>
-<th>1</th>
-<td>15</td>
-<td>REB1</td>
-<td>0.0</td>
-<td>100_242</td>
-</tr>
-<tr>
-<th>2</th>
-<td>31</td>
-<td>RPN4</td>
-<td>0.0</td>
-<td>229</td>
-</tr>
-<tr>
-<th>3</th>
-<td>162</td>
-<td>XBP1</td>
-<td>0.0</td>
-<td>741</td>
-</tr>
-<tr>
-<th>4</th>
-<td>303</td>
-<td>CIN5</td>
-<td>0.0</td>
-<td>1369</td>
-</tr>
-<tr>
-<th>5</th>
-<td>314</td>
-<td>HAP5</td>
-<td>0.0</td>
-<td>1488</td>
-</tr>
-<tr>
 <th>6</th>
-<td>36</td>
-<td>MBP1</td>
+<td>209</td>
+<td>HAP4</td>
 <td>0.0</td>
-<td>212</td>
+<td>875</td>
 </tr>
 <tr>
 <th>7</th>
-<td>240</td>
-<td>YAP1</td>
+<td>255</td>
+<td>MSN2</td>
 <td>0.0</td>
-<td>1092</td>
+<td>1125</td>
 </tr>
 <tr>
 <th>8</th>
-<td>330</td>
-<td>CUP9</td>
+<td>189</td>
+<td>HIR3</td>
 <td>0.0</td>
-<td>1551</td>
+<td>772</td>
 </tr>
 <tr>
 <th>9</th>
-<td>9</td>
-<td>RTG3</td>
+<td>284</td>
+<td>RAP1</td>
 <td>0.0</td>
-<td>48</td>
+<td>211</td>
 </tr>
 </tbody>
 </table>
@@ -4677,7 +4677,7 @@ regulators and design a query which returns only 1 sample per condition set.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [17]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [88]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-17">
@@ -4718,7 +4718,7 @@ vdb.query("""
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[17]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[88]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div>
 <style scoped="">
@@ -4749,7 +4749,7 @@ vdb.query("""
 <tr>
 <th>0</th>
 <td>SWI1</td>
-<td>10.0</td>
+<td>45.0</td>
 <td>ZEV</td>
 <td>P</td>
 <td>3</td>
@@ -4757,7 +4757,7 @@ vdb.query("""
 <tr>
 <th>1</th>
 <td>SWI1</td>
-<td>90.0</td>
+<td>20.0</td>
 <td>ZEV</td>
 <td>P</td>
 <td>3</td>
@@ -4765,7 +4765,7 @@ vdb.query("""
 <tr>
 <th>2</th>
 <td>SWI1</td>
-<td>20.0</td>
+<td>10.0</td>
 <td>ZEV</td>
 <td>P</td>
 <td>3</td>
@@ -4773,7 +4773,7 @@ vdb.query("""
 <tr>
 <th>3</th>
 <td>SWI1</td>
-<td>45.0</td>
+<td>5.0</td>
 <td>ZEV</td>
 <td>P</td>
 <td>3</td>
@@ -4781,7 +4781,7 @@ vdb.query("""
 <tr>
 <th>4</th>
 <td>SWI1</td>
-<td>15.0</td>
+<td>90.0</td>
 <td>ZEV</td>
 <td>P</td>
 <td>3</td>
@@ -4797,7 +4797,7 @@ vdb.query("""
 <tr>
 <th>6</th>
 <td>SWI1</td>
-<td>5.0</td>
+<td>15.0</td>
 <td>ZEV</td>
 <td>P</td>
 <td>3</td>
@@ -4813,7 +4813,7 @@ vdb.query("""
 <tr>
 <th>8</th>
 <td>RDS2</td>
-<td>30.0</td>
+<td>0.0</td>
 <td>ZEV</td>
 <td>P</td>
 <td>2</td>
@@ -4821,7 +4821,7 @@ vdb.query("""
 <tr>
 <th>9</th>
 <td>RDS2</td>
-<td>10.0</td>
+<td>90.0</td>
 <td>ZEV</td>
 <td>P</td>
 <td>2</td>
@@ -4829,21 +4829,37 @@ vdb.query("""
 <tr>
 <th>10</th>
 <td>MAC1</td>
-<td>5.0</td>
-<td>GEV</td>
-<td>P</td>
-<td>2</td>
-</tr>
-<tr>
-<th>11</th>
-<td>MAC1</td>
 <td>45.0</td>
 <td>GEV</td>
 <td>P</td>
 <td>2</td>
 </tr>
 <tr>
+<th>11</th>
+<td>GCN4</td>
+<td>0.0</td>
+<td>ZEV</td>
+<td>P</td>
+<td>2</td>
+</tr>
+<tr>
 <th>12</th>
+<td>GCN4</td>
+<td>15.0</td>
+<td>ZEV</td>
+<td>P</td>
+<td>2</td>
+</tr>
+<tr>
+<th>13</th>
+<td>RDS2</td>
+<td>45.0</td>
+<td>ZEV</td>
+<td>P</td>
+<td>2</td>
+</tr>
+<tr>
+<th>14</th>
 <td>RDS2</td>
 <td>20.0</td>
 <td>ZEV</td>
@@ -4851,39 +4867,15 @@ vdb.query("""
 <td>2</td>
 </tr>
 <tr>
-<th>13</th>
-<td>GCN4</td>
+<th>15</th>
+<td>RDS2</td>
 <td>15.0</td>
 <td>ZEV</td>
 <td>P</td>
 <td>2</td>
 </tr>
 <tr>
-<th>14</th>
-<td>MAC1</td>
-<td>15.0</td>
-<td>GEV</td>
-<td>P</td>
-<td>2</td>
-</tr>
-<tr>
-<th>15</th>
-<td>MAC1</td>
-<td>30.0</td>
-<td>GEV</td>
-<td>P</td>
-<td>2</td>
-</tr>
-<tr>
 <th>16</th>
-<td>MAC1</td>
-<td>90.0</td>
-<td>GEV</td>
-<td>P</td>
-<td>2</td>
-</tr>
-<tr>
-<th>17</th>
 <td>GCN4</td>
 <td>45.0</td>
 <td>ZEV</td>
@@ -4891,18 +4883,26 @@ vdb.query("""
 <td>2</td>
 </tr>
 <tr>
-<th>18</th>
+<th>17</th>
 <td>GCN4</td>
-<td>30.0</td>
+<td>90.0</td>
 <td>ZEV</td>
 <td>P</td>
 <td>2</td>
 </tr>
 <tr>
-<th>19</th>
+<th>18</th>
 <td>MAC1</td>
 <td>0.0</td>
 <td>GEV</td>
+<td>P</td>
+<td>2</td>
+</tr>
+<tr>
+<th>19</th>
+<td>GCN4</td>
+<td>30.0</td>
+<td>ZEV</td>
 <td>P</td>
 <td>2</td>
 </tr>
@@ -4916,48 +4916,48 @@ vdb.query("""
 </tr>
 <tr>
 <th>21</th>
-<td>GCN4</td>
-<td>0.0</td>
-<td>ZEV</td>
+<td>MAC1</td>
+<td>90.0</td>
+<td>GEV</td>
 <td>P</td>
 <td>2</td>
 </tr>
 <tr>
 <th>22</th>
 <td>RDS2</td>
-<td>15.0</td>
+<td>30.0</td>
 <td>ZEV</td>
 <td>P</td>
 <td>2</td>
 </tr>
 <tr>
 <th>23</th>
-<td>RDS2</td>
-<td>90.0</td>
-<td>ZEV</td>
+<td>MAC1</td>
+<td>5.0</td>
+<td>GEV</td>
 <td>P</td>
 <td>2</td>
 </tr>
 <tr>
 <th>24</th>
-<td>RDS2</td>
-<td>0.0</td>
-<td>ZEV</td>
+<td>MAC1</td>
+<td>15.0</td>
+<td>GEV</td>
 <td>P</td>
 <td>2</td>
 </tr>
 <tr>
 <th>25</th>
-<td>RDS2</td>
-<td>45.0</td>
-<td>ZEV</td>
+<td>MAC1</td>
+<td>30.0</td>
+<td>GEV</td>
 <td>P</td>
 <td>2</td>
 </tr>
 <tr>
 <th>26</th>
-<td>GCN4</td>
-<td>90.0</td>
+<td>RDS2</td>
+<td>10.0</td>
 <td>ZEV</td>
 <td>P</td>
 <td>2</td>
@@ -4976,7 +4976,7 @@ vdb.query("""
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [18]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [89]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-18">
@@ -5015,7 +5015,7 @@ vdb.query("""
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[18]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[89]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div>
 <style scoped="">
@@ -5101,7 +5101,7 @@ vdb.query("""
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [19]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [90]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-19">
@@ -5148,7 +5148,7 @@ print(replicated_hackett_regulators)</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>['GCN4', 'RDS2', 'MAC1', 'SWI1']
+<pre>['MAC1', 'GCN4', 'SWI1', 'RDS2']
 </pre>
 </div>
 </div>
@@ -5161,7 +5161,7 @@ print(replicated_hackett_regulators)</div>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [20]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [91]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-20">
@@ -5192,7 +5192,7 @@ print(replicated_hackett_regulators)</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>['GCN4', 'RDS2', 'MAC1', 'SWI1', 'GEV']
+<pre>['MAC1', 'GCN4', 'SWI1', 'RDS2', 'GEV']
 </pre>
 </div>
 </div>
@@ -5205,7 +5205,7 @@ print(replicated_hackett_regulators)</div>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [21]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [92]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-21">
@@ -5230,7 +5230,7 @@ print(replicated_hackett_regulators)</div>
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[21]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[92]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div>
 <style scoped="">
@@ -5481,7 +5481,7 @@ print(replicated_hackett_regulators)</div>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [22]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [93]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-22">
@@ -5551,47 +5551,54 @@ print(hackett_harbison_dto.head())</div>
 3        448             ACA1  15.0       ZEV   
 4        448             ACA1  15.0       ZEV   
 
-                                     binding_id  \
-0  BrentLab/callingcards;annotated_features;189   
-1       BrentLab/harbison_2004;harbison_2004;88   
-2  BrentLab/callingcards;annotated_features;156   
-3  BrentLab/callingcards;annotated_features;126   
-4  BrentLab/callingcards;annotated_features;146   
+                                          binding_id  \
+0  BrentLab/mahendrawada_2025;chec_mahendrawada_m...   
+1       BrentLab/callingcards;annotated_features;156   
+2       BrentLab/callingcards;annotated_features;803   
+3  BrentLab/mahendrawada_2025;chec_mahendrawada_m...   
+4        BrentLab/callingcards;2026_analysis_set;338   
 
                           perturbation_id  binding_rank_threshold  \
-0  BrentLab/hackett_2020;hackett_2020;448                   194.0   
-1  BrentLab/hackett_2020;hackett_2020;448                   122.0   
-2  BrentLab/hackett_2020;hackett_2020;448                   374.0   
-3  BrentLab/hackett_2020;hackett_2020;448                   437.0   
-4  BrentLab/hackett_2020;hackett_2020;448                    35.0   
+0  BrentLab/hackett_2020;hackett_2020;448                  3882.0   
+1  BrentLab/hackett_2020;hackett_2020;448                   296.0   
+2  BrentLab/hackett_2020;hackett_2020;448                   110.0   
+3  BrentLab/hackett_2020;hackett_2020;448                  1027.0   
+4  BrentLab/hackett_2020;hackett_2020;448                    50.0   
 
    perturbation_rank_threshold  binding_set_size  perturbation_set_size  \
-0                         19.0             194.0                   19.0   
-1                        218.0             122.0                  218.0   
-2                          1.0             376.0                 5591.0   
-3                          1.0             442.0                 5591.0   
-4                        407.0              35.0                  407.0   
+0                          1.0            3883.0                 5591.0   
+1                        346.0             297.0                  346.0   
+2                        346.0             113.0                  346.0   
+3                        417.0            1027.0                  417.0   
+4                        417.0              50.0                  417.0   
 
     dto_fdr  dto_empirical_pvalue pr_ranking_column  \
-0  0.037017                 0.000            log2fc   
-1  0.612736                 0.917            log2fc   
-2  0.000000                 1.000            pvalue   
-3  0.000000                 1.000            pvalue   
-4  0.116834                 0.000            log2fc   
+0  0.000000                 1.000            pvalue   
+1  0.277211                 0.000            log2fc   
+2  0.236207                 0.001            log2fc   
+3  0.180018                 0.000            log2fc   
+4  0.148370                 0.001            log2fc   
 
-              binding_repo_dataset  perturbation_repo_dataset binding_id_id  \
-0  callingcards-annotated_features  hackett_2020-hackett_2020           189   
-1      harbison_2004-harbison_2004  hackett_2020-hackett_2020            88   
-2  callingcards-annotated_features  hackett_2020-hackett_2020           156   
-3  callingcards-annotated_features  hackett_2020-hackett_2020           126   
-4  callingcards-annotated_features  hackett_2020-hackett_2020           146   
+                                binding_repo_dataset  \
+0  mahendrawada_2025-chec_mahendrawada_m2025_af_c...   
+1                    callingcards-annotated_features   
+2                    callingcards-annotated_features   
+3  mahendrawada_2025-chec_mahendrawada_m2025_af_c...   
+4                     callingcards-2026_analysis_set   
 
-                          binding_id_source perturbation_id_id  \
-0  BrentLab/callingcards;annotated_features                448   
-1                                  harbison                448   
-2  BrentLab/callingcards;annotated_features                448   
-3  BrentLab/callingcards;annotated_features                448   
-4  BrentLab/callingcards;annotated_features                448   
+   perturbation_repo_dataset binding_id_id  \
+0  hackett_2020-hackett_2020            59   
+1  hackett_2020-hackett_2020           156   
+2  hackett_2020-hackett_2020           803   
+3  hackett_2020-hackett_2020            59   
+4  hackett_2020-hackett_2020           338   
+
+                                   binding_id_source perturbation_id_id  \
+0  BrentLab/mahendrawada_2025;chec_mahendrawada_m...                448   
+1           BrentLab/callingcards;annotated_features                448   
+2           BrentLab/callingcards;annotated_features                448   
+3  BrentLab/mahendrawada_2025;chec_mahendrawada_m...                448   
+4            BrentLab/callingcards;2026_analysis_set                448   
 
   perturbation_id_source  
 0                hackett  
@@ -5612,9 +5619,16 @@ print(hackett_harbison_dto.head())</div>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="citations">Citations<a class="anchor-link" href="#citations">¶</a></h2><p>Citation metadata is defined in the HuggingFace dataset card YAML, not in the VirtualDB configuration file. <code>get_citation()</code> reads from the fetched DataCard, so it returns a value only when the upstream dataset card includes a <code>citation:</code> field.</p>
-<p>Citations follow the same override hierarchy as experimental conditions: a dataset-level citation (on a specific config) overrides a repository-level citation. <code>get_citation()</code> handles the fallback automatically.</p>
-<p>If the dataset card has no citation defined at either level, <code>get_citation()</code> returns <code>None</code>.</p>
+<h2 id="dataset-metadata-doi-citation-and-description">Dataset Metadata: DOI, Citation, and Description<a class="anchor-link" href="#dataset-metadata-doi-citation-and-description">¶</a></h2><p>Publication metadata is stored in the upstream HuggingFace dataset card as two
+separate fields: <code>doi</code> (a URL or DOI string) and <code>citation</code> (a full bibliographic
+string). Both follow the same override hierarchy — a config-level value takes
+precedence over a repository-level value.</p>
+<p><code>get_citation()</code> returns the citation string, falling back from config level to
+repository level automatically. The DOI is accessible via <code>card.info()</code> on the
+underlying DataCard (see the DataCard tutorial).</p>
+<p><code>get_dataset_description()</code> returns the human-readable description for a dataset.
+The VirtualDB config can supply a <code>description</code> field on any dataset entry to
+override the DataCard description; otherwise the DataCard description is used.</p>
 </div>
 </div>
 </div>
@@ -5624,7 +5638,7 @@ print(hackett_harbison_dto.head())</div>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [23]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [94]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-23">
@@ -5637,17 +5651,31 @@ print(hackett_harbison_dto.head())</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Retrieve the citation for each dataset.</span>
-<span class="c1"># Returns None when no citation field is present in the upstream DataCard.</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Citation for each dataset (None when the dataset card has no citation field)</span>
 <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="n">vdb</span><span class="o">.</span><span class="n">get_datasets</span><span class="p">():</span>
     <span class="n">citation</span> <span class="o">=</span> <span class="n">vdb</span><span class="o">.</span><span class="n">get_citation</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">ds</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">citation</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># Description for each dataset</span>
+<span class="c1"># Returns the VirtualDB config description if set, otherwise the DataCard description</span>
+<span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="n">vdb</span><span class="o">.</span><span class="n">get_datasets</span><span class="p">():</span>
+    <span class="n">desc</span> <span class="o">=</span> <span class="n">vdb</span><span class="o">.</span><span class="n">get_dataset_description</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">ds</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">desc</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-23"># Retrieve the citation for each dataset.
-# Returns None when no citation field is present in the upstream DataCard.
+<div class="clipboard-copy-txt" id="cell-23"># Citation for each dataset (None when the dataset card has no citation field)
 for ds in vdb.get_datasets():
     citation = vdb.get_citation(ds)
-    print(f"{ds}: {citation}")</div>
+    print(f"{ds}: {citation}")
+
+print()
+
+# Description for each dataset
+# Returns the VirtualDB config description if set, otherwise the DataCard description
+for ds in vdb.get_datasets():
+    desc = vdb.get_dataset_description(ds)
+    print(f"{ds}: {desc}")</div>
 </div>
 </div>
 </div>
@@ -5660,9 +5688,14 @@ for ds in vdb.get_datasets():
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>dto: None
-hackett: https://doi.org/10.15252/msb.20199174
-harbison: https://doi.org/10.1038/nature02800
+hackett: Hackett, SR, Baltz, EA, Coram, M, Wranik, BJ, Kim, et al. 2020. Learning causal networks using inducible transcription factors and transcriptome-wide time series. Molecular Systems Biology.
+harbison: Harbison CT, Gordon DB, Lee TI, Rinaldi NJ, Macisaac KD, et al. 2004. Transcriptional regulatory code of a eukaryotic genome. Nature.
 kemmeren: https://doi.org/10.1016/j.cell.2014.02.054
+
+dto: Direct target overlap analysis results comparing transcription factor binding experiments with gene expression perturbation experiments. The dataset is partitioned by binding dataset and perturbation dataset, allowing efficient queries for specific binding-perturbation comparisons.
+hackett: Microarray expression data comparing cells without estradiol inducer, which express a TF at a very low level and post-induction, which express the TF at a high level by 15-30 minutes post induction. Contains many time points. Cells were grown in minimal medium with glucose in continuous-flow chemostats. In most experiments growth was limited by phosphate limitation.
+harbison: locally overwritten harbison 2004 description
+kemmeren: Transcriptional regulator overexpression perturbation data with differential expression measurements
 </pre>
 </div>
 </div>
@@ -5675,7 +5708,7 @@ kemmeren: https://doi.org/10.1016/j.cell.2014.02.054
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [24]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [95]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-24">
