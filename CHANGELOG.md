@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.3.0] - 2026-04-21
+
+### Added
+
+- `doi` field on `DatasetConfig` (dataset-level) and `DatasetCard`
+  (repository-level) models. Stores a DOI URL for the primary publication,
+  separate from the `citation` text field. Dataset-level value overrides
+  repository-level when present.
+- `DataCard.info()` now includes a `doi` key at both the repository and
+  dataset levels.
+- `description` field on `DatasetVirtualDBConfig`. When set in the VirtualDB
+  YAML configuration, overrides the DataCard config description returned by
+  `VirtualDB.get_dataset_description(db_name)`.
+
+### Changed
+
+- `VirtualDB.get_dataset_description(db_name)` now checks the VirtualDB config
+  `description` field first, falling back to the DataCard config description.
+- HuggingFace dataset card convention: the `citation` YAML field now holds the
+  full bibliographic text; the DOI URL is stored separately under `doi`.
+
 ## [0.2.0] - 2026-04-20
 
 ### Added

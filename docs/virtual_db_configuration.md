@@ -211,6 +211,31 @@ After view registration, `hackett_meta` will contain:
 - `time` -- ENUM column, queryable as `WHERE time = '45'`
 - `time_orig` -- original numeric column
 
+## Dataset Description Override
+
+Each dataset entry can include an optional `description` field that overrides the
+description stored in the DataCard for that dataset. This is useful when the DataCard
+description is too terse, written for a different audience, or when you want to add
+VirtualDB-specific context.
+
+```yaml
+repositories:
+  BrentLab/harbison_2004:
+    dataset:
+      harbison_2004:
+        db_name: harbison
+        description: >-
+          ChIP-chip binding data for 204 transcription factors, primarily in
+          standard YPD medium. Use this dataset to query regulator-target binding
+          associations with p-value and effect-size columns.
+        sample_id:
+          field: sample_id
+```
+
+When present, `description` takes precedence over the DataCard config description
+in `vdb.get_dataset_description(db_name)`. When absent, the DataCard description is
+used as the fallback.
+
 ## Tags
 
 Tags are arbitrary string key/value pairs for annotating datasets. They follow

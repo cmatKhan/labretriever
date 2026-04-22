@@ -464,11 +464,11 @@ class DataCard:
         :param config_name: Optional configuration name. If None, returns
             repository-level info. If provided, returns dataset-level info.
         :return: Dict of metadata fields. Repository-level keys: ``repo_id``,
-            ``pretty_name``, ``license``, ``citation``, ``tags``, ``language``,
-            ``size_categories``, ``num_configs``, ``total_files``,
+            ``pretty_name``, ``license``, ``doi``, ``citation``, ``tags``,
+            ``language``, ``size_categories``, ``num_configs``, ``total_files``,
             ``last_modified``, ``has_default_config``, ``configs``.
             Dataset-level keys: ``config_name``, ``description``,
-            ``dataset_type``, ``default``, ``citation``, ``features``,
+            ``dataset_type``, ``default``, ``doi``, ``citation``, ``features``,
             ``experimental_conditions``, ``metadata_schema``.
         :raises DataCardError: If ``config_name`` is provided but not found.
 
@@ -493,6 +493,7 @@ class DataCard:
             "repo_id": self.repo_id,
             "pretty_name": card.pretty_name,
             "license": card.license,
+            "doi": card.doi,
             "citation": card.citation,
             "tags": card.tags,
             "language": card.language,
@@ -523,6 +524,7 @@ class DataCard:
             "description": config.description,
             "dataset_type": config.dataset_type.value,
             "default": config.default,
+            "doi": config.doi if config.doi is not None else self.dataset_card.doi,
             "citation": self.get_citation(config_name),
             "features": [
                 {

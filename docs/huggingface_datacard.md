@@ -154,27 +154,32 @@ configs:
         role: quantitative_measure
 ```
 
-## Citation
+## Citation and DOI
 
-Citation information can be specified at two levels with dataset-level overriding repository-level, similar to experimental conditions:
+Publication metadata is split into two separate fields, each usable at the repository
+level or overridden at the individual dataset config level:
 
-1. **Repository-level** `citation`: A citation that applies to all datasets in the repository.
-   Use when all datasets in the repository come from the same publication or source.
-2. **Dataset-level** `citation`: A citation specific to an individual dataset configuration.
-   Use when different datasets within the same repository come from different publications.
+- **`doi`**: A URL or DOI string pointing to the primary publication. Use the full
+  DOI URL (e.g., `https://doi.org/10.1038/nature02800`) rather than the short form.
+- **`citation`**: A full bibliographic citation string for the publication. Include
+  enough detail for a reader to locate the original work.
 
-The dataset-level citation takes precedence over the repository-level citation, allowing for flexibility when repositories contain datasets from multiple sources.
+Both fields follow the same precedence rule: the dataset-level value overrides the
+repository-level value when present.
 
 **Example:**
 ```yaml
-# Repository-level citation (applies to all datasets unless overridden)
-citation: "Harbison CT, et al. Transcriptional regulatory code of a eukaryotic genome. Nature. 2004;431(7004):99-104."
+# Repository-level fields (apply to all datasets unless overridden)
+doi: https://doi.org/10.1038/nature02800
+citation: >-
+  Harbison CT, Gordon DB, Lee TI, Rinaldi NJ, Macisaac KD, et al. 2004.
+  Transcriptional regulatory code of a eukaryotic genome. Nature 431:99-104.
 
 configs:
 - config_name: harbison_2004
   description: ChIP-chip binding data from Harbison et al. 2004
   dataset_type: annotated_features
-  # Uses repository-level citation since no dataset-specific citation provided
+  # Uses repository-level doi and citation since none specified here
   data_files:
     - split: train
       path: harbison_data.parquet
@@ -184,8 +189,9 @@ configs:
 - config_name: reprocessed_binding
   description: Reprocessed version using updated analysis pipeline
   dataset_type: annotated_features
-  # Dataset-specific citation overrides repository-level
-  citation: "Smith J, et al. Reanalysis of Harbison ChIP-chip data with improved methods. Bioinformatics. 2023;39(10):1234-1245."
+  # Dataset-specific fields override repository-level
+  doi: https://doi.org/10.1093/bioinformatics/example
+  citation: "Smith J, et al. Reanalysis of Harbison ChIP-chip data. Bioinformatics. 2023."
   data_files:
     - split: train
       path: reprocessed_data.parquet

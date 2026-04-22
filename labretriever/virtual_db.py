@@ -628,17 +628,26 @@ class VirtualDB:
 
     def get_dataset_description(self, db_name: str) -> str | None:
         """
-        Return the DataCard config description for a dataset.
+        Return the description for a dataset.
+
+        The VirtualDB config ``description`` field takes precedence over the
+        DataCard config description. Returns ``None`` if neither is defined.
 
         :param db_name: Dataset name as registered in the VirtualDB config.
-        :returns: Description string from the DataCard config, or ``None``
-            if not found.
+        :returns: Description string, or ``None`` if not found.
         :rtype: str | None
 
         """
         if db_name not in self.db_name_map:
             return None
         repo_id, config_name = self.db_name_map[db_name]
+        # Check VirtualDB config description override first
+        repo_cfg = self.config.repositories.get(repo_id)
+        if repo_cfg and repo_cfg.dataset:
+            vdb_dataset_cfg = repo_cfg.dataset.get(config_name)
+            if vdb_dataset_cfg and vdb_dataset_cfg.description is not None:
+                return vdb_dataset_cfg.description
+        # Fall back to DataCard description
         card = self.datacards.get(repo_id)
         if card is None:
             return None
