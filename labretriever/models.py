@@ -123,6 +123,11 @@ class DatasetConfig(BaseModel):
         description="Dataset-specific citation that overrides "
         "repository-level citation",
     )
+    doi: str | None = Field(
+        default=None,
+        description="DOI or URL for the primary publication associated with "
+        "this dataset configuration",
+    )
 
     model_config = ConfigDict(extra="allow")
 
@@ -177,6 +182,11 @@ class DatasetCard(BaseModel):
     configs: list[DatasetConfig] = Field(..., description="Dataset configurations")
     citation: str | None = Field(
         default=None, description="Repository-level citation for all datasets"
+    )
+    doi: str | None = Field(
+        default=None,
+        description="DOI or URL for the primary publication associated with "
+        "this repository",
     )
 
     model_config = ConfigDict(extra="allow")
@@ -470,6 +480,13 @@ class DatasetVirtualDBConfig(BaseModel):
 
     sample_id: PropertyMapping | None = Field(
         None, description="Mapping for sample identifier field"
+    )
+    description: str | None = Field(
+        None,
+        description=(
+            "Human-readable description of this dataset in the VirtualDB context. "
+            "Overrides the description from the DataCard when present."
+        ),
     )
     db_name: str | None = Field(
         None,
