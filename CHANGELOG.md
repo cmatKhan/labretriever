@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.4.0] - 2026-05-08
+
+### Added
+
+- `VirtualDB.materialize()` replaces all registered dataset views with
+  in-memory DuckDB tables, re-pointing the original view names at those tables.
+  Subsequent queries hit RAM instead of re-scanning parquet files, reducing
+  per-query latency at the cost of increased startup time and memory usage.
+  Uses `CREATE OR REPLACE` semantics; safe to call multiple times.
+
 ## [0.3.1] - 2026-05-08
 
 ### Added
