@@ -452,6 +452,40 @@ class VirtualDB:
         """
         return sorted(self.db_name_map)
 
+    def materialize(self) -> None:
+        """
+        Replace all registered dataset views with in-memory DuckDB tables.
+
+        For each dataset known to this VirtualDB, reads the public data view
+        and the corresponding ``_meta`` view into in-memory tables, then
+        re-points the original view names at those tables. Subsequent queries
+        hit RAM instead of re-scanning parquet files, which substantially
+        reduces per-query latency at the cost of increased startup time and
+        memory usage.
+
+        Only views that exist in the current DuckDB session are materialized;
+        missing views are silently skipped. Safe to call multiple times —
+        uses ``CREATE OR REPLACE`` semantics.
+
+        """
+        conn = self._conn
+        for db_name in self.get_datasets():
+            for view_name in (db_name, f"{db_name}_meta"):
+                row = conn.execute(
+                    "SELECT view_name FROM duckdb_views() WHERE view_name = ?",
+                    [view_name],
+                ).fetchone()
+                if row is None:
+                    continue
+                table_name = f"_mat_{view_name}"
+                conn.execute(
+                    f"CREATE OR REPLACE TABLE {table_name} AS SELECT * FROM {view_name}"
+                )
+                conn.execute(
+                    f"CREATE OR REPLACE VIEW {view_name} AS SELECT * FROM {table_name}"
+                )
+                logger.debug("materialize: %s -> %s", view_name, table_name)
+
     def get_tags(self, db_name: str) -> dict[str, str]:
         """
         Return the merged tags for a dataset.
