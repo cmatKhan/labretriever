@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.4.1] - 2026-05-08
+
+### Added
+
+- `cache_dir` parameter on `VirtualDB.__init__`. Accepts a path or string that
+  overrides the HuggingFace cache directory for all `snapshot_download` calls
+  made during dataset registration. When `None` (default), the location is
+  resolved from `HF_CACHE_DIR` / `HF_HOME` / the `huggingface_hub` default at
+  call time. Useful for bundled deployments that store parquet snapshots in a
+  non-standard location.
+
+### Changed
+
+- `constants.CACHE_DIR` (a module-level `Path` constant) replaced by
+  `constants.get_cache_dir()` (a function). The function reads `HF_CACHE_DIR`
+  at call time rather than at import time, so setting the variable after import
+  (e.g. via a CLI flag) is now respected.
+
 ## [0.4.0] - 2026-05-08
 
 ### Added

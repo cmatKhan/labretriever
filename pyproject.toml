@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "labretriever"
-version = "0.4.0"
+version = "0.5.0"
 description = "A collection of classes and functions to facilitate interaction with django.tfbindingandmodeling.com"
 authors = ["chasem <chasem@wustl.edu>"]
 license = "GPL-3.0"
