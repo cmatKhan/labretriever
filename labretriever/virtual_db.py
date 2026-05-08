@@ -204,6 +204,7 @@ class VirtualDB:
         token: str | None = None,
         duckdb_connection: duckdb.DuckDBPyConnection | None = None,
         local_files_only: bool = False,
+        cache_dir: Path | str | None = None,
     ):
         """
         Initialize VirtualDB with configuration.
@@ -221,6 +222,11 @@ class VirtualDB:
             HTTP round-trips on warm restarts. Raises
             ``huggingface_hub.utils.LocalEntryNotFoundError`` if
             any required file is absent from the local cache.
+        :param cache_dir: Override the HuggingFace cache directory. When ``None``,
+            ``huggingface_hub`` resolves the location from ``HF_CACHE_DIR`` /
+            ``HF_HOME`` / its own default. Pass an explicit path to store or read
+            parquet snapshots from a non-default location (e.g. a bundled directory
+            inside the deployed application).
         :raises FileNotFoundError: If config file does not exist
         :raises ValueError: If configuration is invalid
 
@@ -228,6 +234,14 @@ class VirtualDB:
         self.config = MetadataConfig.from_yaml(config_path)
         self.token = token
         self.local_files_only = local_files_only
+        # Explicit argument wins; fall back to get_cache_dir() which reads
+        # HF_CACHE_DIR at call time so CLI --cache-dir is respected even when
+        # VirtualDB is constructed without the parameter.
+        from labretriever.constants import get_cache_dir
+
+        self.cache_dir: Path = (
+            Path(cache_dir) if cache_dir is not None else get_cache_dir()
+        )
 
         self._conn: duckdb.DuckDBPyConnection = (
             duckdb_connection
@@ -1103,6 +1117,7 @@ class VirtualDB:
             allow_patterns=file_patterns,
             token=self.token,
             local_files_only=self.local_files_only,
+            cache_dir=self.cache_dir,
         )
         elapsed = time.monotonic() - t0
         logger.debug(
