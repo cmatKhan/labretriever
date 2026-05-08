@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.3.1] - 2026-05-08
+
+### Added
+
+- `local_files_only` parameter on `VirtualDB.__init__`. When `True`, all
+  `snapshot_download` calls skip HuggingFace network checks and use only the
+  local cache, eliminating per-dataset `repo_info` HTTP round-trips on warm
+  restarts. Raises `huggingface_hub.utils.LocalEntryNotFoundError` if a
+  required file is absent from the local cache.
+- Debug-level timing logs throughout `VirtualDB.__init__` and its internal
+  phases (`_load_datacards`, `_validate_datacards`, `_update_cache`,
+  `_register_all_views`, `_build_column_metadata`) to aid performance
+  profiling.
+- Debug-level timing logs in `HfDataCardFetcher` and `HfRepoStructureFetcher`
+  for individual `DatasetCard.load` and `repo_info` calls.
+
 ## [0.3.0] - 2026-04-21
 
 ### Added

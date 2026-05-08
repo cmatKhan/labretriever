@@ -2,6 +2,7 @@
 
 import logging
 import re
+import time
 from typing import Any
 
 import requests
@@ -37,7 +38,12 @@ class HfDataCardFetcher:
         """
         try:
             self.logger.debug(f"Fetching dataset card for {repo_id}")
+            t0 = time.monotonic()
             card = DatasetCard.load(repo_id, repo_type=repo_type, token=self.token)
+            elapsed = time.monotonic() - t0
+            self.logger.debug(
+                f"DatasetCard.load for {repo_id} completed in {elapsed:.3f}s"
+            )
 
             if not card.data:
                 self.logger.warning(f"Dataset card for {repo_id} has no data section")
@@ -149,7 +155,10 @@ class HfRepoStructureFetcher:
 
         try:
             self.logger.debug(f"Fetching repo structure for {repo_id}")
+            t0 = time.monotonic()
             info = repo_info(repo_id=repo_id, repo_type="dataset", token=self.token)
+            elapsed = time.monotonic() - t0
+            self.logger.debug(f"repo_info for {repo_id} completed in {elapsed:.3f}s")
 
             # Extract file structure
             files = []
