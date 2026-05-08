@@ -44,6 +44,7 @@ from __future__ import annotations
 
 import logging
 import re
+import time
 import warnings
 from dataclasses import dataclass
 from functools import lru_cache
@@ -202,6 +203,7 @@ class VirtualDB:
         config_path: Path | str,
         token: str | None = None,
         duckdb_connection: duckdb.DuckDBPyConnection | None = None,
+        local_files_only: bool = False,
     ):
         """
         Initialize VirtualDB with configuration.
@@ -214,12 +216,18 @@ class VirtualDB:
             registered on this connection instead of creating a new in-memory database.
             This provides a method of using a persistent database file. If not provided,
             an in-memory DuckDB connection is created.
+        :param local_files_only: If ``True``, skip HuggingFace network checks and use
+            only locally cached files. Eliminates per-dataset ``repo_info``
+            HTTP round-trips on warm restarts. Raises
+            ``huggingface_hub.utils.LocalEntryNotFoundError`` if
+            any required file is absent from the local cache.
         :raises FileNotFoundError: If config file does not exist
         :raises ValueError: If configuration is invalid
 
         """
         self.config = MetadataConfig.from_yaml(config_path)
         self.token = token
+        self.local_files_only = local_files_only
 
         self._conn: duckdb.DuckDBPyConnection = (
             duckdb_connection
@@ -233,11 +241,29 @@ class VirtualDB:
         # Prepared queries: name -> sql
         self._prepared_queries: dict[str, str] = {}
 
+        _t0 = time.monotonic()
+
+        t = time.monotonic()
         self._load_datacards()
+        logger.debug("_load_datacards completed in %.3fs", time.monotonic() - t)
+
+        t = time.monotonic()
         self._validate_datacards()
+        logger.debug("_validate_datacards completed in %.3fs", time.monotonic() - t)
+
+        t = time.monotonic()
         self._update_cache()
+        logger.debug("_update_cache completed in %.3fs", time.monotonic() - t)
+
+        t = time.monotonic()
         self._register_all_views()
+        logger.debug("_register_all_views completed in %.3fs", time.monotonic() - t)
+
+        t = time.monotonic()
         self._build_column_metadata()
+        logger.debug("_build_column_metadata completed in %.3fs", time.monotonic() - t)
+
+        logger.debug("VirtualDB.__init__ total: %.3fs", time.monotonic() - _t0)
 
     # ------------------------------------------------------------------
     # Public API
@@ -694,7 +720,13 @@ class VirtualDB:
                 continue
             seen_repos.add(repo_id)
             try:
+                _t = time.monotonic()
                 self.datacards[repo_id] = _cached_datacard(repo_id, token=self.token)
+                logger.debug(
+                    "_load_datacards: %s loaded in %.3fs",
+                    repo_id,
+                    time.monotonic() - _t,
+                )
             except Exception as exc:
                 logger.warning(
                     "Could not load datacard for repo '%s': %s",
@@ -782,13 +814,27 @@ class VirtualDB:
         """
         self._parquet_files: dict[str, list[str]] = {}
         for db_name, (repo_id, config_name) in self.db_name_map.items():
+            _t = time.monotonic()
             files = self._resolve_parquet_files(repo_id, config_name)
             self._parquet_files[db_name] = files
+            logger.debug(
+                "_update_cache: %s resolved %d file(s) in %.3fs",
+                db_name,
+                len(files),
+                time.monotonic() - _t,
+            )
 
         for db_name, ext_config_name in self._external_meta_configs.items():
             repo_id, _ = self.db_name_map[db_name]
+            _t = time.monotonic()
             files = self._resolve_parquet_files(repo_id, ext_config_name)
             self._parquet_files[f"__{db_name}_meta"] = files
+            logger.debug(
+                "_update_cache: %s (ext meta) resolved %d file(s) in %.3fs",
+                db_name,
+                len(files),
+                time.monotonic() - _t,
+            )
 
     def _register_all_views(self) -> None:
         """
@@ -801,16 +847,21 @@ class VirtualDB:
         """
         # 1. Raw per-dataset views (internal __<db_name>_parquet
         # plus public <db_name> for primary datasets only)
+        _t = time.monotonic()
         for db_name, (repo_id, config_name) in self.db_name_map.items():
             comparative = self._is_comparative(repo_id, config_name)
             self._register_raw_view(
                 db_name,
                 parquet_only=comparative,
             )
+        logger.debug(
+            "_register_all_views: raw views completed in %.3fs", time.monotonic() - _t
+        )
 
         # 2. External metadata parquet views.
         # When a data config's metadata lives in a separate HF config
         # (applies_to), register its parquet as __<db_name>_metadata_parquet.
+        _t = time.monotonic()
         self._external_meta_views: dict[str, str] = {}
         for db_name, ext_config_name in self._external_meta_configs.items():
             meta_view = f"__{db_name}_metadata_parquet"
@@ -837,19 +888,33 @@ class VirtualDB:
                 )
                 continue
             self._external_meta_views[db_name] = meta_view
+        logger.debug(
+            "_register_all_views: external meta views completed in %.3fs",
+            time.monotonic() - _t,
+        )
 
         # 3. Metadata views for primary datasets (<db_name>_meta)
+        _t = time.monotonic()
         for db_name, (repo_id, config_name) in self.db_name_map.items():
             if not self._is_comparative(repo_id, config_name):
                 self._register_meta_view(db_name, repo_id, config_name)
+        logger.debug(
+            "_register_all_views: meta views completed in %.3fs", time.monotonic() - _t
+        )
 
         # 4. Replace primary raw views with join to _meta so
         # derived columns (e.g. carbon_source) are available
+        _t = time.monotonic()
         for db_name, (repo_id, config_name) in self.db_name_map.items():
             if not self._is_comparative(repo_id, config_name):
                 self._enrich_raw_view(db_name)
+        logger.debug(
+            "_register_all_views: enrich raw views completed in %.3fs",
+            time.monotonic() - _t,
+        )
 
         # 5. Comparative expanded views (pre-parsed composite IDs)
+        _t = time.monotonic()
         for db_name, (repo_id, config_name) in self.db_name_map.items():
             repo_cfg = self.config.repositories.get(repo_id)
             if not repo_cfg or not repo_cfg.dataset:
@@ -857,6 +922,10 @@ class VirtualDB:
             ds_cfg = repo_cfg.dataset.get(config_name)
             if ds_cfg and ds_cfg.links:
                 self._register_comparative_expanded_view(db_name, ds_cfg)
+        logger.debug(
+            "_register_all_views: comparative views completed in %.3fs",
+            time.monotonic() - _t,
+        )
 
     def _build_column_metadata(self) -> None:
         """
@@ -990,11 +1059,23 @@ class VirtualDB:
 
         from huggingface_hub import snapshot_download
 
+        logger.debug(
+            "snapshot_download start: repo=%s patterns=%s", repo_id, file_patterns
+        )
+        t0 = time.monotonic()
         downloaded_path = snapshot_download(
             repo_id=repo_id,
             repo_type="dataset",
             allow_patterns=file_patterns,
             token=self.token,
+            local_files_only=self.local_files_only,
+        )
+        elapsed = time.monotonic() - t0
+        logger.debug(
+            "snapshot_download done: repo=%s elapsed=%.3fs path=%s",
+            repo_id,
+            elapsed,
+            downloaded_path,
         )
 
         parquet_files: list[str] = []
@@ -1098,6 +1179,7 @@ class VirtualDB:
         raises BinderException: If view creation fails, with SQL details.
 
         """
+        _t0 = time.monotonic()
         parquet_view = f"__{db_name}_parquet"
         if not self._view_exists(parquet_view):
             return
@@ -1316,6 +1398,11 @@ class VirtualDB:
                 f"  SQL: {sql}\n"
                 f"  error: {exc}"
             ) from exc
+        logger.debug(
+            "_register_meta_view: %s_meta completed in %.3fs",
+            db_name,
+            time.monotonic() - _t0,
+        )
 
     def _enrich_raw_view(self, db_name: str) -> None:
         """
