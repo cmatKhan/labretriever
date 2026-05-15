@@ -7,21 +7,19 @@ DuckDB SQL queries against your collection without any manual Python.
 
 ## Quick Install (Claude Code Plugin)
 
-Add the marketplace, then install the plugin:
+First, [install labretriever](index.md#installation) so that `labretriever-mcp`
+is available on your PATH.
+
+Then add the marketplace and install the plugin:
 
 ```
 /plugin marketplace add cmatKhan/labretriever
 /plugin install labretriever@labretriever
 ```
 
-The plugin will:
-
-1. Prompt you for a VirtualDB config file path and an optional HuggingFace token
-   at enable time.
-2. On first session start, create a Python venv in its persistent data directory
-   and install `labretriever` from the bundled source automatically.
-3. On subsequent sessions, reinstall only if `pyproject.toml` has changed (i.e.
-   when a new version of labretriever has been released).
+The plugin will prompt you for a VirtualDB config file path and an optional
+HuggingFace token at enable time. If `labretriever-mcp` is not found on PATH
+when a session starts, Claude will display installation instructions.
 
 For the BrentLab yeast resources collection, download the ready-to-use config from:
 
