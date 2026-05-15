@@ -1,0 +1,17 @@
+{
+  "name": "labretriever",
+  "owner": {
+    "name": "chasem",
+    "email": "chase.mateusiak@gmail.com"
+  },
+  "description": "MCP server for querying genomic datasets via labretriever VirtualDB",
+  "plugins": [
+    {
+      "name": "labretriever",
+      "source": ".",
+      "description": "Exposes SQL query tools over DuckDB views built from HuggingFace-hosted genomic datasets. Installs automatically and updates when new versions are released.",
+      "category": "data",
+      "tags": ["genomics", "bioinformatics", "sql", "mcp", "huggingface"]
+    }
+  ]
+}

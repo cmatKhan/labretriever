@@ -7,8 +7,11 @@ DuckDB SQL queries against your collection without any manual Python.
 
 ## Quick Install (Claude Code Plugin)
 
+Add the marketplace, then install the plugin:
+
 ```
-/plugin add cmatKhan/labretriever
+/plugin marketplace add cmatKhan/labretriever
+/plugin install labretriever@labretriever
 ```
 
 The plugin will:
