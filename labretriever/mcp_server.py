@@ -22,7 +22,7 @@ from mcp.server.fastmcp import FastMCP
 from labretriever.virtual_db import VirtualDB
 
 _CONFIG_HELP = (
-    "LABRETRIEVER_CONFIG and HF_TOKEN are not currently set. "
+    "LABRETRIEVER_CONFIG is not set. "
     "LABRETRIEVER_CONFIG is required. It must point to a VirtualDB YAML "
     "configuration file that tells the server which HuggingFace datasets to "
     "expose and how to map their fields — this is not a file that ships with "
@@ -32,12 +32,18 @@ _CONFIG_HELP = (
     "For the BrentLab yeast resources collection, a ready-to-use config is "
     "available at https://github.com/BrentLab/tfbpshiny/blob/main/"
     "tfbpshiny/brentlab_yeast_collection.yaml\n"
-    "If you provide a path or URL to a valid VirtualDB config file, I can set "
+    "If you provide a path to a valid VirtualDB config file, I can set "
     "LABRETRIEVER_CONFIG for you in the appropriate Claude Code settings "
     "(user-level ~/.claude.json or project-level .claude/settings.json, "
     "whichever is most appropriate). "
-    "If you plan to access private HuggingFace repositories, exit and run: "
-    "export HF_TOKEN=<your_token>, then restart."
+    "If you plan to access private HuggingFace repositories, also provide "
+    "an HF_TOKEN."
+)
+
+_CONFIG_NOT_FOUND_HELP = (
+    "The config file configured for this plugin cannot be found at: {path}\n"
+    "It may have been moved or deleted. Please provide a valid path to a "
+    "VirtualDB YAML config file and I will update the plugin settings for you."
 )
 
 _PRIVATE_REPO_HELP = (
@@ -47,23 +53,24 @@ _PRIVATE_REPO_HELP = (
 )
 
 _vdb: VirtualDB | None = None
-_config_missing: bool = False
+_startup_error: str | None = None
 
 
 def _get_vdb() -> VirtualDB:
     """
     Return the singleton VirtualDB.
 
-    If ``LABRETRIEVER_CONFIG`` was not set at startup, raises ``RuntimeError``
-    with setup instructions intended to be read by Claude.
+    If startup failed (missing or unreadable config), raises ``RuntimeError``
+    with instructions intended to be read by Claude.
 
-    :raises RuntimeError: If config was missing or VirtualDB was not initialized.
+    :raises RuntimeError: If config was missing, not found, or VirtualDB was
+        not initialized.
     :returns: The initialized VirtualDB instance.
     :rtype: VirtualDB
 
     """
-    if _config_missing:
-        raise RuntimeError(_CONFIG_HELP)
+    if _startup_error is not None:
+        raise RuntimeError(_startup_error)
     if _vdb is None:
         raise RuntimeError(
             "VirtualDB is not initialized. This tool must be invoked via the "
@@ -291,10 +298,12 @@ def main() -> None:
     the user interactively.
 
     """
-    global _vdb, _config_missing
+    global _vdb, _startup_error
     config_path = os.environ.get("LABRETRIEVER_CONFIG")
     if not config_path:
-        _config_missing = True
+        _startup_error = _CONFIG_HELP
+    elif not os.path.isfile(config_path):
+        _startup_error = _CONFIG_NOT_FOUND_HELP.format(path=config_path)
     else:
         token = os.environ.get("HF_TOKEN")
         _vdb = VirtualDB(config_path, token=token)

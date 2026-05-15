@@ -3,13 +3,16 @@
 ## Reproducing an MCP query in Python
 
 When a user asks for Python code to reproduce a result from the MCP, use this
-pattern. The config path is whatever `LABRETRIEVER_CONFIG` is set to in the
-plugin (visible in `.mcp.json` or the plugin's userConfig).
+pattern. Read the `LABRETRIEVER_CONFIG` environment variable to get the exact
+config path that the running MCP server is using — do not substitute a
+placeholder.
 
 ```python
+import os
 from labretriever.virtual_db import VirtualDB
 
-vdb = VirtualDB("/path/to/brentlab_yeast_collection.yaml")
+config_path = os.environ["LABRETRIEVER_CONFIG"]
+vdb = VirtualDB(config_path)
 
 results = vdb.query(
     """
