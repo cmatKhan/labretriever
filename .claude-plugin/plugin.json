@@ -1,0 +1,29 @@
+{
+  "name": "labretriever",
+  "version": "1.0.0",
+  "description": "MCP server for querying genomic datasets via labretriever VirtualDB. Exposes SQL query tools over DuckDB views built from HuggingFace-hosted Parquet datasets.",
+  "author": {
+    "name": "chasem",
+    "email": "chase.mateusiak@gmail.com",
+    "url": "https://github.com/cmatKhan/labretriever"
+  },
+  "homepage": "https://cmatkhan.github.io/labretriever",
+  "repository": "https://github.com/cmatKhan/labretriever",
+  "license": "GPL-3.0",
+  "keywords": ["genomics", "bioinformatics", "sql", "huggingface", "yeast"],
+  "userConfig": {
+    "labretriever_config": {
+      "type": "file",
+      "title": "VirtualDB config file",
+      "description": "Path to your VirtualDB YAML configuration file. See https://cmatkhan.github.io/labretriever/virtual_db_configuration/ for the format. For the BrentLab yeast collection, download https://github.com/BrentLab/tfbpshiny/blob/main/tfbpshiny/brentlab_yeast_collection.yaml and provide the local path.",
+      "required": true
+    },
+    "hf_token": {
+      "type": "string",
+      "title": "HuggingFace token",
+      "description": "HuggingFace API token. Only required for private or gated repositories. Leave blank if all your datasets are public.",
+      "sensitive": true,
+      "required": false
+    }
+  }
+}

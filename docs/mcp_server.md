@@ -7,35 +7,36 @@ DuckDB SQL queries against your collection without any manual Python.
 
 ## Quick Install (Claude Code Plugin)
 
-**NOTE**: you must have [installed labretriever](index.md#installation) in
-the same environment as Claude Code.
-
-The easiest way to set up the server is via the Claude Code plugin:
-
 ```
-/plugin add cmatKhan/labretriever-plugin
+/plugin add cmatKhan/labretriever
 ```
 
-After installing the plugin, simply invoke any labretriever tool (e.g. `list_datasets`).
-If `LABRETRIEVER_CONFIG` is not yet set, the server will return setup instructions and
-Claude will guide you interactively — asking for a path or URL to a VirtualDB config
-file and setting it in the right place (`~/.claude.json` for user-level or
-`.claude/settings.json` for project-level) on your behalf.
+The plugin will:
+
+1. Prompt you for a VirtualDB config file path and an optional HuggingFace token
+   at enable time.
+2. On first session start, create a Python venv in its persistent data directory
+   and install `labretriever` from the bundled source automatically.
+3. On subsequent sessions, reinstall only if `pyproject.toml` has changed (i.e.
+   when a new version of labretriever has been released).
+
+For the BrentLab yeast resources collection, download the ready-to-use config from:
+
+[https://github.com/BrentLab/tfbpshiny/blob/main/tfbpshiny/brentlab_yeast_collection.yaml](https://github.com/BrentLab/tfbpshiny/blob/main/tfbpshiny/brentlab_yeast_collection.yaml)
+
+Save it to a stable path and provide that path when the plugin prompts you.
 
 ## Manual Configuration (without the plugin)
+
+Install the package first — see [Installation](index.md#installation).
 
 `LABRETRIEVER_CONFIG` must point to a VirtualDB YAML file that you create or
 download — it tells the server which HuggingFace datasets to expose and how to map
 their fields. See the [VirtualDB Configuration](virtual_db_configuration.md) docs
 for the full format.
 
-For the BrentLab yeast resources collection, a ready-to-use config can be downloaded
-from:
-
-[https://github.com/BrentLab/tfbpshiny/blob/main/tfbpshiny/brentlab_yeast_collection.yaml](https://github.com/BrentLab/tfbpshiny/blob/main/tfbpshiny/brentlab_yeast_collection.yaml)
-
-Save it to a stable path, then add the following to `.claude/settings.json` (or the
-equivalent user-level settings file):
+Add the following to `.claude/settings.json` (or `~/.claude/settings.json` for
+user-level):
 
 ```json
 {

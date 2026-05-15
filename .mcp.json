@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "labretriever": {
+      "command": "${CLAUDE_PLUGIN_DATA}/.venv/bin/labretriever-mcp",
+      "type": "stdio",
+      "env": {
+        "LABRETRIEVER_CONFIG": "${user_config.labretriever_config}",
+        "HF_TOKEN": "${user_config.hf_token}"
+      }
+    }
+  }
+}

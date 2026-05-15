@@ -22,6 +22,11 @@
   queries.
 - `docs/index.md` now mirrors `README.md` via mkdocs snippets (`--8<--`),
   eliminating duplicate maintenance.
+- Claude Code plugin bundled directly in this repo (`.claude-plugin/plugin.json`,
+  `.mcp.json`, `hooks/hooks.json`). Install via `/plugin add cmatKhan/labretriever`.
+  The plugin prompts for `LABRETRIEVER_CONFIG` and `HF_TOKEN` at enable time via
+  `userConfig`, creates a venv in `CLAUDE_PLUGIN_DATA` on first session, and
+  reinstalls automatically when `pyproject.toml` changes on plugin update.
 
 ### Changed
 
