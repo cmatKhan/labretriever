@@ -98,6 +98,28 @@ learn valid condition values before filtering:
 SELECT DISTINCT condition FROM harbison_meta
 ```
 
+## Reproducing MCP Results in Python
+
+When asked for Python code to reproduce a query result, use the
+`LABRETRIEVER_CONFIG` environment variable for the config path — do not
+substitute a placeholder. The MCP server is already running with that path set.
+
+```python
+import os
+from labretriever.virtual_db import VirtualDB
+
+vdb = VirtualDB(os.environ["LABRETRIEVER_CONFIG"])
+
+results = vdb.query(
+    "SELECT ...",  # paste the SQL from the MCP query here
+    return_data=True,
+)
+print(results)
+```
+
+`vdb.query()` returns a pandas DataFrame when `return_data=True`.
+If private repos are in use, pass `token=os.environ.get("HF_TOKEN")` as well.
+
 ## Error Handling
 
 If a tool returns an error about `LABRETRIEVER_CONFIG` not being set, the MCP
