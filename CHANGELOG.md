@@ -1,5 +1,33 @@
 # Changelog
 
+## [1.0.0] - 2026-05-15
+
+### Added
+
+- `labretriever.mcp_server` module and `labretriever-mcp` entry point. Exposes
+  `VirtualDB` as an MCP server over stdio, compatible with Claude Code and any
+  other MCP client. Tools: `list_datasets`, `describe_dataset`,
+  `get_column_metadata`, `get_tags`, `get_common_fields`, `query`.
+- MCP server is self-guiding when `LABRETRIEVER_CONFIG` is not set: instead of
+  exiting, the server starts and returns setup instructions as tool responses so
+  Claude can interactively guide the user through configuration (downloading a
+  VirtualDB YAML, setting the variable in the appropriate settings file).
+- `GatedRepoError` / `RepositoryNotFoundError` caught in the `query` tool;
+  returns a clear message naming the repository and instructing the user to set
+  `HF_TOKEN`.
+- Published to PyPI (`pip install labretriever`). GitHub main branch install
+  also documented for users who need changes ahead of a PyPI release.
+- `docs/mcp_server.md` — new documentation page covering the Claude Code plugin,
+  manual MCP configuration, environment variables, available tools, and example
+  queries.
+- `docs/index.md` now mirrors `README.md` via mkdocs snippets (`--8<--`),
+  eliminating duplicate maintenance.
+
+### Changed
+
+- `mcp` added as a required dependency (previously absent from `pyproject.toml`).
+- `README.md` installation section expanded with PyPI and GitHub install options.
+
 ## [0.4.1] - 2026-05-08
 
 ### Added

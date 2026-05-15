@@ -167,3 +167,4 @@ nav:
     - HuggingFace Dataset Card Format: huggingface_datacard.md
     - BrentLab Collection: brentlab_yeastresources_collection.md
   - VirtualDB Configuration: virtual_db_configuration.md
+  - MCP Server: mcp_server.md
