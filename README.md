@@ -1,13 +1,28 @@
 # labretriever
 
-A Python package for querying and managing genomic and transcriptomic datasets hosted on [HuggingFace Hub](https://huggingface.co). It provides a unified SQL interface (via DuckDB) across heterogeneous datasets, with local caching and structured metadata exploration.
+A Python package for querying and managing genomic and transcriptomic datasets
+hosted on [HuggingFace Hub](https://huggingface.co). It provides a unified SQL
+interface (via DuckDB) across heterogeneous datasets, with local caching and
+structured metadata exploration.
 
-See the [documentation](https://cmatKhan.github.io/labretriever) for full usage guides and API reference. The [BrentLab yeast resources collection](https://huggingface.co/collections/BrentLab/yeastresources) is an example of datasets designed to work with this package.
+See the [documentation](https://cmatKhan.github.io/labretriever) for full usage
+guides and API reference. The [BrentLab yeast resources
+collection](https://huggingface.co/collections/BrentLab/yeastresources) is an
+example of datasets designed to work with this package.
 
 ## Installation
 
+Install the latest release from PyPI:
+
 ```bash
 pip install labretriever
+```
+
+To get the most recent changes ahead of a PyPI release, install directly from
+the main branch on GitHub:
+
+```bash
+pip install git+https://github.com/cmatKhan/labretriever.git@main
 ```
 
 Set your HuggingFace token if accessing private datasets:
@@ -31,7 +46,10 @@ vdb.describe("harbison")
 df = vdb.query("SELECT * FROM harbison_meta WHERE carbon_source = $cs", cs="glucose")
 ```
 
-`VirtualDB` loads datasets from HuggingFace (caching locally), constructs DuckDB views over Parquet files, and exposes metadata and full-data views for SQL querying. See the docs for how to write a `config.yaml` and structure your HuggingFace dataset cards.
+`VirtualDB` loads datasets from HuggingFace (caching locally), constructs DuckDB
+views over Parquet files, and exposes metadata and full-data views for SQL
+querying. See the docs for how to write a `config.yaml` and structure your
+HuggingFace dataset cards.
 
 ## Development
 
