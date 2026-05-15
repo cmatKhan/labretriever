@@ -57,6 +57,7 @@ Always follow this order when starting a new analysis:
 | `get_tags` | Get assay type, publication, and provenance tags |
 | `get_common_fields` | Find columns shared across all `_meta` views for joins |
 | `query` | Execute DuckDB SQL against any registered view |
+| `get_config_path` | Return the config file path (call before writing Python) |
 
 ## Writing Effective Queries
 
@@ -100,15 +101,15 @@ SELECT DISTINCT condition FROM harbison_meta
 
 ## Reproducing MCP Results in Python
 
-When asked for Python code to reproduce a query result, use the
-`LABRETRIEVER_CONFIG` environment variable for the config path — do not
-substitute a placeholder. The MCP server is already running with that path set.
+When asked for Python code to reproduce a query result, first call
+`get_config_path()` to retrieve the actual config file path from the running
+MCP server, then embed that literal path in the snippet — do not use a
+placeholder or `os.environ`.
 
 ```python
-import os
 from labretriever.virtual_db import VirtualDB
 
-vdb = VirtualDB(os.environ["LABRETRIEVER_CONFIG"])
+vdb = VirtualDB("/actual/path/returned/by/get_config_path")
 
 results = vdb.query(
     "SELECT ...",  # paste the SQL from the MCP query here

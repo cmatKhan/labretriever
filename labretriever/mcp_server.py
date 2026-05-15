@@ -53,6 +53,7 @@ _PRIVATE_REPO_HELP = (
 )
 
 _vdb: VirtualDB | None = None
+_vdb_config_path: str | None = None
 _startup_error: str | None = None
 
 
@@ -80,6 +81,22 @@ def _get_vdb() -> VirtualDB:
 
 
 mcp = FastMCP("labretriever")
+
+
+@mcp.tool()
+def get_config_path() -> str:
+    """
+    Return the absolute path to the VirtualDB config file in use.
+
+    Call this before generating Python code that instantiates ``VirtualDB``
+    so the correct config path can be embedded directly in the snippet.
+
+    :returns: Absolute path to the LABRETRIEVER_CONFIG file.
+    :rtype: str
+
+    """
+    _get_vdb()  # raises if not initialized
+    return _vdb_config_path  # type: ignore[return-value]
 
 
 @mcp.tool()
@@ -298,7 +315,7 @@ def main() -> None:
     the user interactively.
 
     """
-    global _vdb, _startup_error
+    global _vdb, _vdb_config_path, _startup_error
     config_path = os.environ.get("LABRETRIEVER_CONFIG")
     if not config_path:
         _startup_error = _CONFIG_HELP
@@ -307,6 +324,7 @@ def main() -> None:
     else:
         token = os.environ.get("HF_TOKEN")
         _vdb = VirtualDB(config_path, token=token)
+        _vdb_config_path = config_path
     mcp.run(transport="stdio")
 
 
