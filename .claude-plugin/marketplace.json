@@ -8,7 +8,10 @@
   "plugins": [
     {
       "name": "labretriever",
-      "source": ".",
+      "source": {
+        "source": "github",
+        "repo": "cmatKhan/labretriever"
+      },
       "description": "Exposes SQL query tools over DuckDB views built from HuggingFace-hosted genomic datasets. Installs automatically and updates when new versions are released.",
       "category": "data",
       "tags": ["genomics", "bioinformatics", "sql", "mcp", "huggingface"]
