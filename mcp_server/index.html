@@ -12,25 +12,29 @@
         <meta name="author" content="ben mueller <email@email.com>, chase mateusiak <chasem@wustl.edu>, michael brent <brent@wustl.edu>">
       
       
+        <link rel="canonical" href="https://cmatKhan.github.io/labretriever/mcp_server/">
+      
+      
+        <link rel="prev" href="../virtual_db_configuration/">
       
       
       
         
       
       
-      <link rel="icon" href="/labretriever/assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>labretriever</title>
+        <title>MCP Server - labretriever</title>
       
     
     
-      <link rel="stylesheet" href="/labretriever/assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="/labretriever/assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -49,11 +53,11 @@
       
     
     
-      <link rel="stylesheet" href="/labretriever/assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="/labretriever/stylesheets/extra.css">
+      <link rel="stylesheet" href="../stylesheets/extra.css">
     
-    <script>__md_scope=new URL("/labretriever/",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -77,6 +81,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#mcp-server-setup" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -91,7 +100,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="/labretriever/." title="labretriever" class="md-header__button md-logo" aria-label="labretriever" data-md-component="logo">
+    <a href=".." title="labretriever" class="md-header__button md-logo" aria-label="labretriever" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -111,7 +120,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              
+              MCP Server
             
           </span>
         </div>
@@ -229,7 +238,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/labretriever/." class="md-tabs__link">
+      <a href=".." class="md-tabs__link">
         
   
   
@@ -257,7 +266,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="/labretriever/tutorials/datacard_tutorial/" class="md-tabs__link">
+        <a href="../tutorials/datacard_tutorial/" class="md-tabs__link">
           
   
   
@@ -287,7 +296,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="/labretriever/virtual_db/" class="md-tabs__link">
+        <a href="../virtual_db/" class="md-tabs__link">
           
   
   
@@ -310,7 +319,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="/labretriever/huggingface_datacard/" class="md-tabs__link">
+        <a href="../huggingface_datacard/" class="md-tabs__link">
           
   
   
@@ -328,7 +337,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/labretriever/virtual_db_configuration/" class="md-tabs__link">
+      <a href="../virtual_db_configuration/" class="md-tabs__link">
         
   
   
@@ -345,9 +354,11 @@
   
   
   
+    
   
-    <li class="md-tabs__item">
-      <a href="/labretriever/mcp_server/" class="md-tabs__link">
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
         
   
   
@@ -382,7 +393,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="/labretriever/." title="labretriever" class="md-nav__button md-logo" aria-label="labretriever" data-md-component="logo">
+    <a href=".." title="labretriever" class="md-nav__button md-logo" aria-label="labretriever" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -412,7 +423,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/labretriever/." class="md-nav__link">
+      <a href=".." class="md-nav__link">
         
   
   
@@ -547,7 +558,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/labretriever/tutorials/datacard_tutorial/" class="md-nav__link">
+      <a href="../tutorials/datacard_tutorial/" class="md-nav__link">
         
   
   
@@ -575,7 +586,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/labretriever/tutorials/cache_manager_tutorial/" class="md-nav__link">
+      <a href="../tutorials/cache_manager_tutorial/" class="md-nav__link">
         
   
   
@@ -665,7 +676,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/labretriever/tutorials/virtual_db_tutorial/" class="md-nav__link">
+      <a href="../tutorials/virtual_db_tutorial/" class="md-nav__link">
         
   
   
@@ -816,7 +827,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/labretriever/virtual_db/" class="md-nav__link">
+      <a href="../virtual_db/" class="md-nav__link">
         
   
   
@@ -844,7 +855,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/labretriever/datacard/" class="md-nav__link">
+      <a href="../datacard/" class="md-nav__link">
         
   
   
@@ -872,7 +883,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/labretriever/hf_cache_manager/" class="md-nav__link">
+      <a href="../hf_cache_manager/" class="md-nav__link">
         
   
   
@@ -962,7 +973,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/labretriever/models/" class="md-nav__link">
+      <a href="../models/" class="md-nav__link">
         
   
   
@@ -990,7 +1001,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/labretriever/fetchers/" class="md-nav__link">
+      <a href="../fetchers/" class="md-nav__link">
         
   
   
@@ -1080,7 +1091,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/labretriever/errors/" class="md-nav__link">
+      <a href="../errors/" class="md-nav__link">
         
   
   
@@ -1177,7 +1188,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/labretriever/huggingface_datacard/" class="md-nav__link">
+      <a href="../huggingface_datacard/" class="md-nav__link">
         
   
   
@@ -1205,7 +1216,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/labretriever/brentlab_yeastresources_collection/" class="md-nav__link">
+      <a href="../brentlab_yeastresources_collection/" class="md-nav__link">
         
   
   
@@ -1240,7 +1251,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/labretriever/virtual_db_configuration/" class="md-nav__link">
+      <a href="../virtual_db_configuration/" class="md-nav__link">
         
   
   
@@ -1264,10 +1275,37 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="/labretriever/mcp_server/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MCP Server
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1283,6 +1321,72 @@
   
 
       </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quick-install-claude-code-plugin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick Install (Claude Code Plugin)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manual-configuration-without-the-plugin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Manual Configuration (without the plugin)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#available-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Available Tools
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example Session
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1306,6 +1410,60 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quick-install-claude-code-plugin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick Install (Claude Code Plugin)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manual-configuration-without-the-plugin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Manual Configuration (without the plugin)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#available-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Available Tools
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example Session
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -1326,8 +1484,127 @@
               
               <article class="md-content__inner md-typeset">
                 
-  <h1>404 - Not found</h1>
+                  
 
+
+  
+    <a href="https://github.com/cmatKhan/labretriever/edit/main/docs/mcp_server.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/cmatKhan/labretriever/raw/main/docs/mcp_server.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0 8a5 5 0 0 1-5-5 5 5 0 0 1 5-5 5 5 0 0 1 5 5 5 5 0 0 1-5 5m0-12.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5"/></svg>
+    </a>
+  
+
+
+<h1 id="mcp-server-setup">MCP Server Setup<a class="headerlink" href="#mcp-server-setup" title="Permanent link">&para;</a></h1>
+<p><code>labretriever</code> ships an <a href="https://modelcontextprotocol.io">MCP</a> server that exposes
+a <code>VirtualDB</code> instance as a set of tools callable by Claude Code (or any other MCP
+client). Once configured, Claude can discover datasets, inspect schema, and execute
+DuckDB SQL queries against your collection without any manual Python.</p>
+<h2 id="quick-install-claude-code-plugin">Quick Install (Claude Code Plugin)<a class="headerlink" href="#quick-install-claude-code-plugin" title="Permanent link">&para;</a></h2>
+<p>First, <a href="../#installation">install labretriever</a> so that <code>labretriever-mcp</code>
+is available on your PATH.</p>
+<p>Then add the marketplace and install the plugin:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>/plugin marketplace add cmatKhan/labretriever
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>/plugin install labretriever@labretriever
+</span></code></pre></div>
+<p>The plugin will prompt you for a VirtualDB config file path and an optional
+HuggingFace token at enable time. If <code>labretriever-mcp</code> is not found on PATH
+when a session starts, Claude will display installation instructions.</p>
+<p>For the BrentLab yeast resources collection, download the ready-to-use config from:</p>
+<p><a href="https://github.com/BrentLab/tfbpshiny/blob/main/tfbpshiny/brentlab_yeast_collection.yaml">https://github.com/BrentLab/tfbpshiny/blob/main/tfbpshiny/brentlab_yeast_collection.yaml</a></p>
+<p>Save it to a stable path and provide that path when the plugin prompts you.</p>
+<h2 id="manual-configuration-without-the-plugin">Manual Configuration (without the plugin)<a class="headerlink" href="#manual-configuration-without-the-plugin" title="Permanent link">&para;</a></h2>
+<p>Install the package first — see <a href="../#installation">Installation</a>.</p>
+<p><code>LABRETRIEVER_CONFIG</code> must point to a VirtualDB YAML file that you create or
+download — it tells the server which HuggingFace datasets to expose and how to map
+their fields. See the <a href="../virtual_db_configuration/">VirtualDB Configuration</a> docs
+for the full format.</p>
+<p>Add the following to <code>.claude/settings.json</code> (or <code>~/.claude/settings.json</code> for
+user-level):</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">&quot;labretriever&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;labretriever-mcp&quot;</span><span class="p">,</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;stdio&quot;</span><span class="p">,</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">      </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">        </span><span class="nt">&quot;LABRETRIEVER_CONFIG&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/absolute/path/to/brentlab_yeast_collection.yaml&quot;</span><span class="p">,</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">        </span><span class="nt">&quot;HF_TOKEN&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;${HF_TOKEN}&quot;</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">      </span><span class="p">}</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><code>HF_TOKEN</code> is only required for private HuggingFace repositories. If it is not set
+and a query touches a private or gated repository, the server will return a clear
+error naming the repository.</p>
+<h2 id="available-tools">Available Tools<a class="headerlink" href="#available-tools" title="Permanent link">&para;</a></h2>
+<p>Once the server is running, Claude has access to these tools:</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>list_datasets</code></td>
+<td>List all registered dataset names (call this first).</td>
+</tr>
+<tr>
+<td><code>describe_dataset</code></td>
+<td>Return column names and types for a <code>{name}</code> or <code>{name}_meta</code> view.</td>
+</tr>
+<tr>
+<td><code>get_column_metadata</code></td>
+<td>Return semantic roles and condition-level definitions for each column.</td>
+</tr>
+<tr>
+<td><code>get_tags</code></td>
+<td>Return provenance tags (assay type, publication, etc.) for a dataset.</td>
+</tr>
+<tr>
+<td><code>get_common_fields</code></td>
+<td>Return column names shared across all <code>_meta</code> views.</td>
+</tr>
+<tr>
+<td><code>query</code></td>
+<td>Execute DuckDB SQL; returns shape by default, rows when <code>return_data=True</code>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="example-session">Example Session<a class="headerlink" href="#example-session" title="Permanent link">&para;</a></h2>
+<p>After connecting, a typical workflow in Claude Code looks like:</p>
+<ol>
+<li><code>list_datasets</code> - discover available views (<code>harbison</code>, <code>callingcards</code>, etc.)</li>
+<li><code>describe_dataset("harbison_meta")</code> - inspect sample-level columns</li>
+<li><code>get_column_metadata("harbison")</code> - understand condition values and measurement roles</li>
+<li><code>query("SELECT * FROM harbison_meta WHERE condition = 'GAL'", return_data=True)</code> - explore</li>
+<li><code>query("SELECT regulator_symbol, COUNT(*) FROM harbison WHERE condition = 'GAL' AND pvalue &lt; 0.001 GROUP BY 1 ORDER BY 2 DESC")</code> - full analysis</li>
+</ol>
+<p>See the <a href="../tutorials/virtual_db_tutorial/">VirtualDB tutorial</a> for more query patterns.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
               </article>
             </div>
           
@@ -1383,18 +1660,18 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "/labretriever/", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.code.select", "content.code.annotate", "content.action.edit", "content.action.view"], "search": "/labretriever/assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.code.select", "content.code.annotate", "content.action.edit", "content.action.view"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="/labretriever/assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
-        <script src="/labretriever/javascripts/mathjax.js"></script>
+        <script src="../javascripts/mathjax.js"></script>
       
         <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
       
-        <script src="/labretriever/js/init-mermaid.js"></script>
+        <script src="../js/init-mermaid.js"></script>
       
     
   </body>
