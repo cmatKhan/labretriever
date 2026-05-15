@@ -110,7 +110,8 @@ token with access to the relevant repository.
 
 ## Additional Resources
 
-- `references/query_patterns.md` - Common analysis patterns with example SQL
+- `references/query_patterns.md` - Common SQL patterns and Python API usage
+  (how to reproduce MCP results in a notebook with `VirtualDB.query()`)
 - Full docs: <https://cmatkhan.github.io/labretriever/>
 - VirtualDB config format:
   <https://cmatkhan.github.io/labretriever/virtual_db_configuration/>

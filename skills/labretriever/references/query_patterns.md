@@ -1,5 +1,39 @@
 # Common Query Patterns
 
+## Reproducing an MCP query in Python
+
+When a user asks for Python code to reproduce a result from the MCP, use this
+pattern. The config path is whatever `LABRETRIEVER_CONFIG` is set to in the
+plugin (visible in `.mcp.json` or the plugin's userConfig).
+
+```python
+from labretriever.virtual_db import VirtualDB
+
+vdb = VirtualDB("/path/to/brentlab_yeast_collection.yaml")
+
+results = vdb.query(
+    """
+    SELECT regulator_symbol, COUNT(*) AS significant_targets
+    FROM harbison
+    WHERE condition = 'GAL' AND pvalue < 0.05
+    GROUP BY regulator_symbol
+    ORDER BY significant_targets DESC
+    LIMIT 5
+    """,
+    return_data=True,
+)
+print(results)
+```
+
+If the user has an `HF_TOKEN` for private repos, pass it as:
+
+```python
+vdb = VirtualDB("/path/to/config.yaml", token="hf_...")
+```
+
+`vdb.query()` returns a pandas DataFrame when `return_data=True`, or a dict
+with shape information when omitted.
+
 ## Ranking TFs by target count in a condition
 
 ```sql
