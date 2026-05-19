@@ -198,6 +198,59 @@ configs:
   dataset_info:
     # ... feature definitions ...
 
+## Genome Resources
+
+Binding datasets that are built against a specific set of genomic intervals
+(e.g. promoter annotations, gene bodies) can declare that information directly
+in the datacard using a `genome_resources` block. This keeps data provenance
+co-located with the dataset rather than in a separate config file.
+
+`genome_resources` may appear at the repo level (applies to all configs) or
+at the config level (applies to that config only, overrides repo-level entries
+with the same name).
+
+The dict key under `region_sets` is the region set name. No redundant `name:`
+sub-field is needed.
+
+```yaml
+# Repo-level: applies to all configs in this datacard
+genome_resources:
+  region_sets:
+    yiming_promoters:
+      path: https://huggingface.co/datasets/BrentLab/yeast_genome_resources/resolve/main/yiming_promoters.bed
+      join_column: target_locus_tag
+
+configs:
+  - config_name: 2026_analysis_set
+    description: Calling cards data
+    dataset_type: annotated_features
+    # Config-level: overrides repo-level for this config only
+    genome_resources:
+      region_sets:
+        yiming_promoters:
+          path: https://huggingface.co/datasets/BrentLab/yeast_genome_resources/resolve/main/yiming_promoters_v2.bed
+          join_column: target_locus_tag
+    data_files:
+      - split: train
+        path: data/2026_analysis_set.parquet
+    dataset_info:
+      features: []
+```
+
+Sub-fields per region set entry:
+
+| Field | Description |
+|-------|-------------|
+| `path` | Relative path within this repo or a full URL to the region BED/parquet file. Full URLs (e.g. `https://huggingface.co/datasets/Org/repo/resolve/main/file.bed`) are preferred when the file lives in a different HuggingFace repo. |
+| `join_column` | Column in this dataset used to join to the region set (e.g. `target_locus_tag`). |
+
+Both fields are optional, and arbitrary additional fields are permitted.
+
+VirtualDB reads these entries when `vdb.get_region_sets(db_name)` is called and
+merges them with any overrides declared in the VirtualDB config. See the
+[VirtualDB configuration guide](virtual_db_configuration.md#genome-resources) for
+details on the merge order and the `get_region_sets` / `get_region_set_info` accessors.
+
 ## Feature Definitions
 
 Each config must include detailed feature definitions in `dataset_info.features`:

@@ -292,6 +292,124 @@ data via `(repo_id, config_name)` pairs for programmatic or developer use:
 vdb.config.get_tags("BrentLab/harbison_2004", "harbison_2004")
 ```
 
+## Genome Resources
+
+Region set information is split across two layers: the HuggingFace datacard
+(where the data provenance belongs) and the VirtualDB config (for descriptions
+and overrides that should not require editing every datacard).
+
+### Part A: Datacard-level region sets
+
+A binding dataset intrinsically knows which genomic intervals it was built
+against. That information lives in the datacard as a `genome_resources` block
+at the repo level (applies to all configs in the card) or at the config level
+(applies only to that config, overrides repo-level entries of the same name).
+
+```yaml
+# repo-level: applies to all configs in this datacard
+genome_resources:
+  region_sets:
+    yiming_promoters:
+      path: https://huggingface.co/datasets/BrentLab/yeast_genome_resources/resolve/main/yiming_promoters.bed
+      join_column: target_locus_tag
+
+configs:
+  - config_name: 2026_analysis_set
+    # config-level: overrides the repo-level entry for this config only
+    genome_resources:
+      region_sets:
+        yiming_promoters:
+          path: https://huggingface.co/datasets/BrentLab/yeast_genome_resources/resolve/main/yiming_promoters_v2.bed
+          join_column: target_locus_tag
+```
+
+Sub-fields per region set entry:
+
+| Field | Description |
+|-------|-------------|
+| `path` | Relative path within the repo or full URL to the region BED/parquet file. Full URLs are preferred when referencing files in other HuggingFace repos. |
+| `join_column` | Column in this dataset used to join to the region set (e.g. `target_locus_tag`). |
+
+Both fields are optional; arbitrary additional fields are allowed.
+
+See the [HuggingFace datacard documentation](huggingface_datacard.md) for the
+full `genome_resources` field reference.
+
+### Part B: VirtualDB genome-resource repo entry
+
+One or more repos in the VirtualDB config can act as genome-resource reference
+repos. These repos have a `genome_resources` key but no `dataset` key. No
+HuggingFace download is attempted for them — the block is YAML-only. Their
+region set entries are used to supplement or override datacard-declared entries,
+most commonly to add human-readable descriptions.
+
+```yaml
+repositories:
+  BrentLab/yeast_genome_resources:
+    genome_resources:
+      region_sets:
+        yiming_promoters:
+          description: >-
+            Yiming et al. (2001) promoter annotations. 700 bp upstream of each
+            ORF start site.
+        mindel_promoters:
+          description: >-
+            Miura & Bhaskara (Mindel) promoter annotations. Boundaries derived
+            from nucleosome-free region calls.
+
+  BrentLab/callingcards:
+    dataset:
+      2026_analysis_set:
+        db_name: callingcards
+        sample_id:
+          field: gm_id
+```
+
+### Resolution order
+
+`vdb.get_region_sets(db_name)` merges three layers, with later layers overriding
+earlier ones for the same named entry:
+
+1. Datacard repo-level `genome_resources.region_sets`
+2. Datacard config-level `genome_resources.region_sets`
+3. VirtualDB genome-resource repo entries (repos with `genome_resources` and no `dataset`)
+
+### Python accessors
+
+```python
+from labretriever.virtual_db import VirtualDB
+
+vdb = VirtualDB("datasets.yaml")
+
+# Returns all region sets merged from datacard + VirtualDB overrides
+region_sets = vdb.get_region_sets("callingcards")
+# -> {
+#      "yiming_promoters": RegionSetInfo(
+#          path="https://huggingface.co/datasets/.../yiming_promoters.bed",
+#          join_column="target_locus_tag",
+#          description="Yiming et al. (2001) promoter annotations...",
+#      )
+#    }
+
+# Returns info for a single named region set, or None
+info = vdb.get_region_set_info("callingcards", "yiming_promoters")
+# -> RegionSetInfo(path=..., join_column="target_locus_tag", description=...)
+
+info = vdb.get_region_set_info("harbison", "yiming_promoters")
+# -> None  (harbison has no genome_resources in its datacard)
+```
+
+`RegionSetInfo` fields:
+
+| Field | Description |
+|-------|-------------|
+| `description` | Human-readable description. Comes from VirtualDB override. |
+| `path` | Relative path or full URL to the region file. Comes from the datacard. |
+| `join_column` | Column used to join to the region set. Comes from the datacard. |
+
+All three fields are optional; `None` is returned for any field not configured
+at any layer.
+
 ## Missing Value Labels
 
 `missing_value_labels` is a top-level mapping from property name to a default

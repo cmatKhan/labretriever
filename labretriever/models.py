@@ -96,6 +96,42 @@ class DataFileInfo(BaseModel):
     path: str = Field(..., description="Path to data file(s)")
 
 
+class DatacardRegionSetInfo(BaseModel):
+    """
+    Region set entry as declared in a datacard.
+
+    Dict key is the name.
+
+    """
+
+    path: str | None = Field(
+        None,
+        description=(
+            "Relative path within the repo or full URL to the region BED/parquet"
+            " file. Full URLs are supported and preferred when referencing files"
+            " in other HuggingFace repos."
+        ),
+    )
+    join_column: str | None = Field(
+        None,
+        description=(
+            "Dataset column used to join to this region set"
+            " (e.g. 'target_locus_tag')."
+        ),
+    )
+    model_config = ConfigDict(extra="allow")
+
+
+class DatacardGenomeResources(BaseModel):
+    """genome_resources block at repo or config level in a datacard."""
+
+    region_sets: dict[str, DatacardRegionSetInfo] = Field(
+        default_factory=dict,
+        description="Named region set definitions keyed by region set name.",
+    )
+    model_config = ConfigDict(extra="allow")
+
+
 class DatasetConfig(BaseModel):
     """
     Configuration for a dataset within a repository.
@@ -127,6 +163,11 @@ class DatasetConfig(BaseModel):
         default=None,
         description="DOI or URL for the primary publication associated with "
         "this dataset configuration",
+    )
+    genome_resources: DatacardGenomeResources | None = Field(
+        default=None,
+        description="Region set definitions specific to this dataset config. "
+        "Overrides repo-level genome_resources entries with the same name.",
     )
 
     model_config = ConfigDict(extra="allow")
@@ -187,6 +228,11 @@ class DatasetCard(BaseModel):
         default=None,
         description="DOI or URL for the primary publication associated with "
         "this repository",
+    )
+    genome_resources: DatacardGenomeResources | None = Field(
+        default=None,
+        description="Repo-level region set definitions. "
+        "Applies to all configs unless overridden at the config level.",
     )
 
     model_config = ConfigDict(extra="allow")
@@ -439,6 +485,35 @@ class PropertyMapping(BaseModel):
         return self
 
 
+class RegionSetInfo(BaseModel):
+    """Merged region set info returned by VirtualDB accessors."""
+
+    description: str | None = Field(None, description="Human-readable description.")
+    path: str | None = Field(
+        None,
+        description=(
+            "Relative path or full URL to the region BED/parquet file. "
+            "Sourced from the datacard; may be overridden by a VirtualDB"
+            " genome-resource repo entry."
+        ),
+    )
+    join_column: str | None = Field(
+        None,
+        description="Dataset column used to join to this region set.",
+    )
+    model_config = ConfigDict(extra="allow")
+
+
+class GenomeResourcesConfig(BaseModel):
+    """Genome resource definitions in a VirtualDB genome-resource repo entry."""
+
+    region_sets: dict[str, RegionSetInfo] = Field(
+        default_factory=dict,
+        description="Named region set definitions keyed by region set name.",
+    )
+    model_config = ConfigDict(extra="allow")
+
+
 class DatasetVirtualDBConfig(BaseModel):
     """
     VirtualDB configuration for a specific dataset within a repository.
@@ -573,7 +648,13 @@ class DatasetVirtualDBConfig(BaseModel):
         result = {}
         for key, value in data.items():
             # Known typed fields - let Pydantic handle them
-            if key in ("sample_id", "links", "db_name", "tags"):
+            if key in (
+                "sample_id",
+                "links",
+                "db_name",
+                "tags",
+                "description",
+            ):
                 result[key] = value
             # Dict values should be PropertyMappings
             elif isinstance(value, dict):
@@ -642,6 +723,14 @@ class RepositoryConfig(BaseModel):
         default_factory=dict,
         description="Arbitrary key/value annotations for all datasets in this repo",
     )
+    genome_resources: GenomeResourcesConfig | None = Field(
+        None,
+        description=(
+            "VirtualDB-level genome resource definitions. Repos with this field "
+            "and no 'dataset' key act as reference repos — their region set entries "
+            "are used to supplement or override datacard-declared region sets."
+        ),
+    )
 
     @model_validator(mode="before")
     @classmethod
@@ -679,10 +768,21 @@ class RepositoryConfig(BaseModel):
                         f"Invalid configuration for dataset '{dataset_name}': {e}"
                     ) from e
 
-        # Parse repo-wide properties (all keys except 'dataset' and 'tags')
+        # Parse genome_resources section if present
+        genome_resources_data = data.get("genome_resources")
+        parsed_genome_resources: GenomeResourcesConfig | None = None
+        if genome_resources_data is not None:
+            try:
+                parsed_genome_resources = GenomeResourcesConfig.model_validate(
+                    genome_resources_data
+                )
+            except Exception as e:
+                raise ValueError(f"Invalid genome_resources config: {e}") from e
+
+        # Parse repo-wide properties (all keys except known typed fields)
         parsed_properties = {}
         for key, value in data.items():
-            if key in ("dataset", "tags"):
+            if key in ("dataset", "tags", "genome_resources"):
                 continue
 
             try:
@@ -694,6 +794,7 @@ class RepositoryConfig(BaseModel):
             "properties": parsed_properties,
             "dataset": parsed_datasets,
             "tags": data.get("tags") or {},
+            "genome_resources": parsed_genome_resources,
         }
 
 
@@ -807,13 +908,18 @@ class MetadataConfig(BaseModel):
     @model_validator(mode="after")
     def validate_repositories_have_datasets(self) -> "MetadataConfig":
         """
-        Validate that every repository defines at least one dataset.
+        Validate that every non-genome-resource repository defines at least one dataset.
+
+        Repos that have a ``genome_resources`` key but no ``dataset`` key are treated as
+        reference repos and are exempt from this check.
 
         :return: The validated MetadataConfig instance
-        :raises ValueError: If any repository has no datasets defined
+        :raises ValueError: If any data repository has no datasets defined
 
         """
         for repo_id, repo_config in self.repositories.items():
+            if repo_config.genome_resources is not None:
+                continue  # genome-resource reference repo — no datasets required
             if not repo_config.dataset:
                 raise ValueError(
                     f"Repository '{repo_id}' must define at least one "
@@ -857,8 +963,9 @@ class MetadataConfig(BaseModel):
 
         Handles the four top-level sections: ``repositories`` (required),
         ``factor_aliases``, ``missing_value_labels``, and ``description``
-        (all optional). Logs an INFO message for each optional section that
-        is absent from the configuration.
+        (all optional). Genome resource definitions now live inside individual
+        repository entries under a ``genome_resources`` key. Logs an INFO
+        message for each optional section that is absent from the configuration.
 
         :param data: Raw configuration data
         :return: Processed configuration dict ready for Pydantic field validation
@@ -877,7 +984,11 @@ class MetadataConfig(BaseModel):
                 "with at least one repository"
             )
 
-        for optional_key in ("factor_aliases", "missing_value_labels", "description"):
+        for optional_key in (
+            "factor_aliases",
+            "missing_value_labels",
+            "description",
+        ):
             if not data.get(optional_key):
                 logger.info(
                     "No '%s' section found in VirtualDB configuration.",
