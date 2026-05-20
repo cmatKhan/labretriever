@@ -1,7 +1,7 @@
 {
   "name": "labretriever",
   "version": "1.0.0",
-  "description": "MCP server for querying genomic datasets via labretriever VirtualDB. Exposes SQL query tools over DuckDB views built from HuggingFace-hosted Parquet datasets.",
+  "description": "Two MCP servers for labretriever: 'labretriever' exposes VirtualDB SQL query tools over DuckDB views built from HuggingFace-hosted Parquet datasets; 'labretriever-repo' provides DataCard scaffold and collection audit tools that require no VirtualDB config.",
   "author": {
     "name": "chasem",
     "email": "chase.mateusiak@gmail.com",

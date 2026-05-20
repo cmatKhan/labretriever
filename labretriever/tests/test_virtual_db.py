@@ -15,7 +15,7 @@ import pytest
 import yaml  # type: ignore
 
 from labretriever.datacard import DatasetSchema
-from labretriever.models import DatasetType, FeatureInfo, MetadataConfig
+from labretriever.models import FeatureInfo, MetadataConfig
 from labretriever.virtual_db import VirtualDB
 
 # ------------------------------------------------------------------
@@ -426,7 +426,7 @@ def _make_mock_datacard(repo_id):
     else:
         config_mock = MagicMock()
         config_mock.metadata_fields = None
-        config_mock.dataset_type = DatasetType.COMPARATIVE
+        config_mock.dataset_type = "comparative"
         card.get_config.return_value = config_mock
         card.get_field_definitions.return_value = {}
         card.get_experimental_conditions.return_value = {}
@@ -1155,7 +1155,7 @@ class TestEdgeCases:
 
         non_comparative_card = _make_mock_datacard("BrentLab/harbison")
         cfg_mock = MagicMock()
-        cfg_mock.dataset_type = DatasetType.ANNOTATED_FEATURES
+        cfg_mock.dataset_type = "annotated_features"
         non_comparative_card.get_config.return_value = cfg_mock
 
         monkeypatch.setattr(VirtualDB, "_resolve_parquet_files", lambda *a: [])

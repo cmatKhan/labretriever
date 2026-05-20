@@ -10,7 +10,6 @@ Also includes models for VirtualDB metadata normalization configuration.
 """
 
 import logging
-from enum import Enum
 from functools import cached_property
 from pathlib import Path
 from typing import Any, TypeAlias
@@ -32,15 +31,10 @@ FactorAliases: TypeAlias = dict[str, dict[str, list[str | int | float | bool]]]
 
 logger = logging.getLogger(__name__)
 
-
-class DatasetType(str, Enum):
-    """Supported dataset types."""
-
-    GENOMIC_FEATURES = "genomic_features"
-    ANNOTATED_FEATURES = "annotated_features"
-    GENOME_MAP = "genome_map"
-    METADATA = "metadata"
-    COMPARATIVE = "comparative"
+# Reserved dataset_type values with special behavior in labretriever.
+# Any string is accepted as a dataset_type; only these two trigger code-level logic.
+DATASET_TYPE_METADATA = "metadata"
+DATASET_TYPE_COMPARATIVE = "comparative"
 
 
 class FeatureInfo(BaseModel):
@@ -56,7 +50,9 @@ class FeatureInfo(BaseModel):
         ...,
         description="Data type (string, int64, float64, etc.) or class_label dict",
     )
-    description: str = Field(..., description="Description of the field")
+    description: str | None = Field(
+        default=None, description="Description of the field"
+    )
     role: str | None = Field(
         default=None,
         description="Optional semantic role. 'experimental_condition' "
@@ -87,6 +83,15 @@ class DatasetInfo(BaseModel):
     partitioning: PartitioningInfo | None = Field(
         default=None, description="Partitioning configuration"
     )
+
+
+class SharedFeatureGroup(BaseModel):
+    """A group of feature definitions shared across named dataset configs."""
+
+    applies_to: list[str] = Field(
+        ..., description="Config names that inherit these field definitions"
+    )
+    fields: list[FeatureInfo] = Field(..., description="Shared feature definitions")
 
 
 class DataFileInfo(BaseModel):
@@ -141,8 +146,10 @@ class DatasetConfig(BaseModel):
     """
 
     config_name: str = Field(..., description="Unique configuration identifier")
-    description: str = Field(..., description="Human-readable description")
-    dataset_type: DatasetType = Field(..., description="Type of dataset")
+    description: str | None = Field(
+        default=None, description="Human-readable description"
+    )
+    dataset_type: str = Field(..., description="Type of dataset")
     default: bool = Field(
         default=False, description="Whether this is the default config"
     )
@@ -169,6 +176,11 @@ class DatasetConfig(BaseModel):
         description="Region set definitions specific to this dataset config. "
         "Overrides repo-level genome_resources entries with the same name.",
     )
+    experimental_conditions: dict[str, Any] | None = Field(
+        default=None,
+        description="Condition metadata constant across all samples in this config. "
+        "Overrides any repo-level experimental_conditions entries with the same key.",
+    )
 
     model_config = ConfigDict(extra="allow")
 
@@ -188,7 +200,7 @@ class DatasetConfig(BaseModel):
         """
         if v is not None:
             dataset_type = info.data.get("dataset_type")
-            if dataset_type not in (DatasetType.METADATA, DatasetType.COMPARATIVE):
+            if dataset_type not in (DATASET_TYPE_METADATA, DATASET_TYPE_COMPARATIVE):
                 raise ValueError(
                     "applies_to field is only valid "
                     "for metadata and comparative dataset types"
@@ -221,6 +233,10 @@ class DatasetCard(BaseModel):
     """
 
     configs: list[DatasetConfig] = Field(..., description="Dataset configurations")
+    features: list[SharedFeatureGroup] | None = Field(
+        default=None,
+        description="Repo-level shared feature groups inherited by named configs.",
+    )
     citation: str | None = Field(
         default=None, description="Repository-level citation for all datasets"
     )
@@ -233,6 +249,11 @@ class DatasetCard(BaseModel):
         default=None,
         description="Repo-level region set definitions. "
         "Applies to all configs unless overridden at the config level.",
+    )
+    experimental_conditions: dict[str, Any] | None = Field(
+        default=None,
+        description="Condition metadata constant across all configs in this repo. "
+        "Config-level experimental_conditions override individual keys.",
     )
 
     model_config = ConfigDict(extra="allow")
@@ -266,6 +287,65 @@ class DatasetCard(BaseModel):
             raise ValueError("At most one configuration can be marked as default")
 
         return v
+
+    @model_validator(mode="after")
+    def resolve_inherited_features(self) -> "DatasetCard":
+        """
+        Merge repo-level shared feature groups into each named config.
+
+        Each group's fields are inherited by every config listed in its
+        ``applies_to``. When multiple groups list the same config, later
+        groups win on field-name collisions. Config-level
+        ``dataset_info.features`` entries then override individual properties
+        (e.g. only ``description``) of any inherited field with the same name.
+
+        :returns: Self with resolved feature lists on all affected configs.
+        :rtype: DatasetCard
+        :raises ValueError: If any ``applies_to`` name is not a known config.
+
+        """
+        if not self.features:
+            return self
+
+        known = set(self.config_names)
+        for group in self.features:
+            unknown = set(group.applies_to) - known
+            if unknown:
+                raise ValueError(
+                    f"features.applies_to references unknown config(s): "
+                    f"{sorted(unknown)}"
+                )
+
+        for config in self.configs:
+            inherited: dict[str, dict[str, Any]] = {}
+            for group in self.features:
+                if config.config_name in group.applies_to:
+                    for field in group.fields:
+                        inherited[field.name] = field.model_dump(exclude_none=True)
+
+            if not inherited:
+                continue
+
+            merged_features: list[FeatureInfo] = []
+            # Start with inherited fields, applying config-level overrides
+            for name, base in inherited.items():
+                config_override: dict[str, Any] = next(
+                    (
+                        f.model_dump(exclude_none=True)
+                        for f in config.dataset_info.features
+                        if f.name == name
+                    ),
+                    {},
+                )
+                merged_features.append(FeatureInfo(**{**base, **config_override}))
+            # Append config-only fields (not present in any inherited group)
+            for field in config.dataset_info.features:
+                if field.name not in inherited:
+                    merged_features.append(field)
+
+            config.dataset_info.features = merged_features
+
+        return self
 
     # Computed properties for better discoverability
     @computed_field  # type: ignore[prop-decorator]
@@ -307,11 +387,12 @@ class DatasetCard(BaseModel):
                 return config
         return None
 
-    def get_configs_by_type(self, dataset_type: DatasetType) -> list[DatasetConfig]:
+    def get_configs_by_type(self, dataset_type: str) -> list[DatasetConfig]:
         """
         Get all configurations of a specific type.
 
-        :param dataset_type: The DatasetType to filter by
+        :param dataset_type: The dataset_type string to filter by (e.g.
+            ``"annotated_features"``, ``"metadata"``).
         :return: List of matching DatasetConfig objects
 
         """
@@ -329,7 +410,7 @@ class DatasetCard(BaseModel):
         return [
             config
             for config in self.configs
-            if config.dataset_type != DatasetType.METADATA
+            if config.dataset_type != DATASET_TYPE_METADATA
         ]
 
     def get_metadata_configs(self) -> list[DatasetConfig]:
@@ -342,7 +423,7 @@ class DatasetCard(BaseModel):
         return [
             config
             for config in self.configs
-            if config.dataset_type == DatasetType.METADATA
+            if config.dataset_type == DATASET_TYPE_METADATA
         ]
 
 

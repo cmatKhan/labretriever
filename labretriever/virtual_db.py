@@ -56,7 +56,7 @@ import pandas as pd
 from duckdb import BinderException
 
 from labretriever.datacard import DataCard, DatasetSchema
-from labretriever.models import DatasetType, MetadataConfig, RegionSetInfo
+from labretriever.models import DATASET_TYPE_COMPARATIVE, MetadataConfig, RegionSetInfo
 
 logger = logging.getLogger(__name__)
 
@@ -925,7 +925,7 @@ class VirtualDB:
                     dc_config = card.get_config(config_name)
                     if (
                         dc_config is not None
-                        and dc_config.dataset_type != DatasetType.COMPARATIVE
+                        and dc_config.dataset_type != DATASET_TYPE_COMPARATIVE
                     ):
                         raise ValueError(
                             f"Dataset '{config_name}' in repo '{repo_id}' has "

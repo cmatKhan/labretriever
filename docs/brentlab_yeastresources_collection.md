@@ -1,6 +1,37 @@
 # BrentLab Yeast Resources Collection
 
-This document describes the BrentLab yeast resources collection on HuggingFace as an example implementation of the [datacard specifications](huggingface_datacard.md). This collection demonstrates best practices for organizing transcription factor binding and perturbation datasets for *Saccharomyces cerevisiae*.
+## What Is a Collection Context Document?
+
+A **collection context document** captures the conventions that apply across all
+repositories in a labretriever-compatible collection. Individual datacards stay
+concise because they can rely on these shared conventions, and tooling — in
+particular the `audit_collection` MCP tool — uses the document as authoritative
+context when auditing repos.
+
+Any developer building a labretriever-compatible collection should write one.
+The document typically covers:
+
+- **Field naming conventions**: canonical names for identifiers, measurements,
+  and condition columns (e.g. `regulator_locus_tag`, `pval`, `sample_id`).
+- **Standardized vocabulary**: controlled terms for media names, strain
+  backgrounds, growth phases, and cultivation methods so that per-sample
+  condition values are comparable across repos.
+- **Dataset type usage**: which `dataset_type` values are used in the collection
+  and what each means for the data structure.
+- **Categorical value standards**: the expected set of values for condition
+  columns that appear across multiple repos.
+- **Cross-cutting best practices**: any other notes that apply to all repos in
+  the collection.
+
+When you pass this document to `audit_collection` via the `collection_context`
+parameter, the tool uses its **Field Naming Conventions** and **Dataset Type
+Usage Examples** sections to flag deviations in individual datacards, and uses
+the **Standardized** vocabulary sections to identify non-standard values.
+
+The BrentLab yeast resources collection serves as a concrete reference
+implementation of this pattern. Its conventions are described below.
+
+---
 
 ## Collection Overview
 
@@ -18,76 +49,21 @@ The BrentLab yeast resources collection contains 11 datasets related to yeast tr
 10. **yeast_comparative_analysis** - Cross-dataset comparative analyses
 11. **yeast_genome_resources** - Reference genomic features
 
-## Standardized Media Names
+## Standard Experimental Conditions
 
-The collection uses standardized media names to facilitate cross-dataset queries. When specifying media in datacards, use these canonical names:
+None of these are required. However, when information
+about these conditions is available, the following
+standardized fields and values should be used to ensure
+comparability across datasets.
 
-### Rich Media
+### Strain
 
-- **YPD** (Yeast extract Peptone Dextrose)
-  - Carbon source: 2% D-glucose
-  - Nitrogen sources: 1% yeast extract, 2% peptone
-  - Standard rich medium for yeast growth
-
-- **yeast_extract_peptone**
-  - Base medium without specified carbon source
-  - Used with galactose (YPGal) or raffinose (YPRaff)
-
-### Minimal/Defined Media
-
-- **minimal** or **minimal_glucose**
-  - Minimal defined medium with glucose as carbon source
-  - Nitrogen source varies by experiment
-
-- **synthetic_complete** or **synthetic_complete_dextrose**
-  - Defined medium with complete amino acid supplementation
-  - Carbon source: typically 2% D-glucose
-  - Nitrogen source: yeast nitrogen base + amino acid dropout mix
-
-- **synthetic_complete_minus_X**
-  - Synthetic complete medium lacking specific nutrient(s)
-  - Examples: `synthetic_complete_minus_thiamine`, `synthetic_complete_minus_phosphate`
-  - Used for nutrient deprivation experiments
-
-- **selective_medium**
-  - Defined medium for plasmid selection
-  - Specific composition varies by selection markers
-
-## Standardized Strain Backgrounds
-
-The collection primarily uses these strain backgrounds:
-
-- **BY4741** - MATa his3Δ1 leu2Δ0 met15Δ0 ura3Δ0
-  - Used in: hu_2007_reimand_2010, kemmeren_2014
-
-- **W303** - Common alternative strain background
-  - Used in: harbison_2004 (derivative Z1256)
-
-- **S288C** - Reference genome strain
-  - Used in: Various datasets
-
-Strain background can be specified as a string or detailed object:
+Strain background may be included, for example:
 
 ```yaml
-# Simple string
 experimental_conditions:
   strain_background: BY4741
-
-# Detailed specification
-experimental_conditions:
-  strain_background:
-    genotype: BY4741
-    mating_type: MATa
-    markers:
-      - his3Δ1
-      - leu2Δ0
-      - met15Δ0
-      - ura3Δ0
-    source: Open_Biosystems
-    description: Knockout strains for nonessential transcription factors
 ```
-
-## Standard Experimental Conditions
 
 ### Growth Temperature
 
@@ -162,12 +138,29 @@ The collection follows these field naming conventions:
 
 ### Gene/Feature Identifiers
 
-- **regulator_locus_tag**: Systematic ID of regulatory factor (e.g., "YJR060W")
-- **regulator_symbol**: Common name of regulatory factor (e.g., "CBF1")
-- **target_locus_tag**: Systematic ID of target gene
-- **target_symbol**: Common name of target gene
+The BrentLab yeast collection uses these canonical identifier field names:
 
-All locus tags and symbols join to **yeast_genome_resources** dataset.
+- **regulator_locus_tag**: Systematic ID of the regulatory factor (e.g., "YJR060W")
+- **regulator_symbol**: Common gene name of the regulatory factor (e.g., "CBF1")
+- **target_locus_tag**: Systematic ID of the target gene
+- **target_symbol**: Common gene name of the target gene
+
+All locus tag and symbol fields must be joinable to
+`BrentLab/yeast_genome_resources` via the corresponding identifier column.
+
+#### Identifier Roles
+
+Fields carrying these identifiers should be marked with the following
+collection-defined roles:
+
+- `regulator_identifier` — applied to `regulator_locus_tag` and `regulator_symbol`.
+- `target_identifier` — applied to `target_locus_tag` and `target_symbol`.
+
+These roles are not reserved by labretriever itself (the library stores them but
+takes no special action). They are BrentLab conventions. Their value is that
+`get_column_metadata()` will return them on the appropriate columns, allowing an AI
+assistant or analysis script to identify which columns refer to the regulator and
+which refer to the target without relying on naming conventions alone.
 
 ### Quantitative Measurements Examples
 
@@ -187,14 +180,52 @@ Common measurement field names:
 - **replicate** - Biological replicate number
 - **time** - Timepoint in timecourse experiments
 
-## Dataset Type Usage Examples
+## Dataset Types in This Collection
+
+The BrentLab yeast resources collection defines three collection-specific
+`dataset_type` values in addition to the two reserved by labretriever. For the
+reserved types (`metadata`, `comparative`) and their runtime behavior, see
+[Reserved Dataset Types](huggingface_datacard.md#reserved-dataset-types).
+
+### `genomic_features`
+
+Static reference annotations for genomic features (genes, promoters, etc.).
+
+- **Structure**: One row per genomic feature.
+- **Fields**: Identifiers, coordinates, and classification columns. Field names
+  are collection-defined; see [Gene/Feature Identifiers](#genefeature-identifiers).
+
+### `annotated_features`
+
+Quantitative data associated with genomic features.
+
+- **Structure**: One row per genomic feature per sample. A `sample_id` field
+  should uniquely identify each experimental sample.
+- **Fields**: Identifier fields (roles `regulator_identifier`,
+  `target_identifier`) and measurement fields (role `quantitative_measure`).
+  See [Field Naming Conventions](#field-naming-conventions).
+
+### `genome_map`
+
+Position-level data across genomic coordinates, typically for large signal
+track or coverage datasets.
+
+- **Structure**: Position-value pairs; usually partitioned.
+- **Fields**: Standard coordinate fields in this collection are `chr` and `pos`
+  for single-position data, or `chr`, `start`, `end` for interval data.
+
+The following sections describe how each type is used in specific repos.
 
 ### genomic_features
 
 **yeast_genome_resources** provides reference annotations:
 - Gene coordinates and strand information
-- Systematic IDs (locus_tag) and common names (symbol)
+- Systematic IDs (`locus_tag`) and common names (`symbol`)
 - Feature types (gene, ncRNA_gene, tRNA_gene, etc.)
+
+Standard coordinate field names in this collection: `chr`, `pos` for single
+positions; `chr`, `start`, `end` for intervals. All coordinates are 0-based,
+half-open unless otherwise noted.
 
 Used for joining regulator/target identifiers across all other datasets.
 
@@ -207,15 +238,17 @@ Most common dataset type in the collection. Examples:
 - **kemmeren_2014**: TF deletion expression data
 - **mahendrawada_2025**: ChEC-seq binding scores
 
-Typical structure: regulator × target × measurements, with optional condition fields.
+Typical structure: regulator x target x measurements, with optional condition fields.
 
 ### genome_map
 
-Position-level data, typically partitioned by sample or accession:
+Position-level data, typically partitioned by sample or accession. Examples:
 
 - **barkai_compendium**: ChEC-seq pileup data partitioned by Series/Accession
 - **rossi_2021**: ChIP-exo 5' tag coverage partitioned by sample
 - **callingcards**: Transposon insertion density partitioned by batch
+
+Standard coordinate field names: `chr`, `pos`.
 
 ### metadata
 
@@ -353,12 +386,9 @@ carbon_source:
 
 ### 3. Use Standard Field Roles
 
-Apply semantic roles consistently:
-- `regulator_identifier` - for regulator fields
-- `target_identifier` - for target fields
-- `quantitative_measure` - for measurements
-- `experimental_condition` - for condition fields
-- `genomic_coordinate` - for positional data
+Apply semantic roles consistently across all repos in the collection. See
+[Feature Roles](huggingface_datacard.md#feature-roles) for the full list of
+recognized roles.
 
 ### 4. Provide sample_id
 
@@ -376,3 +406,30 @@ All regulator/target identifiers must be joinable to **yeast_genome_resources**:
 - Use current systematic IDs (ORF names)
 - Include both locus_tag and symbol fields
 - Mark with appropriate roles
+
+---
+
+## Terms and Definitions
+
+### regulator
+
+A protein assayed for its effect on gene expression, including but not limited to
+transcription factors (TFs). In this collection, "regulator" and "TF" are used
+interchangeably because the collection focuses on TF binding and perturbation
+experiments.
+
+### target
+
+A gene whose expression or accessibility is measured in the context of a regulator
+experiment. In binding datasets (e.g., ChIP-chip, ChEC-seq, Calling Cards), a target
+is a genomic locus at which the regulator's occupancy is measured. In perturbation
+datasets (e.g., overexpression, deletion), a target is a gene whose expression
+changes in response to the regulator perturbation.
+
+### active set (of samples)
+
+To conduct analysis a user defines a set of samples. A sample is identified by its
+metadata features — for example, `regulator_locus_tag`. If the user is interested in
+all samples across the collection that assay a given regulator, that constitutes the
+active set. The user may further filter on additional features (e.g., retain only
+one condition per regulator, exclude specific datasets) to refine the active set.

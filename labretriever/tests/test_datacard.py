@@ -7,7 +7,6 @@ import pytest
 from labretriever import DataCard
 from labretriever.datacard import DatasetSchema
 from labretriever.errors import DataCardError, DataCardValidationError, HfDataFetchError
-from labretriever.models import DatasetType
 
 
 def _external_metadata_card_data():
@@ -253,7 +252,7 @@ class TestDataCard:
         config = datacard.get_config("binding_data")
         assert config is not None
         assert config.config_name == "binding_data"
-        assert config.dataset_type == DatasetType.ANNOTATED_FEATURES
+        assert config.dataset_type == "annotated_features"
 
         # Test non-existent config
         assert datacard.get_config("nonexistent") is None
@@ -660,9 +659,11 @@ class TestGetMetadataFields:
         datacard = DataCard(test_repo_id)
         schema = datacard.extract_metadata_schema("coverage_data")
 
-        # External metadata features with role=regulator_identifier
-        assert "regulator_locus_tag" in schema["regulator_fields"]
-        assert "regulator_symbol" in schema["regulator_fields"]
+        # regulator_fields / target_fields are no longer extracted by the core
+        # library — identifier roles are collection-defined and pass through
+        # to ColumnMeta.role without special-casing here
+        assert "regulator_fields" not in schema
+        assert "target_fields" not in schema
         # metadata_fields key populated
         assert schema["metadata_fields"] is not None
         assert "sample_id" in schema["metadata_fields"]

@@ -13,35 +13,44 @@ from labretriever.models import (
     DatasetCard,
     DatasetConfig,
     DatasetInfo,
-    DatasetType,
     ExtractedMetadata,
     FeatureInfo,
     MetadataConfig,
     MetadataRelationship,
     PartitioningInfo,
+    SharedFeatureGroup,
 )
 
 
 class TestDatasetType:
-    """Tests for DatasetType enum."""
+    """Tests for dataset_type string field behavior."""
 
-    def test_dataset_type_values(self):
-        """Test that all expected dataset types are defined."""
-        assert DatasetType.GENOMIC_FEATURES == "genomic_features"
-        assert DatasetType.ANNOTATED_FEATURES == "annotated_features"
-        assert DatasetType.GENOME_MAP == "genome_map"
-        assert DatasetType.METADATA == "metadata"
-        assert DatasetType.COMPARATIVE == "comparative"
+    def test_reserved_types_are_strings(self):
+        """Reserved types are plain string constants."""
+        from labretriever.models import DATASET_TYPE_COMPARATIVE, DATASET_TYPE_METADATA
 
-    def test_dataset_type_from_string(self):
-        """Test creating DatasetType from string."""
-        dt = DatasetType("genomic_features")
-        assert dt == DatasetType.GENOMIC_FEATURES
+        assert DATASET_TYPE_METADATA == "metadata"
+        assert DATASET_TYPE_COMPARATIVE == "comparative"
 
-    def test_invalid_dataset_type(self):
-        """Test that invalid dataset type raises error."""
-        with pytest.raises(ValueError):
-            DatasetType("invalid_type")
+    def test_arbitrary_dataset_type_accepted(self):
+        """Any string is accepted as dataset_type."""
+        cfg = DatasetConfig(
+            config_name="c",
+            dataset_type="my_collection_type",
+            data_files=[DataFileInfo(path="f.parquet")],
+            dataset_info=DatasetInfo(features=[]),
+        )
+        assert cfg.dataset_type == "my_collection_type"
+
+    def test_reserved_type_metadata_accepted(self):
+        """The reserved type 'metadata' parses correctly."""
+        cfg = DatasetConfig(
+            config_name="c",
+            dataset_type="metadata",
+            data_files=[DataFileInfo(path="f.parquet")],
+            dataset_info=DatasetInfo(features=[]),
+        )
+        assert cfg.dataset_type == "metadata"
 
 
 class TestFeatureInfo:
@@ -169,14 +178,14 @@ class TestDatasetConfig:
         config = DatasetConfig(
             config_name="test_data",
             description="Test dataset",
-            dataset_type=DatasetType.ANNOTATED_FEATURES,
+            dataset_type="annotated_features",
             data_files=[DataFileInfo(path="data.parquet")],
             dataset_info=DatasetInfo(
                 features=[FeatureInfo(name="id", dtype="string", description="ID")]
             ),
         )
         assert config.config_name == "test_data"
-        assert config.dataset_type == DatasetType.ANNOTATED_FEATURES
+        assert config.dataset_type == "annotated_features"
         assert config.default is False
         assert config.applies_to is None
         assert config.metadata_fields is None
@@ -186,7 +195,7 @@ class TestDatasetConfig:
         config = DatasetConfig(
             config_name="metadata",
             description="Metadata",
-            dataset_type=DatasetType.METADATA,
+            dataset_type="metadata",
             applies_to=["data_config_1", "data_config_2"],
             data_files=[DataFileInfo(path="metadata.parquet")],
             dataset_info=DatasetInfo(
@@ -205,7 +214,7 @@ class TestDatasetConfig:
             DatasetConfig(
                 config_name="data",
                 description="Data",
-                dataset_type=DatasetType.ANNOTATED_FEATURES,
+                dataset_type="annotated_features",
                 applies_to=["other_config"],
                 data_files=[DataFileInfo(path="data.parquet")],
                 dataset_info=DatasetInfo(
@@ -218,7 +227,7 @@ class TestDatasetConfig:
         config = DatasetConfig(
             config_name="data",
             description="Data",
-            dataset_type=DatasetType.ANNOTATED_FEATURES,
+            dataset_type="annotated_features",
             metadata_fields=["regulator_symbol", "condition"],
             data_files=[DataFileInfo(path="data.parquet")],
             dataset_info=DatasetInfo(
@@ -240,7 +249,7 @@ class TestDatasetConfig:
             DatasetConfig(
                 config_name="data",
                 description="Data",
-                dataset_type=DatasetType.ANNOTATED_FEATURES,
+                dataset_type="annotated_features",
                 metadata_fields=[],
                 data_files=[DataFileInfo(path="data.parquet")],
                 dataset_info=DatasetInfo(
@@ -248,8 +257,9 @@ class TestDatasetConfig:
                 ),
             )
 
-    def test_dataset_config_accepts_extra_fields(self):
-        """Test that DatasetConfig accepts extra fields like experimental_conditions."""
+    def test_dataset_config_accepts_experimental_conditions(self):
+        """Test that DatasetConfig parses experimental_conditions as a declared
+        field."""
         config_data = {
             "config_name": "data",
             "description": "Data",
@@ -264,8 +274,11 @@ class TestDatasetConfig:
             },
         }
         config = DatasetConfig(**config_data)
-        assert hasattr(config, "model_extra")
-        assert "experimental_conditions" in config.model_extra
+        assert config.experimental_conditions == {
+            "temperature_celsius": 30,
+            "media": {"name": "YPD"},
+        }
+        assert "experimental_conditions" not in config.model_extra
 
 
 class TestDatasetCard:
@@ -278,7 +291,7 @@ class TestDatasetCard:
                 DatasetConfig(
                     config_name="data",
                     description="Data",
-                    dataset_type=DatasetType.ANNOTATED_FEATURES,
+                    dataset_type="annotated_features",
                     data_files=[DataFileInfo(path="data.parquet")],
                     dataset_info=DatasetInfo(
                         features=[
@@ -291,7 +304,8 @@ class TestDatasetCard:
         assert len(card.configs) == 1
 
     def test_dataset_card_accepts_extra_fields(self):
-        """Test that DatasetCard accepts extra top-level fields."""
+        """Test that DatasetCard parses experimental_conditions as a declared field
+        while still accepting other arbitrary top-level fields via model_extra."""
         card_data = {
             "license": "mit",
             "pretty_name": "Test Dataset",
@@ -312,9 +326,9 @@ class TestDatasetCard:
             ],
         }
         card = DatasetCard(**card_data)
-        assert hasattr(card, "model_extra")
+        assert card.experimental_conditions == {"strain_background": "BY4741"}
+        assert "experimental_conditions" not in card.model_extra
         assert "license" in card.model_extra
-        assert "experimental_conditions" in card.model_extra
 
     def test_empty_configs_error(self):
         """Test that empty configs raises error."""
@@ -329,7 +343,7 @@ class TestDatasetCard:
                     DatasetConfig(
                         config_name="data",
                         description="Data 1",
-                        dataset_type=DatasetType.ANNOTATED_FEATURES,
+                        dataset_type="annotated_features",
                         data_files=[DataFileInfo(path="data1.parquet")],
                         dataset_info=DatasetInfo(
                             features=[
@@ -340,7 +354,7 @@ class TestDatasetCard:
                     DatasetConfig(
                         config_name="data",
                         description="Data 2",
-                        dataset_type=DatasetType.ANNOTATED_FEATURES,
+                        dataset_type="annotated_features",
                         data_files=[DataFileInfo(path="data2.parquet")],
                         dataset_info=DatasetInfo(
                             features=[
@@ -359,7 +373,7 @@ class TestDatasetCard:
                     DatasetConfig(
                         config_name="data1",
                         description="Data 1",
-                        dataset_type=DatasetType.ANNOTATED_FEATURES,
+                        dataset_type="annotated_features",
                         default=True,
                         data_files=[DataFileInfo(path="data1.parquet")],
                         dataset_info=DatasetInfo(
@@ -371,7 +385,7 @@ class TestDatasetCard:
                     DatasetConfig(
                         config_name="data2",
                         description="Data 2",
-                        dataset_type=DatasetType.ANNOTATED_FEATURES,
+                        dataset_type="annotated_features",
                         default=True,
                         data_files=[DataFileInfo(path="data2.parquet")],
                         dataset_info=DatasetInfo(
@@ -390,7 +404,7 @@ class TestDatasetCard:
                 DatasetConfig(
                     config_name="data1",
                     description="Data 1",
-                    dataset_type=DatasetType.ANNOTATED_FEATURES,
+                    dataset_type="annotated_features",
                     data_files=[DataFileInfo(path="data1.parquet")],
                     dataset_info=DatasetInfo(
                         features=[
@@ -401,7 +415,7 @@ class TestDatasetCard:
                 DatasetConfig(
                     config_name="data2",
                     description="Data 2",
-                    dataset_type=DatasetType.METADATA,
+                    dataset_type="metadata",
                     data_files=[DataFileInfo(path="data2.parquet")],
                     dataset_info=DatasetInfo(
                         features=[
@@ -423,7 +437,7 @@ class TestDatasetCard:
                 DatasetConfig(
                     config_name="data",
                     description="Data",
-                    dataset_type=DatasetType.ANNOTATED_FEATURES,
+                    dataset_type="annotated_features",
                     data_files=[DataFileInfo(path="data.parquet")],
                     dataset_info=DatasetInfo(
                         features=[
@@ -434,7 +448,7 @@ class TestDatasetCard:
                 DatasetConfig(
                     config_name="metadata",
                     description="Metadata",
-                    dataset_type=DatasetType.METADATA,
+                    dataset_type="metadata",
                     data_files=[DataFileInfo(path="metadata.parquet")],
                     dataset_info=DatasetInfo(
                         features=[
@@ -444,7 +458,7 @@ class TestDatasetCard:
                 ),
             ]
         )
-        data_configs = card.get_configs_by_type(DatasetType.ANNOTATED_FEATURES)
+        data_configs = card.get_configs_by_type("annotated_features")
         assert len(data_configs) == 1
         assert data_configs[0].config_name == "data"
 
@@ -455,7 +469,7 @@ class TestDatasetCard:
                 DatasetConfig(
                     config_name="data1",
                     description="Data 1",
-                    dataset_type=DatasetType.ANNOTATED_FEATURES,
+                    dataset_type="annotated_features",
                     data_files=[DataFileInfo(path="data1.parquet")],
                     dataset_info=DatasetInfo(
                         features=[
@@ -466,7 +480,7 @@ class TestDatasetCard:
                 DatasetConfig(
                     config_name="data2",
                     description="Data 2",
-                    dataset_type=DatasetType.ANNOTATED_FEATURES,
+                    dataset_type="annotated_features",
                     default=True,
                     data_files=[DataFileInfo(path="data2.parquet")],
                     dataset_info=DatasetInfo(
@@ -488,7 +502,7 @@ class TestDatasetCard:
                 DatasetConfig(
                     config_name="data",
                     description="Data",
-                    dataset_type=DatasetType.ANNOTATED_FEATURES,
+                    dataset_type="annotated_features",
                     data_files=[DataFileInfo(path="data.parquet")],
                     dataset_info=DatasetInfo(
                         features=[
@@ -499,7 +513,7 @@ class TestDatasetCard:
                 DatasetConfig(
                     config_name="metadata",
                     description="Metadata",
-                    dataset_type=DatasetType.METADATA,
+                    dataset_type="metadata",
                     data_files=[DataFileInfo(path="metadata.parquet")],
                     dataset_info=DatasetInfo(
                         features=[
@@ -511,7 +525,7 @@ class TestDatasetCard:
         )
         data_configs = card.get_data_configs()
         assert len(data_configs) == 1
-        assert data_configs[0].dataset_type != DatasetType.METADATA
+        assert data_configs[0].dataset_type != "metadata"
 
     def test_get_metadata_configs(self):
         """Test get_metadata_configs method."""
@@ -520,7 +534,7 @@ class TestDatasetCard:
                 DatasetConfig(
                     config_name="data",
                     description="Data",
-                    dataset_type=DatasetType.ANNOTATED_FEATURES,
+                    dataset_type="annotated_features",
                     data_files=[DataFileInfo(path="data.parquet")],
                     dataset_info=DatasetInfo(
                         features=[
@@ -531,7 +545,7 @@ class TestDatasetCard:
                 DatasetConfig(
                     config_name="metadata",
                     description="Metadata",
-                    dataset_type=DatasetType.METADATA,
+                    dataset_type="metadata",
                     data_files=[DataFileInfo(path="metadata.parquet")],
                     dataset_info=DatasetInfo(
                         features=[
@@ -543,7 +557,7 @@ class TestDatasetCard:
         )
         metadata_configs = card.get_metadata_configs()
         assert len(metadata_configs) == 1
-        assert metadata_configs[0].dataset_type == DatasetType.METADATA
+        assert metadata_configs[0].dataset_type == "metadata"
 
     def test_dataset_card_citation_field(self):
         """Test that DatasetCard accepts citation field."""
@@ -571,7 +585,7 @@ class TestDatasetCard:
         config = DatasetConfig(
             config_name="special_dataset",
             description="Dataset with specific citation",
-            dataset_type=DatasetType.ANNOTATED_FEATURES,
+            dataset_type="annotated_features",
             citation="Dataset-specific citation that overrides repository level",
             data_files=[DataFileInfo(path="special.parquet")],
             dataset_info=DatasetInfo(
@@ -591,7 +605,7 @@ class TestDatasetCard:
                 DatasetConfig(
                     config_name="data",
                     description="Data",
-                    dataset_type=DatasetType.ANNOTATED_FEATURES,
+                    dataset_type="annotated_features",
                     data_files=[DataFileInfo(path="data.parquet")],
                     dataset_info=DatasetInfo(
                         features=[
@@ -727,3 +741,177 @@ class TestMetadataConfig:
                     }
                 }
             )
+
+
+def _make_config(name: str, features: list[dict]) -> DatasetConfig:
+    """Return a minimal DatasetConfig with the given name and features."""
+    return DatasetConfig(
+        config_name=name,
+        description=name,
+        dataset_type="annotated_features",
+        data_files=[DataFileInfo(path=f"{name}.parquet")],
+        dataset_info=DatasetInfo(features=[FeatureInfo(**f) for f in features]),
+    )
+
+
+class TestSharedFeatures:
+    """Tests for repo-level shared feature inheritance in DatasetCard."""
+
+    def test_fields_inherited_by_single_config(self):
+        """A config listed in applies_to receives the shared fields."""
+        card = DatasetCard(
+            features=[
+                SharedFeatureGroup(
+                    applies_to=["cfg_a"],
+                    fields=[
+                        FeatureInfo(
+                            name="target_locus_tag",
+                            dtype="string",
+                            description="Shared description",
+                            role="target_identifier",
+                        )
+                    ],
+                )
+            ],
+            configs=[
+                _make_config("cfg_a", []),
+                _make_config("cfg_b", []),
+            ],
+        )
+        cfg_a = card.get_config_by_name("cfg_a")
+        assert cfg_a is not None
+        names = [f.name for f in cfg_a.dataset_info.features]
+        assert "target_locus_tag" in names
+
+        cfg_b = card.get_config_by_name("cfg_b")
+        assert cfg_b is not None
+        assert cfg_b.dataset_info.features == []
+
+    def test_fields_inherited_by_multiple_configs(self):
+        """Two configs listed in applies_to both receive the shared fields."""
+        card = DatasetCard(
+            features=[
+                SharedFeatureGroup(
+                    applies_to=["cfg_a", "cfg_b"],
+                    fields=[
+                        FeatureInfo(name="shared", dtype="string", description="S")
+                    ],
+                )
+            ],
+            configs=[
+                _make_config("cfg_a", []),
+                _make_config("cfg_b", []),
+            ],
+        )
+        for name in ("cfg_a", "cfg_b"):
+            cfg = card.get_config_by_name(name)
+            assert cfg is not None
+            assert any(f.name == "shared" for f in cfg.dataset_info.features)
+
+    def test_config_overrides_description_only(self):
+        """Config-level entry overrides only description; dtype and role are
+        inherited."""
+        card = DatasetCard(
+            features=[
+                SharedFeatureGroup(
+                    applies_to=["cfg_a"],
+                    fields=[
+                        FeatureInfo(
+                            name="pval",
+                            dtype="float64",
+                            description="Shared description",
+                            role="quantitative_measure",
+                        )
+                    ],
+                )
+            ],
+            configs=[
+                _make_config(
+                    "cfg_a",
+                    [{"name": "pval", "dtype": "float64", "description": "Override"}],
+                ),
+            ],
+        )
+        cfg_a = card.get_config_by_name("cfg_a")
+        assert cfg_a is not None
+        feature = next(f for f in cfg_a.dataset_info.features if f.name == "pval")
+        assert feature.description == "Override"
+        assert feature.dtype == "float64"
+        assert feature.role == "quantitative_measure"
+
+    def test_later_group_wins_on_field_name_collision(self):
+        """When two groups both supply a field with the same name, the later group
+        wins."""
+        card = DatasetCard(
+            features=[
+                SharedFeatureGroup(
+                    applies_to=["cfg_a"],
+                    fields=[FeatureInfo(name="x", dtype="string", description="First")],
+                ),
+                SharedFeatureGroup(
+                    applies_to=["cfg_a"],
+                    fields=[FeatureInfo(name="x", dtype="int32", description="Second")],
+                ),
+            ],
+            configs=[_make_config("cfg_a", [])],
+        )
+        cfg_a = card.get_config_by_name("cfg_a")
+        assert cfg_a is not None
+        feature = next(f for f in cfg_a.dataset_info.features if f.name == "x")
+        assert feature.dtype == "int32"
+        assert feature.description == "Second"
+
+    def test_config_only_fields_preserved(self):
+        """Fields declared only in dataset_info.features (not inherited) are kept."""
+        card = DatasetCard(
+            features=[
+                SharedFeatureGroup(
+                    applies_to=["cfg_a"],
+                    fields=[
+                        FeatureInfo(name="inherited", dtype="string", description="I")
+                    ],
+                )
+            ],
+            configs=[
+                _make_config(
+                    "cfg_a",
+                    [
+                        {"name": "inherited", "dtype": "string", "description": "I"},
+                        {"name": "local_only", "dtype": "int32", "description": "L"},
+                    ],
+                ),
+            ],
+        )
+        cfg_a = card.get_config_by_name("cfg_a")
+        assert cfg_a is not None
+        names = [f.name for f in cfg_a.dataset_info.features]
+        assert "inherited" in names
+        assert "local_only" in names
+
+    def test_unknown_applies_to_raises(self):
+        """An applies_to referencing a non-existent config name raises ValueError."""
+        with pytest.raises((ValidationError, ValueError)):
+            DatasetCard(
+                features=[
+                    SharedFeatureGroup(
+                        applies_to=["nonexistent"],
+                        fields=[FeatureInfo(name="x", dtype="string", description="X")],
+                    )
+                ],
+                configs=[_make_config("cfg_a", [])],
+            )
+
+    def test_no_features_key_unchanged(self):
+        """DatasetCard with no top-level features key is unaffected."""
+        card = DatasetCard(
+            configs=[
+                _make_config(
+                    "cfg_a",
+                    [{"name": "col", "dtype": "string", "description": "C"}],
+                )
+            ]
+        )
+        cfg_a = card.get_config_by_name("cfg_a")
+        assert cfg_a is not None
+        assert len(cfg_a.dataset_info.features) == 1
+        assert cfg_a.dataset_info.features[0].name == "col"

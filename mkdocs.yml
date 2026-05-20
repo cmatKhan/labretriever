@@ -1,6 +1,6 @@
 site_name: labretriever
 site_description: "Python API for querying and analyzing genomic datasets from HuggingFace Hub"
-site_author: "ben mueller <email@email.com>, chase mateusiak <chasem@wustl.edu>, michael brent <brent@wustl.edu>"
+site_author: "chase mateusiak <chasem@wustl.edu>"
 site_url: "https://cmatKhan.github.io/labretriever"
 repo_url: "https://github.com/cmatKhan/labretriever"
 repo_name: "cmatKhan/labretriever"
@@ -165,6 +165,6 @@ nav:
       - Custom Exceptions: errors.md
   - HuggingFace Configuration:
     - HuggingFace Dataset Card Format: huggingface_datacard.md
-    - BrentLab Collection: brentlab_yeastresources_collection.md
+    - Collection Context Document (Example): brentlab_yeastresources_collection.md
   - VirtualDB Configuration: virtual_db_configuration.md
   - MCP Server: mcp_server.md

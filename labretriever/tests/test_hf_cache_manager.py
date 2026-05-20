@@ -8,7 +8,6 @@ import duckdb
 import pytest
 
 from labretriever.hf_cache_manager import HfCacheManager
-from labretriever.models import DatasetType
 
 
 class TestHfCacheManagerInit:
@@ -486,7 +485,7 @@ def sample_data_config():
     return Mock(
         config_name="test_data",
         metadata_fields=["condition", "replicate"],
-        dataset_type=DatasetType.ANNOTATED_FEATURES,
+        dataset_type="annotated_features",
     )
 
 

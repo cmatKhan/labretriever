@@ -5,70 +5,44 @@ repositories used with the labretriever package. The metadata is defined in the 
 README.md file, at the top in a yaml block, and provides structured information about
 the dataset configuration and contents.  
 
-This documentation is intended for developers preparing or augmenting a huggingface
-dataset repository to be compatible with labretriever. Before reading, please review the
-[BrentLab/hackett_2020](https://huggingface.co/datasets/BrentLab/hackett_2020/blob/main/README.md) 
-datacard as an example of a complete implementation of a simple repository. After
-reviewing Hackett 2020 and this documentation, it might be helpful to review a more
-complex example such as:
+This documentation is intended for developers preparing or augmenting a HuggingFace
+dataset repository to be compatible with labretriever. It describes the format only.
+Field naming conventions, expected dataset types, and vocabulary standards are
+collection-specific and should be documented in a
+[collection context document](brentlab_yeastresources_collection.md). The BrentLab
+yeast resources collection provides a concrete example of both the datacard format
+and its accompanying collection context document.
 
-- [BrentLab/barkai_compendium](https://huggingface.co/datasets/BrentLab/barkai_compendium):
-  This contains a `genome_map` partitioned dataset with separate metadata applied via
-  the `applies_to` field. 
-- [Brentlab/rossi_2021](https://huggingface.co/datasets/BrentLab/rossi_2021):
-  This contains multiple `annotated_features` datasets with embedded metadata
-- [Brentlab/yeast_genomic_features](https://huggingface.co/datasets/BrentLab/yeast_genomic_features):
-  This contains a simple `genomic_features` dataset used as a reference for other
-  datasets in the collection.
+## Reserved Dataset Types
 
-## Dataset Types
+The `dataset_type` field is a free-form string on each config. Any value is
+accepted. Your collection context document should define which types your
+collection uses and what each one means.
 
-The `dataset_type` field is a property of each config (hierarchically under
-`config_name`). `labretriever` recognizes the following dataset types:
+Two values are **reserved** by labretriever and trigger specific runtime
+behavior. All other values are treated as opaque collection-defined strings.
 
-### 1. `genomic_features`
-Static information about genomic features (genes, promoters, etc.)
-- **Use case**: Gene annotations, regulatory classifications, static feature data
-- **Structure**: One row per genomic feature
-- **Required fields**: Usually includes gene identifiers, coordinates, classifications
+### `metadata`
 
-### 2. `annotated_features`
-Quantitative data associated with genomic features. A field `sample_id` should exist
-to identify single experiments in a single set of conditions.
-- **Use case**: Expression data, binding scores, differential expression results
-- **Structure**: Each sample will have one row per genomic feature measured. The
-  role `quantitative_measure` should be used to identify measurement columns.
-- **Common fields**: `regulator_*`, `target_*` fields with the roles
-  `regulator_identifier` and `target_identifier` respectively. Fields with the role
-  `quantitative_measure` for measurements.
+Experimental metadata and sample descriptions.
 
-### 3. `genome_map`
-Position-level data across genomic coordinates
-- **Use case**: Signal tracks, coverage data, genome-wide binding profiles
-- **Structure**: Position-value pairs, often large datasets
-- **Required fields**: `chr` (chromosome), `pos` (position), signal values
+- **Use case**: Sample information, experimental conditions, protocol details,
+  per-sample QC metrics. For cross-sample analysis see
+  [`comparative`](#comparative) below.
+- **Structure**: One row per sample.
+- **Special field**: `applies_to` — an optional list of config names this
+  metadata config applies to. This field is only permitted on `metadata` and
+  `comparative` configs. It is rejected by validation on any other type.
 
-### 4. `metadata`
-Experimental metadata and sample descriptions
-- **Use case**: Sample information, experimental conditions, protocol details. Note
-  that this can also include per-sample QC metrics. For cross-sample QC or analysis,
-  see [comparative](#5-comparative) below.
-- **Structure**: One row per sample
-- **Common fields**: Sample identifiers, experimental conditions, publication info
-- **Special field**: `applies_to` - Optional list of config names this metadata applies to
-
-### 5. `comparative`
+### `comparative`
 
 Quality control metrics, validation results, and cross-dataset analysis outputs.
 
-**Use cases**:
-- Cross-dataset quality assessments and validation metrics
-- Analysis results relating samples across datasets or repositories
-- Comparative analyses (e.g., binding vs expression correlation)
-
-**Structure**: One row represents an observation on 2 or more samples. Note that the
-  name of the column containing the sample references isn't specified. However, the
-  role and format of the sample references are strictly defined. See
+- **Use cases**: Cross-dataset quality assessments, analysis results relating
+  samples across datasets or repositories, comparative analyses.
+- **Structure**: One row represents an observation on two or more samples. The
+  name of the column containing sample references is user-defined, but its role
+  and format are strictly defined. See
   [Defining Sample References](#defining-sample-references) below.
 
 #### Defining Sample References
@@ -84,75 +58,72 @@ the contents of that field, and its role, must be as follows:
 ```
 
 Examples:
-- `"BrentLab/harbison_2004;harbison_2004;CBF1_YPD"`
-- `"BrentLab/kemmeren_2014;kemmeren_2014;sample_42"`
+- `"org/dataset_a;config_1;42"`
+- `"org/dataset_b;main_config;sample_99"`
 
 ## Experimental Conditions
 
-Experimental conditions can be specified in three ways:
-1. **Top-level** `experimental_conditions`: Apply to all configs in the repository.
-  Use when experimental parameters are common across all datasets. This will occur
-  at the same level as `configs`
-2. **Config-level** `experimental_conditions`: Apply to a specific config
-  ([dataset](#dataset)). Use when certain datasets have experimental parameters that
-  are not shared by all other datasets in the [repository](#huggingface-repo), but
-  are common to all [samples](#sample) within that dataset.
-3. **Field-level** with `role: experimental_condition` ([feature-roles](#feature-roles)): For
-  per-sample or per-measurement variation in experimental conditions stored as
-  data columns. This is specified in the
-  `dataset_info.features` ([feature-definitions](#feature-definitions))
-  section of a config. `experimental_condition` fields which are categorical can are
-  specifically defined in [categorical fields with value definitions](#categorical-fields-with-value-definitions).
+`experimental_conditions` is a **reserved property** in labretriever with
+built-in retrieval and merging logic. It can be specified at three scopes,
+and all three levels are surfaced together by `DataCard.extract_metadata_schema`
+and `DataCard.get_experimental_conditions`.
 
-The priority of experimental conditions is:
+1. **Top-level** (`experimental_conditions` at the same level as `configs`):
+   Values here are constant across every config in the repository. Returned
+   by `get_experimental_conditions()` with no argument.
+2. **Config-level** (`experimental_conditions` inside a specific config entry):
+   Values here are constant across all samples in that config and override
+   top-level keys of the same name. Returned merged with top-level by
+   `get_experimental_conditions(config_name)`.
+3. **Field-level** (`role: experimental_condition` on a feature column; see
+   [Feature Roles](#feature-roles)): Per-sample variation captured as a data
+   column. Columns with this role are collected into `condition_fields` by
+   `extract_metadata_schema` and their `definitions` are exposed as
+   `level_definitions` in column metadata.
+
+When the same key appears at multiple scopes the resolution order is:
 
 field-level > config-level > top-level
 
-**Example of all three methods:**
+The content and structure of `experimental_conditions` dicts is entirely
+collection-defined. For a concrete example of how this property is used in
+practice, see the
+[BrentLab Yeast Resources Collection](brentlab_yeastresources_collection.md#standard-experimental-conditions).
+
+**Example showing all three scopes:**
+
 ```yaml
-# Top-level experimental conditions (apply to all [datasets](#dataset) in the repo)
+# Top-level: constant across the entire repo
 experimental_conditions:
   temperature_celsius: 30
 configs:
-- config_name: overexpression_data
-  description: TF overexpression perturbation data
+- config_name: treated_samples
   dataset_type: annotated_features
-  # The overexpression_data [dataset](#dataset) has an additional experimental
-  # condition that is specific to this dataset
+  # Config-level: constant across all samples in this config only;
+  # overrides top-level keys of the same name
   experimental_conditions:
-    strain_background: "BY4741"
+    treatment: compound_x
   data_files:
     - split: train
-      path: overexpression.parquet
+      path: treated.parquet
   dataset_info:
     features:
-      - name: time
-        dtype: float
-        description: Time point in minutes
-        role: experimental_condition
-      - name: mechanism
+      - name: batch
         dtype: string
-        description: Induction mechanism (GEV or ZEV)
+        description: Experimental batch identifier
+        # Field-level: per-row variation stored as a data column
         role: experimental_condition
-        definitions:
-          GEV:
-            perturbation_method:
-              type: inducible_overexpression
-              system: GEV
-              inducer: beta-estradiol
-              description: "Galactose-inducible estrogen receptor-VP16 fusion system"
-          ZEV:
-            perturbation_method:
-              type: inducible_overexpression
-              system: ZEV
-              inducer: beta-estradiol
-              description: >-
-                "Z3 (synthetic zinc finger)-estrogen receptor-VP16 fusion system"
-      - name: log2_ratio
+      - name: score
         dtype: float
-        description: Log2 fold change
         role: quantitative_measure
 ```
+
+### Other Repo and Config Properties
+
+The format also accepts arbitrary additional properties at the repo or config
+level via Pydantic's `extra="allow"`. These pass through to `model_extra` and
+are available to collection-specific tooling, but labretriever has no built-in
+retrieval logic for them. Only `experimental_conditions` has first-class support.
 
 ## Citation and DOI
 
@@ -197,10 +168,11 @@ configs:
       path: reprocessed_data.parquet
   dataset_info:
     # ... feature definitions ...
+```
 
 ## Genome Resources
 
-Binding datasets that are built against a specific set of genomic intervals
+Datasets that are built against a specific set of genomic intervals
 (e.g. promoter annotations, gene bodies) can declare that information directly
 in the datacard using a `genome_resources` block. This keeps data provenance
 co-located with the dataset rather than in a separate config file.
@@ -216,23 +188,23 @@ sub-field is needed.
 # Repo-level: applies to all configs in this datacard
 genome_resources:
   region_sets:
-    yiming_promoters:
-      path: https://huggingface.co/datasets/BrentLab/yeast_genome_resources/resolve/main/yiming_promoters.bed
-      join_column: target_locus_tag
+    promoters:
+      path: https://huggingface.co/datasets/org/reference_data/resolve/main/promoters.bed
+      join_column: gene_id
 
 configs:
-  - config_name: 2026_analysis_set
-    description: Calling cards data
+  - config_name: analysis_set
+    description: Binding data
     dataset_type: annotated_features
     # Config-level: overrides repo-level for this config only
     genome_resources:
       region_sets:
-        yiming_promoters:
-          path: https://huggingface.co/datasets/BrentLab/yeast_genome_resources/resolve/main/yiming_promoters_v2.bed
-          join_column: target_locus_tag
+        promoters:
+          path: https://huggingface.co/datasets/org/reference_data/resolve/main/promoters_v2.bed
+          join_column: gene_id
     data_files:
       - split: train
-        path: data/2026_analysis_set.parquet
+        path: data/analysis_set.parquet
     dataset_info:
       features: []
 ```
@@ -307,28 +279,109 @@ top level.
 
 ### Naming Conventions
 
-**Gene/Feature Identifiers:**
-- `(regulator/target)_locus_tag`: Systematic gene identifiers (e.g., "YJR060W"). Must
-  be able to join to a genomic_features dataset. If none is specific,
-  then the BrentLab/yeast_genomic_features is used
-- `(regulator/target)_symbol`: Standard gene symbols (e.g., "CBF1"). Must be able to
-  join to a genomic_features dataset. If none is specific,
-  then the BrentLab/yeast_genomic_features is used
+Field naming conventions are collection-defined. Consult your
+[collection context document](brentlab_yeastresources_collection.md) for the
+canonical names used in your collection.
 
-**Genomic Coordinates:**  
-Unless otherwise noted, assume that coordinates are 0-based, half-open intervals
+**Genomic Coordinates:**
+Unless otherwise noted, assume that coordinates are 0-based, half-open intervals.
 
 - `chr`: Chromosome identifier
 - `start`, `end`: Genomic coordinates
 - `pos`: Single position
 - `strand`: Strand information (+ or -)
 
+## Shared Feature Definitions
+
+When a repo has multiple configs that share most of the same fields, you can declare
+those fields once at the repo level rather than repeating them in every
+`dataset_info.features` block. This is a labretriever convention; it is not rendered
+by the HuggingFace Hub.
+
+Add a top-level `features` key (parallel to `configs`) containing a list of groups.
+Each group has an `applies_to` list of `config_name` strings and a `fields` list in the
+same format as `dataset_info.features`.
+
+```yaml
+features:
+  - applies_to:
+      - dataset_a
+      - dataset_b
+    fields:
+      - name: target_locus_tag
+        dtype: string
+        description: Systematic gene identifier for the target gene
+        role: target_identifier
+      - name: poisson_pval
+        dtype: float64
+        description: P-value from Poisson test
+        role: quantitative_measure
+
+  - applies_to:
+      - dataset_b
+      - dataset_c
+    fields:
+      - name: field_specific_to_b_and_c
+        dtype: string
+        description: >-
+          This field only appears in dataset_b and dataset_c.
+          dataset_b gets both this, and those above, since it is
+          present in both groups.
+```
+
+In this example `annotated_feature_mindel` appears in both groups, so it inherits fields
+from each. `annotated_features_orig_reprocess` only appears in the first group and
+inherits only those fields. This lets two configs share a common base while each
+accumulating additional group-specific fields.
+
+### Merge rules
+
+The hierarchy of shared vs config-specific fields is the same as for other properties: config-level fields override shared fields with the same name.
+However, merge rules are property-specific, so if a field has the same name 
+at the repo and dataset level, but the description at the dataset level 
+differs, then that description will be used for that field in that dataset, but all other properties (dtype, role) will be inherited from the shared definition.
+
+```yaml
+features:
+  # both dataset_a and dataset_b have a pvalue field, but the method in
+  # which they are calculated differs. So, dataset_b overrides the description but inherits dtype and role from the repo level features
+  - applies_to: [dataset_a, dataset_b]
+    fields:
+      - name: pval
+        dtype: float64
+        description: P-value from Poisson test
+        role: quantitative_measure
+
+configs:
+- config_name: dataset_a
+  # ...
+  dataset_info:
+    features:
+      - name: pval
+        description: A hypergeometric pvalue 
+        # dtype and role are inherited from the shared definition above
+```
+
 ## Feature Roles
 
-The optional `role` field provides semantic meaning to features, especially useful
-for annotated_features datasets. The following roles are recognized by labretriever.
-**NOTE** `experimental_condition` is a reserved role with additional behavior
-as described above.
+The optional `role` field is a free-form string that provides semantic meaning to
+features. All role values are stored and exposed via `get_column_metadata()` without
+modification. Only one role has built-in library behavior:
+
+- `experimental_condition` — marks a feature column as per-sample condition
+  variation. Triggers collection into `condition_fields` by `extract_metadata_schema`
+  and population of `level_definitions` in column metadata. Categorical columns with
+  this role may also carry a `definitions` block; see
+  [Categorical Fields with Value Definitions](#categorical-fields-with-value-definitions).
+
+All other role values are collection-defined. The library stores them as metadata but
+takes no action on them. Your collection context document should define which role
+values are used and what they mean. See the
+[BrentLab Yeast Resources Collection](brentlab_yeastresources_collection.md#field-naming-conventions)
+for an example of collection-defined identifier roles.
+
+The `experimental_conditions` property name at repo/config scope is also reserved;
+see [Experimental Conditions](#experimental-conditions).
 
 ## Partitioned Datasets
 
@@ -452,13 +505,16 @@ data_files:
 ```yaml
 license: mit
 language: [en]
-tags: [biology, genomics, transcription-factors]
+tags: [biology, genomics]
 pretty_name: "Example Genomics Dataset"
 size_categories: [100K<n<1M]
 
+doi: https://doi.org/10.0000/example
+citation: "Author A, Author B. Example study. Journal. 2024."
+
 configs:
 - config_name: genomic_features
-  description: Gene annotations and regulatory features
+  description: Reference feature annotations
   dataset_type: genomic_features
   data_files:
   - split: train
@@ -467,58 +523,59 @@ configs:
     features:
     - name: gene_id
       dtype: string
-      description: Systematic gene identifier
+      description: Systematic feature identifier
     - name: chr
       dtype: string
       description: Chromosome name
     - name: start
       dtype: int64
-      description: Gene start position
+      description: Feature start position (0-based)
+    - name: end
+      dtype: int64
+      description: Feature end position (half-open)
 
-- config_name: binding_data
-  description: Transcription factor binding measurements
+- config_name: measurement_data
+  description: Quantitative measurements per feature per sample
   dataset_type: annotated_features
   default: true
   data_files:
   - split: train
-    path: binding.parquet
+    path: measurements.parquet
   dataset_info:
     features:
-    - name: regulator_symbol
+    - name: source_id
       dtype: string
-      description: Transcription factor name
+      description: Identifier for the entity whose effect is measured
       role: regulator_identifier
-    - name: target_locus_tag
+    - name: gene_id
       dtype: string
-      description: Target gene systematic identifier
+      description: Systematic identifier of the measured feature
       role: target_identifier
-    - name: target_symbol
-      dtype: string
-      description: Target gene name
-      role: target_identifier
-    - name: binding_score
+    - name: score
       dtype: float64
-      description: Quantitative binding measurement
+      description: Quantitative measurement value
       role: quantitative_measure
+    - name: sample_id
+      dtype: int64
+      description: Unique integer identifier for this experimental sample
+      role: experimental_condition
 
 - config_name: experiment_metadata
   description: Experimental conditions and sample information
   dataset_type: metadata
-  applies_to: ["genomic_features", "binding_data"]
+  applies_to: ["measurement_data"]
   data_files:
   - split: train
     path: metadata.parquet
   dataset_info:
     features:
     - name: sample_id
-      dtype: string
+      dtype: int64
       description: Unique sample identifier
-    - name: experimental_condition
+    - name: condition
       dtype: string
       description: Experimental treatment or condition
-    - name: publication_doi
-      dtype: string
-      description: DOI of associated publication
+      role: experimental_condition
 ```
 
 ## Terms and definitions
@@ -527,24 +584,23 @@ configs:
 In a collection of samples (see below), the fields record information about the
 record. For example, if there are two samples each of which report results for 6000
 genes and the way in which the samples differ is by growth media, then growth_media
-would be a feature with two levels, eg YPD and SC. If the two samples are stored in
-the same parquet file, then there would be a column where the entry for all 6000
-rows of the first sample would be YPD and the entry for all 6000 rows of the second
-sample would be SC.
+would be a feature with two levels. If the two samples are stored in the same parquet
+file, there would be a column where the entry for all 6000 rows of the first sample
+would be one value and the entry for all 6000 rows of the second sample would be
+another.
 
 ### record/row
 A row in a table, or a single observation in a single sample (see below).
 
 ### metadata
-Data about data. However, there are multiple objects to which metadata is attached in
-our usage, in particular at the dataset level and at the repo level (see below for
-those terms).
+Data about data. In labretriever usage this applies at both the dataset level and the
+repo level.
 
 ### sample
-The result of a single biological experiment. For example, if a given dataset has 20
-regulators, in 3 replicates in 2 conditions, then there would be 20×3×2 samples.
-If the way the results are reported is over 6000 genes, then we would expect all
-20×3×2 of those samples to have 6000 records.
+The result of a single biological experiment. For example, if a given dataset has
+20 entities measured in 3 replicates in 2 conditions, then there would be 20x3x2
+samples. If results are reported over 6000 features, all 20x3x2 samples would each
+have 6000 records.
 
 ### huggingface repo
 HuggingFace is a thin layer on top of GitHub. HuggingFace repos are GitHub repos with
@@ -558,36 +614,16 @@ of attributes and features that allow us to search/filter/subset the data in the
 collection (see below). See the datacard format documentation for a full description.
 
 ### dataset
-In our HuggingFace repos, we store one or more datasets. These datasets have
-defined types. In general, we try to refer to datasets by the first author and year
-of the paper from which they originate, eg 'Mahendrawada 2025'. However, the
-distinction between a dataset and a repo can be complicated, as in the case of
-Mahendrawada 2025 there is ChEC-seq, ChIP-seq and RNA-seq data. Each of those may be
-provided in multiple datasets, eg one which was reported by the authors, and another
-reprocessed in our lab. A dataset should refer to a single one of those collections
-and may require further specification beyond the first author's name and year published.
+In a HuggingFace repo, one or more datasets may be stored, each with a defined type.
+A dataset should refer to a single cohesive collection of data and may require
+further specification beyond a name (e.g., a repo may contain both raw and
+reprocessed versions of the same experiment as separate dataset configs).
 
 ### huggingface collection
-HuggingFace allows you to group repositories together, which is what we are doing
-with all repos storing data related to the yeast database project.
-
-### regulator
-A superset that includes "TF" or "transcription factor". These are proteins which
-are assayed for their effect on gene expression.
-
-### target
-Genes on which the regulator's effect is measured.
+HuggingFace allows you to group repositories together into a collection. A
+labretriever collection context document captures the conventions shared across
+all repos in such a group.
 
 ### labretriever
-A Python package which provides the interface to the HuggingFace collection.
-
-### active set (of samples)
-In order to conduct analysis, a user will need to define a set of samples. A sample
-(see definition above) is defined by the metadata features, eg regulator_locus_tag.
-If the user is interested in all datasets in which this regulator exists, then the
-active set would be the set of samples, across the entire collection (see HuggingFace
-collection above), with this regulator_locus_tag. The user may choose to filter on
-additional features in order to further refine the active set (eg, if a different
-dataset has 2 conditions for that regulator, then the user may wish to only retain
-1 of those conditions in their active set. They may wish to completely exclude a
-different dataset, etc).
+A Python package which provides the interface to a HuggingFace collection of
+labretriever-compatible dataset repositories.

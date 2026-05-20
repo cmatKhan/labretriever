@@ -7,6 +7,13 @@
         "LABRETRIEVER_CONFIG": "${user_config.labretriever_config}",
         "HF_TOKEN": "${user_config.hf_token}"
       }
+    },
+    "labretriever-repo": {
+      "command": "labretriever-mcp-repo",
+      "type": "stdio",
+      "env": {
+        "HF_TOKEN": "${user_config.hf_token}"
+      }
     }
   }
 }
