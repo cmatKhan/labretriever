@@ -1,5 +1,68 @@
 # Changelog
 
+## [1.1.0] - 2026-05-20
+
+### Added
+
+- `genome_resources` block in DataCard YAML. Declares named region sets (e.g.
+  promoter BED/CSV files) at the repo level, at individual config level, or
+  both. Each region set has a `path` and an optional `join_column` specifying
+  which column links the annotated-features table to the region set.
+- `DatacardRegionSetInfo` and `DatacardGenomeResources` Pydantic models parse
+  the DataCard `genome_resources` block.
+- `RegionSetInfo` and `GenomeResourcesConfig` Pydantic models parse the
+  VirtualDB YAML `genome_resources` block inside a repository entry.
+- `RepositoryConfig.genome_resources` field: a VirtualDB YAML repo entry can
+  now carry a `genome_resources` key (without a `dataset` key) to define
+  collection-wide region sets that are available to all datasets. These are
+  treated as a third, lowest-priority layer during region set resolution.
+- `VirtualDB.get_region_sets(db_name)` method. Returns the fully merged
+  `dict[str, RegionSetInfo]` for a named dataset by combining three layers in
+  order of increasing priority:
+  1. VirtualDB YAML genome-resource-only repo entries (collection-wide defaults)
+  2. DataCard repo-level `genome_resources.region_sets`
+  3. DataCard config-level `genome_resources.region_sets` (overrides per field)
+- `SharedFeatureGroup` Pydantic model for the top-level `features` shared-block
+  list in a DataCard YAML.
+- `labretriever-mcp-repo` entry point. A second MCP server
+  (`FastMCP("labretriever-repo")`) that exposes `scaffold_readme` and
+  `audit_collection` without requiring `LABRETRIEVER_CONFIG`.
+- `labretriever/mcp_server/` package replacing the single `mcp_server.py`
+  module. Sub-modules: `_common.py` (shared dtype helpers), `_vdb_server.py`
+  (VirtualDB MCP tools), `_repo_server.py` (scaffold/audit MCP tools).
+- `skills/repo/SKILL.md` — new Claude Code skill for the `labretriever-repo`
+  MCP server, covering DataCard inspection, parquet querying, `scaffold_readme`,
+  and `audit_collection`.
+- `labretriever-repo` MCP server added to `.mcp.json` and the Claude Code
+  plugin. Both servers share the same `userConfig` keys (`labretriever_config`,
+  `hf_token`) configured once at plugin install.
+
+### Changed
+
+- `DatasetType` enum removed. `DatasetConfig.dataset_type` is now a plain
+  `str` field, accepting any string value (e.g. `"annotated_features"`,
+  `"metadata"`, `"genome_map"`). This removes the constraint that prevented
+  repos from introducing new dataset type labels without a code change.
+- `labretriever-mcp` entry point now calls `vdb_main` in the new package
+  (`labretriever.mcp_server:vdb_main`). Existing plugin installs are unaffected.
+- `skills/labretriever/` renamed to `skills/vdb/`; skill `name:` changed from
+  `labretriever` to `vdb`. The skill documents only the VirtualDB MCP tools.
+- `get_config_path` added as a VirtualDB MCP tool (documents where the active
+  `LABRETRIEVER_CONFIG` file lives, for use in notebook reproducibility
+  snippets).
+
+### Migration notes
+
+If you maintain a VirtualDB YAML and want to expose region sets to
+`VirtualDB.get_region_sets`, add a `genome_resources` block to the relevant
+repository entries in the YAML, or to the `genome_resources` block in the
+DataCard README of the dataset repo. Config-level declarations take precedence
+over repo-level, which take precedence over YAML-level entries with the same
+name.
+
+If you were importing `DatasetType` from `labretriever.models`, replace
+references with the string literals directly (e.g. `"annotated_features"`).
+
 ## [1.0.0] - 2026-05-15
 
 ### Added
