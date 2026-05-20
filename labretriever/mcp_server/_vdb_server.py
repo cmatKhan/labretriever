@@ -1,5 +1,5 @@
 """
-Local MCP server exposing VirtualDB as a set of tools for Claude Code.
+MCP server exposing VirtualDB query tools.
 
 Initialized from environment variables:
 
@@ -7,7 +7,7 @@ Initialized from environment variables:
 - ``HF_TOKEN`` (optional): HuggingFace token for private datasets.
 
 Run via the ``labretriever-mcp`` entry point or directly with
-``python -m labretriever.mcp_server``.
+``python -m labretriever.mcp_server._vdb_server``.
 
 """
 
@@ -161,17 +161,19 @@ def get_column_metadata(dataset_name: str) -> dict[str, dict]:
     categorical condition columns. Use this alongside :func:`describe_dataset`
     to understand column semantics before writing queries.
 
-    Key roles to look for:
+    The ``role`` field is collection-defined. Consult the collection context
+    document for the role conventions used in this collection. The one role
+    with built-in library behavior is:
 
-    - ``regulator_identifier``: identifies the transcription factor (e.g.
-      ``regulator_locus_tag``, ``regulator_symbol``).
-    - ``target_identifier``: identifies the target gene.
-    - ``quantitative_measure``: the primary measurement column(s) to SELECT
-      when retrieving data (e.g. enrichment scores, fold changes, p-values).
     - ``experimental_condition``: categorical or numeric condition columns
       (e.g. growth media, temperature, treatment). The ``level_definitions``
       field maps each category value to a description — use this to understand
       what filter values mean.
+
+    Other common roles (collection-defined, no special library behavior):
+
+    - ``quantitative_measure``: the primary measurement column(s) to SELECT
+      when retrieving data (e.g. enrichment scores, fold changes, p-values).
 
     :param dataset_name: Dataset name as returned by :func:`list_datasets`.
     :type dataset_name: str

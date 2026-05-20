@@ -505,7 +505,7 @@ class DataCard:
             "configs": [
                 {
                     "config_name": c.config_name,
-                    "dataset_type": c.dataset_type.value,
+                    "dataset_type": c.dataset_type,
                     "default": c.default,
                     "description": c.description,
                 }
@@ -522,7 +522,7 @@ class DataCard:
         return {
             "config_name": config.config_name,
             "description": config.description,
-            "dataset_type": config.dataset_type.value,
+            "dataset_type": config.dataset_type,
             "default": config.default,
             "doi": config.doi if config.doi is not None else self.dataset_card.doi,
             "citation": self.get_citation(config_name),
@@ -547,32 +547,33 @@ class DataCard:
         how to structure it into a metadata table. It consolidates information from
         all sources:
 
-        - **Field roles**: Which fields are regulators, targets, conditions, etc.
-        - **Top-level conditions**: Repo-wide conditions (constant for all samples)
+        - **Field roles**: Roles stored on each feature (collection-defined strings).
+        - **Top-level conditions**: Repo-wide conditions (constant for all samples).
         - **Config-level conditions**: Config-specific conditions
-          (constant for this config)
-        - **Field-level definitions**: Per-sample condition definitions
+          (constant for this config).
+        - **Field-level definitions**: Per-sample condition definitions.
 
         The returned schema provides all the information needed to:
-        1. Identify sample identifier fields (regulator_identifier, etc.)
-        2. Determine which conditions are constant vs. variable
-        3. Access condition definitions for creating flattened columns
-        4. Plan metadata table structure
+        1. Determine which conditions are constant vs. variable.
+        2. Access condition definitions for creating flattened columns.
+        3. Plan metadata table structure.
+
+        Identifier columns (e.g. ``regulator_identifier``, ``target_identifier`` in
+        the BrentLab collection) are not extracted here — inspect the ``role`` field
+        on each entry in ``get_column_metadata()`` for collection-specific identifier
+        conventions.
 
         :param config_name: Configuration name to extract schema for
         :return: Dict with comprehensive schema including:
-            - regulator_fields: List of regulator identifier field names
-            - target_fields: List of target identifier field names
             - condition_fields: List of experimental_condition field names
             - condition_definitions: Dict mapping field -> value -> definition
-            - top_level_conditions: Dict of repo-wide conditions
-            - config_level_conditions: Dict of config-specific conditions
+            - metadata_fields: List of metadata field names or None
+            - top_level_conditions: Dict of repo-wide conditions or None
+            - config_level_conditions: Dict of config-specific conditions or None
         :raises DataCardError: If configuration not found
 
         Example:
             >>> schema = card.extract_metadata_schema('harbison_2004')
-            >>> # Identify identifier fields
-            >>> print(f"Regulator fields: {schema['regulator_fields']}")
             >>> # Check for constant conditions
             >>> if schema['top_level_conditions']:
             ...     print("Has repo-wide constant conditions")
@@ -587,8 +588,6 @@ class DataCard:
             raise DataCardError(f"Configuration '{config_name}' not found")
 
         schema: dict[str, Any] = {
-            "regulator_fields": [],
-            "target_fields": [],
             "condition_fields": [],
             "condition_definitions": {},
             "metadata_fields": None,
@@ -597,11 +596,7 @@ class DataCard:
         }
 
         for feature in config.dataset_info.features:
-            if feature.role == "regulator_identifier":
-                schema["regulator_fields"].append(feature.name)
-            elif feature.role == "target_identifier":
-                schema["target_fields"].append(feature.name)
-            elif feature.role == "experimental_condition":
+            if feature.role == "experimental_condition":
                 schema["condition_fields"].append(feature.name)
                 if feature.definitions:
                     schema["condition_definitions"][feature.name] = feature.definitions
@@ -613,11 +608,7 @@ class DataCard:
             for meta_cfg in self.dataset_card.get_metadata_configs():
                 if meta_cfg.applies_to and config_name in meta_cfg.applies_to:
                     for feature in meta_cfg.dataset_info.features:
-                        if feature.role == "regulator_identifier":
-                            schema["regulator_fields"].append(feature.name)
-                        elif feature.role == "target_identifier":
-                            schema["target_fields"].append(feature.name)
-                        elif feature.role == "experimental_condition":
+                        if feature.role == "experimental_condition":
                             schema["condition_fields"].append(feature.name)
                             if feature.definitions:
                                 schema["condition_definitions"][
@@ -626,16 +617,12 @@ class DataCard:
                     break
 
         # Add top-level conditions (applies to all configs/samples)
-        if self.dataset_card.model_extra:
-            top_level = self.dataset_card.model_extra.get("experimental_conditions")
-            if top_level:
-                schema["top_level_conditions"] = top_level
+        if self.dataset_card.experimental_conditions:
+            schema["top_level_conditions"] = self.dataset_card.experimental_conditions
 
         # Add config-level conditions (applies to this config's samples)
-        if config.model_extra:
-            config_level = config.model_extra.get("experimental_conditions")
-            if config_level:
-                schema["config_level_conditions"] = config_level
+        if config.experimental_conditions:
+            schema["config_level_conditions"] = config.experimental_conditions
 
         return schema
 
@@ -672,36 +659,21 @@ class DataCard:
             >>> media_name = media.get('name', 'unspecified')
 
         """
-        # Get top-level conditions (stored in model_extra)
-        top_level = (
-            self.dataset_card.model_extra.get("experimental_conditions", {})
-            if self.dataset_card.model_extra
-            else {}
-        )
+        top_level = self.dataset_card.experimental_conditions or {}
 
         # If no config specified, return top-level only
         if config_name is None:
-            return top_level.copy() if isinstance(top_level, dict) else {}
+            return dict(top_level)
 
         # Get config-level conditions
         config = self.get_config(config_name)
         if not config:
             raise DataCardError(f"Configuration '{config_name}' not found")
 
-        config_level = (
-            config.model_extra.get("experimental_conditions", {})
-            if config.model_extra
-            else {}
-        )
+        config_level = config.experimental_conditions or {}
 
         # Merge: config-level overrides top-level
-        merged = {}
-        if isinstance(top_level, dict):
-            merged.update(top_level)
-        if isinstance(config_level, dict):
-            merged.update(config_level)
-
-        return merged
+        return {**top_level, **config_level}
 
     def get_citation(self, config_name: str | None = None) -> str | None:
         """

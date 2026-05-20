@@ -1,12 +1,13 @@
 ---
-name: labretriever
+name: vdb
 description: >
   This skill should be used when the user asks to "query genomic datasets",
   "list available datasets", "explore yeast data", "query harbison",
   "query callingcards", "find TF targets", "describe a dataset", "run a SQL
   query on genomic data", "what datasets are available", "get column metadata",
   or mentions labretriever, VirtualDB, or the yeast resources MCP. Use to
-  orient the user and guide effective use of the labretriever MCP tools.
+  orient the user and guide effective use of the labretriever VirtualDB MCP
+  tools.
 version: 1.0.0
 ---
 

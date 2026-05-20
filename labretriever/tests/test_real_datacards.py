@@ -530,8 +530,8 @@ def test_hughes_2006_induction():
 
     # Check experimental conditions (stored as dict in model_extra)
     assert card.configs[0].model_extra is not None
-    assert "experimental_conditions" in card.configs[0].model_extra
-    exp_conds = card.configs[0].model_extra["experimental_conditions"]
+    assert card.configs[0].experimental_conditions is not None
+    exp_conds = card.configs[0].experimental_conditions
 
     # Check induction field
     assert "induction" in exp_conds
@@ -548,8 +548,8 @@ def test_kemmeren_2014_growth_phase():
 
     # Check growth phase (stored as dict in model_extra)
     assert card.model_extra is not None
-    assert "experimental_conditions" in card.model_extra
-    exp_conds = card.model_extra["experimental_conditions"]
+    assert card.experimental_conditions is not None
+    exp_conds = card.experimental_conditions
 
     assert "growth_phase_at_harvest" in exp_conds
     growth_phase = exp_conds["growth_phase_at_harvest"]
@@ -602,8 +602,8 @@ def test_concentration_fields():
 
     # Check media compounds (stored as dict in model_extra)
     assert card.model_extra is not None
-    assert "experimental_conditions" in card.model_extra
-    exp_conds = card.model_extra["experimental_conditions"]
+    assert card.experimental_conditions is not None
+    exp_conds = card.experimental_conditions
     assert "media" in exp_conds
     media = exp_conds["media"]
 
@@ -652,8 +652,8 @@ def test_empty_nitrogen_source_list():
 
     # Check that nitrogen_source is an empty list (stored as dict in model_extra)
     assert card.model_extra is not None
-    assert "experimental_conditions" in card.model_extra
-    exp_conds = card.model_extra["experimental_conditions"]
+    assert card.experimental_conditions is not None
+    exp_conds = card.experimental_conditions
     assert "media" in exp_conds
     media = exp_conds["media"]
     assert media["nitrogen_source"] == []
@@ -687,16 +687,16 @@ def test_strain_background_formats():
     data1 = yaml.safe_load(BARKAI_COMPENDIUM)
     card1 = DatasetCard(**data1)
     assert card1.model_extra is not None
-    assert "experimental_conditions" in card1.model_extra
-    exp_conds1 = card1.model_extra["experimental_conditions"]
+    assert card1.experimental_conditions is not None
+    exp_conds1 = card1.experimental_conditions
     assert exp_conds1["strain_background"] == "BY4741"
 
     # String format in rossi
     data2 = yaml.safe_load(ROSSI_2021)
     card2 = DatasetCard(**data2)
     assert card2.model_extra is not None
-    assert "experimental_conditions" in card2.model_extra
-    exp_conds2 = card2.model_extra["experimental_conditions"]
+    assert card2.experimental_conditions is not None
+    exp_conds2 = card2.experimental_conditions
     assert exp_conds2["strain_background"] == "W303"
 
 

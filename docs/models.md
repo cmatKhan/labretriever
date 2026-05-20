@@ -14,6 +14,14 @@
     options:
       show_root_heading: true
 
+::: labretriever.models.RegionSetInfo
+    options:
+      show_root_heading: true
+
+::: labretriever.models.GenomeResourcesConfig
+    options:
+      show_root_heading: true
+
 ## DataCard Models
 
 ::: labretriever.models.DatasetCard
@@ -24,9 +32,19 @@
     options:
       show_root_heading: true
 
-::: labretriever.models.DatasetType
+::: labretriever.models.DatacardGenomeResources
     options:
       show_root_heading: true
+
+::: labretriever.models.DatacardRegionSetInfo
+    options:
+      show_root_heading: true
+
+### Reserved Dataset Type Constants
+
+`DATASET_TYPE_METADATA = "metadata"` — reserved type with special runtime behavior; see [Reserved Dataset Types](huggingface_datacard.md#reserved-dataset-types).
+
+`DATASET_TYPE_COMPARATIVE = "comparative"` — reserved type with special runtime behavior; see [Reserved Dataset Types](huggingface_datacard.md#reserved-dataset-types).
 
 ::: labretriever.models.FeatureInfo
     options:

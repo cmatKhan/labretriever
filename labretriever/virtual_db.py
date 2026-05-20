@@ -56,7 +56,7 @@ import pandas as pd
 from duckdb import BinderException
 
 from labretriever.datacard import DataCard, DatasetSchema
-from labretriever.models import DatasetType, MetadataConfig
+from labretriever.models import DATASET_TYPE_COMPARATIVE, MetadataConfig, RegionSetInfo
 
 logger = logging.getLogger(__name__)
 
@@ -521,6 +521,107 @@ class VirtualDB:
         repo_id, config_name = self.db_name_map[db_name]
         return self.config.get_tags(repo_id, config_name)
 
+    def get_region_sets(self, db_name: str) -> dict[str, RegionSetInfo]:
+        """
+        Return merged region set info for a dataset.
+
+        Merges three layers in order (later overrides earlier):
+
+        1. Datacard repo-level ``genome_resources.region_sets``
+        2. Datacard config-level ``genome_resources.region_sets``
+        3. VirtualDB genome-resource repo entries (repos with ``genome_resources``
+           and no ``dataset`` key)
+
+        :param db_name: Dataset name as returned by :meth:`tables`.
+        :returns: Dict mapping region set name to
+            :class:`~labretriever.models.RegionSetInfo`.
+            Empty dict if none are configured.
+
+        """
+        if db_name not in self.db_name_map:
+            return {}
+
+        repo_id, config_name = self.db_name_map[db_name]
+        card = self.datacards.get(repo_id)
+
+        merged: dict[str, RegionSetInfo] = {}
+
+        # Layer 1: datacard repo-level genome_resources
+        if card is not None and card.dataset_card.genome_resources is not None:
+            for name, info in card.dataset_card.genome_resources.region_sets.items():
+                merged[name] = RegionSetInfo(
+                    path=info.path,
+                    join_column=info.join_column,
+                )
+
+        # Layer 2: datacard config-level genome_resources
+        if card is not None:
+            dc_config = card.get_config(config_name)
+            if dc_config is not None and dc_config.genome_resources is not None:
+                for name, info in dc_config.genome_resources.region_sets.items():
+                    if name in merged:
+                        # config-level overrides repo-level fields individually
+                        existing = merged[name]
+                        merged[name] = RegionSetInfo(
+                            description=existing.description,
+                            path=info.path if info.path is not None else existing.path,
+                            join_column=(
+                                info.join_column
+                                if info.join_column is not None
+                                else existing.join_column
+                            ),
+                        )
+                    else:
+                        merged[name] = RegionSetInfo(
+                            path=info.path,
+                            join_column=info.join_column,
+                        )
+
+        # Layer 3: VirtualDB genome-resource repo entries
+        for _, repo_cfg in self.config.repositories.items():
+            if repo_cfg.genome_resources is None or repo_cfg.dataset is not None:
+                continue
+            for name, vdb_info in repo_cfg.genome_resources.region_sets.items():
+                if name in merged:
+                    existing = merged[name]
+                    merged[name] = RegionSetInfo(
+                        description=(
+                            vdb_info.description
+                            if vdb_info.description is not None
+                            else existing.description
+                        ),
+                        path=(
+                            vdb_info.path
+                            if vdb_info.path is not None
+                            else existing.path
+                        ),
+                        join_column=(
+                            vdb_info.join_column
+                            if vdb_info.join_column is not None
+                            else existing.join_column
+                        ),
+                    )
+                else:
+                    merged[name] = RegionSetInfo(
+                        description=vdb_info.description,
+                        path=vdb_info.path,
+                        join_column=vdb_info.join_column,
+                    )
+
+        return merged
+
+    def get_region_set_info(self, db_name: str, name: str) -> RegionSetInfo | None:
+        """
+        Return info for a specific region set by name, or None.
+
+        :param db_name: Dataset name as returned by :meth:`tables`.
+        :param name: Region set name (e.g. ``'yiming_promoters'``).
+        :returns: Merged :class:`~labretriever.models.RegionSetInfo`, or
+            ``None`` if not found.
+
+        """
+        return self.get_region_sets(db_name).get(name)
+
     def get_condition_field_info(self, db_name: str) -> dict[str, Any] | None:
         """
         Return hierarchically linked property column groups for a dataset.
@@ -766,6 +867,15 @@ class VirtualDB:
         for repo_id, _ in self.db_name_map.values():
             if repo_id in seen_repos:
                 continue
+            # Skip genome-resource reference repos — they have no HF data files.
+            repo_cfg = self.config.repositories.get(repo_id)
+            if (
+                repo_cfg is not None
+                and repo_cfg.genome_resources is not None
+                and not repo_cfg.dataset
+            ):
+                seen_repos.add(repo_id)
+                continue
             seen_repos.add(repo_id)
             try:
                 _t = time.monotonic()
@@ -815,7 +925,7 @@ class VirtualDB:
                     dc_config = card.get_config(config_name)
                     if (
                         dc_config is not None
-                        and dc_config.dataset_type != DatasetType.COMPARATIVE
+                        and dc_config.dataset_type != DATASET_TYPE_COMPARATIVE
                     ):
                         raise ValueError(
                             f"Dataset '{config_name}' in repo '{repo_id}' has "
