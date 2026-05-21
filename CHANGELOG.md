@@ -1,5 +1,33 @@
 # Changelog
 
+## [1.1.1] - 2026-05-21
+
+### Added
+
+- `VirtualDB._snapshot_path_from_cache(repo_id)` — resolves the active
+  snapshot directory directly from the local HuggingFace cache ref file
+  (`refs/main`) without invoking `snapshot_download`. Saves ~100-170 ms of
+  filesystem work per repository when `local_files_only=True`.
+- `docs/brentlab_yeastresources_collection.md` — new "Genome Resources"
+  section documenting the three-layer region set resolution order, the
+  `BrentLab/yeast_genome_resources` collection-wide registry pattern, and
+  how to declare `genome_resources` in individual datacards.
+
+### Changed
+
+- `VirtualDB._load_datacards` now dispatches `DataCard` construction and the
+  initial `DatasetCard.load` call concurrently via `ThreadPoolExecutor`,
+  warming all cards in memory before `_validate_datacards` runs. Startup time
+  on a cold in-process cache scales with the slowest individual card load
+  rather than their sum.
+- `VirtualDB._download_repo` fast-path: when `local_files_only=True` and the
+  local ref file is present, `snapshot_download` is bypassed entirely in favour
+  of reading the snapshot path from cache. Falls back to `snapshot_download`
+  when the ref is absent or `local_files_only=False`.
+- All `snapshot_download` calls in `VirtualDB._download_datasets` are now
+  dispatched concurrently via a thread pool (each is independent I/O-bound
+  work; local cache resolution alone takes ~100-165 ms per call).
+
 ## [1.1.0] - 2026-05-20
 
 ### Added
