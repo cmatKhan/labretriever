@@ -407,6 +407,82 @@ All regulator/target identifiers must be joinable to **yeast_genome_resources**:
 - Include both locus_tag and symbol fields
 - Mark with appropriate roles
 
+### 7. Declare Region Sets in Datacards
+
+Datasets whose `annotated_features` configs can be linked to genomic intervals
+(e.g. promoter BED files) should declare this in the datacard `genome_resources`
+block. The `BrentLab/yeast_genome_resources` VirtualDB entry provides
+collection-wide descriptions; individual datacards supply the `path` and
+`join_column` that are specific to each dataset.
+
+See [Genome Resources](virtual_db_configuration.md#genome-resources) for the
+full three-layer resolution order.
+
+---
+
+## Genome Resources
+
+The collection uses the `genome_resources` feature introduced in labretriever
+1.1.0 to associate named genomic interval files (region sets) with datasets.
+This is the mechanism for linking, for example, a calling cards dataset to the
+promoter BED file used to annotate its insertion counts.
+
+### Collection-wide region set registry
+
+`BrentLab/yeast_genome_resources` appears in the VirtualDB YAML as a
+genome-resource-only repo entry (no `dataset` key). It carries human-readable
+descriptions for each collection-wide region set. These descriptions are the
+lowest-priority layer — they are merged into whatever `path` and `join_column`
+values individual datacards declare.
+
+```yaml
+# brentlab_yeast_collection.yaml (excerpt)
+repositories:
+  BrentLab/yeast_genome_resources:
+    genome_resources:
+      region_sets:
+        yiming_promoters:
+          description: >-
+            Yiming et al. (2001) promoter annotations. 700 bp upstream of
+            each ORF start site.
+        mindel_promoters:
+          description: >-
+            Miura & Bhaskara (Mindel) promoter annotations. Boundaries
+            derived from nucleosome-free region calls.
+```
+
+No data download is attempted for this entry. It is YAML-only.
+
+### Per-dataset declaration in datacards
+
+Datasets that are annotated against a region set declare it in the datacard
+`genome_resources` block. The `path` should be a full URL to the BED or Parquet
+file; the `join_column` is the column in the dataset that links each row to a
+region.
+
+```yaml
+# Example datacard README.md (repo level)
+genome_resources:
+  region_sets:
+    yiming_promoters:
+      path: https://huggingface.co/datasets/BrentLab/yeast_genome_resources/resolve/main/regions/yiming_promoters.bed
+      join_column: target_locus_tag
+```
+
+This can appear at the repo level (applies to all configs) or at the config
+level (applies only to that config, overrides repo-level for the same name).
+
+### Accessing region sets at runtime
+
+```python
+# Returns the merged dict for a named dataset
+region_sets = vdb.get_region_sets("callingcards")
+# -> {"yiming_promoters": RegionSetInfo(path="https://...", join_column="target_locus_tag",
+#                                        description="Yiming et al. ...")}
+
+info = vdb.get_region_set_info("callingcards", "yiming_promoters")
+```
+
 ---
 
 ## Terms and Definitions
