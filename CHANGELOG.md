@@ -1,5 +1,29 @@
 # Changelog
 
+## [1.1.2] - 2026-05-22
+
+### Fixed
+
+- `VirtualDB._build_path_only_expr` now uses `model_dump(exclude_none=True)`
+  instead of `model_extra` to build the merged data dict for dot-path
+  traversal. `model_extra` contains only fields not declared in the Pydantic
+  schema; explicitly declared fields such as `experimental_conditions` were
+  therefore invisible, causing `Carbon source` and `Temperature` columns in
+  `_meta` views to fall back to the `missing_value_labels` sentinel
+  (`"unspecified"`) for every dataset that carries these conditions at the
+  repository level rather than as per-sample metadata.
+- `VirtualDB._build_meta_sql` now tracks which mapping keys produced a
+  non-`None` SQL expression (`produced` set). Keys whose path or field
+  resolution returned `None` are now treated as unmapped, so they correctly
+  fall through to the `missing_value_labels` fallback instead of silently
+  suppressing the fallback column. Previously, a mapping entry that resolved
+  to `None` would mark the key as "handled" and omit the fallback, leaving the
+  column absent from the view entirely.
+- Test fixture for `BrentLab/kemmeren` mock `DataCard`: added
+  `model_dump.return_value` configuration on both `dataset_card_mock` and
+  `config_mock` so that the mock correctly satisfies the updated
+  `_build_path_only_expr` call path.
+
 ## [1.1.1] - 2026-05-21
 
 ### Added

@@ -385,6 +385,10 @@ def _make_mock_datacard(repo_id):
         dataset_card_mock.model_extra = {
             "experimental_conditions": KEMMEREN_EXP_CONDITIONS,
         }
+        dataset_card_mock.model_dump.return_value = {
+            "experimental_conditions": KEMMEREN_EXP_CONDITIONS,
+        }
+        config_mock.model_dump.return_value = {}
         card.dataset_card = dataset_card_mock
         card.get_metadata_fields.return_value = METADATA_FIELDS["kemmeren_2014"]
         card.get_metadata_config_name.return_value = None

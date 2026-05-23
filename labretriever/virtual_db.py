@@ -1880,6 +1880,8 @@ class VirtualDB:
                     exc,
                 )
 
+        produced: set[str] = set()
+
         for key, mapping in mappings.items():
             if card is None:
                 # Cannot resolve field/path mappings without a DataCard;
@@ -1888,6 +1890,7 @@ class VirtualDB:
             if mapping.expression is not None:
                 # Type D: expression
                 expressions.append(f"({mapping.expression}) AS {_quote_ident(key)}")
+                produced.add(key)
                 continue
 
             if mapping.field is not None and mapping.path is None:
@@ -1919,6 +1922,7 @@ class VirtualDB:
                     pass
                 else:
                     expressions.append(f"{mapping.field} AS {_quote_ident(key)}")
+                produced.add(key)
                 continue
 
             if mapping.field is not None and mapping.path is not None:
@@ -1942,6 +1946,7 @@ class VirtualDB:
                 )
                 if expr is not None:
                     expressions.append(expr)
+                    produced.add(key)
                 continue
 
             if mapping.field is None and mapping.path is not None:
@@ -1955,13 +1960,16 @@ class VirtualDB:
                 )
                 if expr is not None:
                     expressions.append(expr)
+                    produced.add(key)
                 continue
 
-        # For any key in missing_value_labels that was not covered by an
-        # explicit mapping for this dataset, emit a constant literal so that
-        # every _meta view exposes the column (with the fallback value).
+        # For any key in missing_value_labels that was not covered by a
+        # mapping that successfully resolved an expression, emit a constant
+        # literal so every _meta view exposes the column (with the fallback
+        # value). Keys in mappings whose path/field resolution returned None
+        # are treated the same as unmapped keys.
         for key, label in self.config.missing_value_labels.items():
-            if key not in mappings:
+            if key not in produced:
                 escaped = label.replace("'", "''")
                 expressions.append(f"'{escaped}' AS {_quote_ident(key)}")
 
@@ -2082,20 +2090,21 @@ class VirtualDB:
         :return: SQL literal expression, or None on failure
 
         """
-        # Build merged dict from top-level + config-level model_extra.
-        # This preserves keys like "experimental_conditions" that
-        # get_experimental_conditions() would strip.
+        # Build merged dict from all top-level fields + config-level fields.
+        # model_extra only contains undeclared keys; explicit fields like
+        # experimental_conditions, doi, citation must be sourced via
+        # model_dump() so they are reachable by dot-path traversal.
         merged: dict[str, Any] = {}
         try:
-            top_extra = card.dataset_card.model_extra
-            if isinstance(top_extra, dict):
-                merged.update(top_extra)
+            top_dump = card.dataset_card.model_dump(exclude_none=True)
+            merged.update(top_dump)
             config_obj = card.get_config(config_name)
-            if config_obj and isinstance(config_obj.model_extra, dict):
-                merged.update(config_obj.model_extra)
+            if config_obj:
+                config_dump = config_obj.model_dump(exclude_none=True)
+                merged.update(config_dump)
         except Exception:
             logger.debug(
-                "Could not get model_extra for %s/%s",
+                "Could not dump model for %s/%s",
                 card.repo_id if hasattr(card, "repo_id") else "?",
                 config_name,
             )
