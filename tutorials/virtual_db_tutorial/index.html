@@ -9,7 +9,7 @@
         <meta name="description" content="Python API for querying and analyzing genomic datasets from HuggingFace Hub">
       
       
-        <meta name="author" content="ben mueller <email@email.com>, chase mateusiak <chasem@wustl.edu>, michael brent <brent@wustl.edu>">
+        <meta name="author" content="chase mateusiak <chasem@wustl.edu>">
       
       
         <link rel="canonical" href="https://cmatKhan.github.io/labretriever/tutorials/virtual_db_tutorial/">
@@ -806,10 +806,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#linked-property-columns" class="md-nav__link">
+  <a href="#column-metadata" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Linked Property Columns
+        Column Metadata
       
     </span>
   </a>
@@ -887,6 +887,17 @@
     <span class="md-ellipsis">
       
         Dataset Metadata: DOI, Citation, and Description
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#region-sets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Region Sets
       
     </span>
   </a>
@@ -1428,7 +1439,7 @@
   <span class="md-ellipsis">
     
   
-    BrentLab Collection
+    Collection Context Document (Example)
   
 
     
@@ -1587,10 +1598,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#linked-property-columns" class="md-nav__link">
+  <a href="#column-metadata" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Linked Property Columns
+        Column Metadata
       
     </span>
   </a>
@@ -1668,6 +1679,17 @@
     <span class="md-ellipsis">
       
         Dataset Metadata: DOI, Citation, and Description
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#region-sets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Region Sets
       
     </span>
   </a>
@@ -3438,29 +3460,23 @@ print("Common fields:", vdb.get_common_fields())</div>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="linked-property-columns">Linked Property Columns<a class="anchor-link" href="#linked-property-columns">¶</a></h2><p>Some datasets expose multiple derived property columns in their  view
-(for example  and ) that are both extracted
-from the <strong>same</strong> per-sample experimental-condition field via field+path
-property mappings.  Because these columns are co-derived, the values that can
-appear in one column are constrained by what is selected in another: picking
-limits which  values are
-meaningful.</p>
-<p>identifies such groups and enriches them
-with per-level descriptions from the DataCard, making it straightforward to
-build conditional filter interfaces or to understand which property columns
-should be filtered together.</p>
-<p>The method returns  for datasets that have no linked property groups
-(fewer than two property columns share the same source field).</p>
+<h2 id="column-metadata">Column Metadata<a class="anchor-link" href="#column-metadata">¶</a></h2><p>Use <code>get_column_metadata(db_name)</code> to inspect per-column metadata for a dataset.
+Each entry is a <code>ColumnMeta</code> object with <code>description</code>, <code>role</code>, and
+<code>level_definitions</code> (for <code>experimental_condition</code> columns). This is the
+recommended replacement for the deprecated <code>get_condition_field_info</code>.</p>
+<p>Columns derived from field+path <code>PropertyMapping</code> entries share a source field
+(<code>experimental_condition</code> role). The <code>level_definitions</code> dict maps each condition
+level to a human-readable description from the DataCard.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=bd2e988a">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=bd2e988a">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [80]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-9">
@@ -3473,53 +3489,45 @@ should be filtered together.</p>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Identify datasets that have hierarchically linked property columns.</span>
-<span class="c1"># Two or more property columns are "linked" when they are both derived</span>
-<span class="c1"># from the same per-sample experimental-condition field via field+path</span>
-<span class="c1"># PropertyMappings in the VirtualDB configuration.</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># get_column_metadata returns a dict of column_name -&gt; ColumnMeta.</span>
+<span class="c1"># ColumnMeta has: description, role, level_definitions</span>
 <span class="k">for</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="n">vdb</span><span class="o">.</span><span class="n">get_datasets</span><span class="p">():</span>
-    <span class="n">info</span> <span class="o">=</span> <span class="n">vdb</span><span class="o">.</span><span class="n">get_condition_field_info</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">info</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">meta</span> <span class="o">=</span> <span class="n">vdb</span><span class="o">.</span><span class="n">get_column_metadata</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">meta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">continue</span>
-    <span class="k">for</span> <span class="n">src_field</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">info</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s2">: '</span><span class="si">{</span><span class="n">src_field</span><span class="si">}</span><span class="s2">' links </span><span class="si">{</span><span class="n">group</span><span class="p">[</span><span class="s1">'property_cols'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">level</span><span class="p">,</span> <span class="n">desc</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="s2">"level_descriptions"</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">())[:</span><span class="mi">3</span><span class="p">]:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">level</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">desc</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="c1"># Print columns with an experimental_condition role</span>
+    <span class="n">cond_cols</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">col</span> <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">cm</span> <span class="ow">in</span> <span class="n">meta</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">cm</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="s1">'experimental_condition'</span>
+    <span class="p">]</span>
+    <span class="k">if</span> <span class="n">cond_cols</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s2">: experimental_condition columns: </span><span class="si">{</span><span class="n">cond_cols</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="c1"># Show a few level descriptions from the first such column</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="n">cond_cols</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">defs</span> <span class="o">=</span> <span class="n">meta</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">level_definitions</span>
+        <span class="k">if</span> <span class="n">defs</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">level</span><span class="p">,</span> <span class="n">desc</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">defs</span><span class="o">.</span><span class="n">items</span><span class="p">())[:</span><span class="mi">3</span><span class="p">]:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">level</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">desc</span><span class="p">[:</span><span class="mi">60</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-9"># Identify datasets that have hierarchically linked property columns.
-# Two or more property columns are "linked" when they are both derived
-# from the same per-sample experimental-condition field via field+path
-# PropertyMappings in the VirtualDB configuration.
+<div class="clipboard-copy-txt" id="cell-9"># get_column_metadata returns a dict of column_name -&gt; ColumnMeta.
+# ColumnMeta has: description, role, level_definitions
 for dataset in vdb.get_datasets():
-    info = vdb.get_condition_field_info(dataset)
-    if info is None:
+    meta = vdb.get_column_metadata(dataset)
+    if meta is None:
         continue
-    for src_field, group in info.items():
-        print(f"{dataset}: '{src_field}' links {group['property_cols']}")
-        for level, desc in list(group["level_descriptions"].items())[:3]:
-            print(f"  {level}: {desc}")</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>hackett: 'time' links ['carbon_source', 'temperature_celsius']
-kemmeren: 'variable_in_wt' links ['carbon_source', 'temperature_celsius']
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>/tmp/ipykernel_2767185/1092681254.py:6: DeprecationWarning: get_condition_field_info is deprecated; use get_column_metadata instead.
-  info = vdb.get_condition_field_info(dataset)
-</pre>
+    # Print columns with an experimental_condition role
+    cond_cols = [
+        col for col, cm in meta.items()
+        if cm.role == 'experimental_condition'
+    ]
+    if cond_cols:
+        print(f"{dataset}: experimental_condition columns: {cond_cols}")
+        # Show a few level descriptions from the first such column
+        col = cond_cols[0]
+        defs = meta[col].level_definitions
+        if defs:
+            for level, desc in list(defs.items())[:3]:
+                print(f"  {col}={level}: {desc[:60]}")</div>
 </div>
 </div>
 </div>
@@ -5748,13 +5756,32 @@ kemmeren: Transcriptional regulator overexpression perturbation data with differ
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=genome-resources-md">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="region-sets">Region Sets<a class="anchor-link" href="#region-sets">¶</a></h2><p><code>get_region_sets(db_name)</code> returns all region set information for a dataset,
+merging three layers: datacard repo-level, datacard config-level, and VirtualDB
+genome-resource repo entries. Later layers override earlier ones for the same name.</p>
+<p><code>get_region_set_info(db_name, name)</code> returns the info for a single named region set,
+or <code>None</code> if it is not defined for that dataset.</p>
+<p>Region set information lives in the datacard (<code>path</code>, <code>join_column</code>) so the data
+provenance stays co-located with the dataset. Descriptions come from a VirtualDB
+genome-resource repo entry (a repo with a <code>genome_resources:</code> block and no <code>dataset:</code> key).</p>
+<p>See the <a href="../virtual_db_configuration.md#genome-resources">configuration guide</a> for details.</p>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=cell-26">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=genome-resources-code">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [95]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-24">
@@ -5767,10 +5794,61 @@ kemmeren: Transcriptional regulator overexpression perturbation data with differ
 </div>
 </clipboard-copy>
 </div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># get_region_sets returns a dict[str, RegionSetInfo] for a dataset.</span>
+<span class="c1"># RegionSetInfo has: path, join_column, description</span>
+<span class="c1"># Returns an empty dict when no genome_resources are declared for that dataset.</span>
+<span class="k">for</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="n">vdb</span><span class="o">.</span><span class="n">get_datasets</span><span class="p">():</span>
+    <span class="n">region_sets</span> <span class="o">=</span> <span class="n">vdb</span><span class="o">.</span><span class="n">get_region_sets</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">region_sets</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s2">: no region sets"</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">region_sets</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  path:        </span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  join_column: </span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">join_column</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  description: </span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-24"># get_region_sets returns a dict[str, RegionSetInfo] for a dataset.
+# RegionSetInfo has: path, join_column, description
+# Returns an empty dict when no genome_resources are declared for that dataset.
+for dataset in vdb.get_datasets():
+    region_sets = vdb.get_region_sets(dataset)
+    if not region_sets:
+        print(f"{dataset}: no region sets")
+    else:
+        for name, info in region_sets.items():
+            print(f"{dataset}: {name}")
+            print(f"  path:        {info.path}")
+            print(f"  join_column: {info.join_column}")
+            print(f"  description: {info.description}")</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=cell-26">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [95]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-25">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Clean up temp file</span>
 <span class="n">temp_config</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">missing_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-24"># Clean up temp file
+<div class="clipboard-copy-txt" id="cell-25"># Clean up temp file
 temp_config.unlink(missing_ok=True)</div>
 </div>
 </div>

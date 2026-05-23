@@ -9,7 +9,7 @@
         <meta name="description" content="Python API for querying and analyzing genomic datasets from HuggingFace Hub">
       
       
-        <meta name="author" content="ben mueller <email@email.com>, chase mateusiak <chasem@wustl.edu>, michael brent <brent@wustl.edu>">
+        <meta name="author" content="chase mateusiak <chasem@wustl.edu>">
       
       
         <link rel="canonical" href="https://cmatKhan.github.io/labretriever/mcp_server/">
@@ -1223,7 +1223,7 @@
   <span class="md-ellipsis">
     
   
-    BrentLab Collection
+    Collection Context Document (Example)
   
 
     
@@ -1370,6 +1370,56 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Available Tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#labretriever-virtualdb-query-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        labretriever (VirtualDB query tools)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#labretriever-repo-datacard-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        labretriever-repo (DataCard tools)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scaffold_readme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        scaffold_readme
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#audit_collection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        audit_collection
+      
+    </span>
+  </a>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1450,6 +1500,56 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Available Tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#labretriever-virtualdb-query-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        labretriever (VirtualDB query tools)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#labretriever-repo-datacard-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        labretriever-repo (DataCard tools)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scaffold_readme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        scaffold_readme
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#audit_collection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        audit_collection
+      
+    </span>
+  </a>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1505,29 +1605,29 @@
 
 
 <h1 id="mcp-server-setup">MCP Server Setup<a class="headerlink" href="#mcp-server-setup" title="Permanent link">&para;</a></h1>
-<p><code>labretriever</code> ships an <a href="https://modelcontextprotocol.io">MCP</a> server that exposes
-a <code>VirtualDB</code> instance as a set of tools callable by Claude Code (or any other MCP
-client). Once configured, Claude can discover datasets, inspect schema, and execute
-DuckDB SQL queries against your collection without any manual Python.</p>
+<p><code>labretriever</code> ships two <a href="https://modelcontextprotocol.io">MCP</a> servers:</p>
+<ul>
+<li><strong><code>labretriever</code></strong> (<code>labretriever-mcp</code>): exposes a <code>VirtualDB</code> instance as
+  SQL query tools. Requires a VirtualDB config file.</li>
+<li><strong><code>labretriever-repo</code></strong> (<code>labretriever-mcp-repo</code>): provides DataCard scaffold
+  and collection audit tools. Requires no config file.</li>
+</ul>
 <h2 id="quick-install-claude-code-plugin">Quick Install (Claude Code Plugin)<a class="headerlink" href="#quick-install-claude-code-plugin" title="Permanent link">&para;</a></h2>
 <p>First, <a href="../#installation">install labretriever</a> so that <code>labretriever-mcp</code>
-is available on your PATH.</p>
+and <code>labretriever-mcp-repo</code> are available on your PATH.</p>
 <p>Then add the marketplace and install the plugin:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>/plugin marketplace add cmatKhan/labretriever
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>/plugin install labretriever@labretriever
 </span></code></pre></div>
 <p>The plugin will prompt you for a VirtualDB config file path and an optional
-HuggingFace token at enable time. If <code>labretriever-mcp</code> is not found on PATH
-when a session starts, Claude will display installation instructions.</p>
+HuggingFace token at enable time. Both MCP servers are registered automatically.
+If <code>labretriever-mcp</code> is not found on PATH when a session starts, Claude will
+display installation instructions.</p>
 <p>For the BrentLab yeast resources collection, download the ready-to-use config from:</p>
 <p><a href="https://github.com/BrentLab/tfbpshiny/blob/main/tfbpshiny/brentlab_yeast_collection.yaml">https://github.com/BrentLab/tfbpshiny/blob/main/tfbpshiny/brentlab_yeast_collection.yaml</a></p>
 <p>Save it to a stable path and provide that path when the plugin prompts you.</p>
 <h2 id="manual-configuration-without-the-plugin">Manual Configuration (without the plugin)<a class="headerlink" href="#manual-configuration-without-the-plugin" title="Permanent link">&para;</a></h2>
 <p>Install the package first — see <a href="../#installation">Installation</a>.</p>
-<p><code>LABRETRIEVER_CONFIG</code> must point to a VirtualDB YAML file that you create or
-download — it tells the server which HuggingFace datasets to expose and how to map
-their fields. See the <a href="../virtual_db_configuration/">VirtualDB Configuration</a> docs
-for the full format.</p>
 <p>Add the following to <code>.claude/settings.json</code> (or <code>~/.claude/settings.json</code> for
 user-level):</p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
@@ -1539,15 +1639,25 @@ user-level):</p>
 </span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">        </span><span class="nt">&quot;LABRETRIEVER_CONFIG&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/absolute/path/to/brentlab_yeast_collection.yaml&quot;</span><span class="p">,</span>
 </span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">        </span><span class="nt">&quot;HF_TOKEN&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;${HF_TOKEN}&quot;</span>
 </span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">      </span><span class="p">}</span>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="p">}</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="p">},</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="nt">&quot;labretriever-repo&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;labretriever-mcp-repo&quot;</span><span class="p">,</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;stdio&quot;</span><span class="p">,</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">      </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">        </span><span class="nt">&quot;HF_TOKEN&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;${HF_TOKEN}&quot;</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">      </span><span class="p">}</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="p">}</span>
 </span></code></pre></div>
-<p><code>HF_TOKEN</code> is only required for private HuggingFace repositories. If it is not set
-and a query touches a private or gated repository, the server will return a clear
-error naming the repository.</p>
+<p><code>HF_TOKEN</code> is only required for private HuggingFace repositories. If it is not
+set and a query touches a private or gated repository, the server returns a
+clear error naming the repository.</p>
+<p><code>LABRETRIEVER_CONFIG</code> is only required for the <code>labretriever</code> server.
+<code>labretriever-repo</code> starts without it.</p>
 <h2 id="available-tools">Available Tools<a class="headerlink" href="#available-tools" title="Permanent link">&para;</a></h2>
-<p>Once the server is running, Claude has access to these tools:</p>
+<h3 id="labretriever-virtualdb-query-tools">labretriever (VirtualDB query tools)<a class="headerlink" href="#labretriever-virtualdb-query-tools" title="Permanent link">&para;</a></h3>
+<p>Requires <code>LABRETRIEVER_CONFIG</code>.</p>
 <table>
 <thead>
 <tr>
@@ -1580,10 +1690,227 @@ error naming the repository.</p>
 <td><code>query</code></td>
 <td>Execute DuckDB SQL; returns shape by default, rows when <code>return_data=True</code>.</td>
 </tr>
+<tr>
+<td><code>get_config_path</code></td>
+<td>Return the config file path (call before writing Python snippets).</td>
+</tr>
 </tbody>
 </table>
+<h3 id="labretriever-repo-datacard-tools">labretriever-repo (DataCard tools)<a class="headerlink" href="#labretriever-repo-datacard-tools" title="Permanent link">&para;</a></h3>
+<p>No config file required.</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scaffold_readme</code></td>
+<td>Scaffold a minimal HF DataCard README from a repository&rsquo;s file structure.</td>
+</tr>
+<tr>
+<td><code>audit_collection</code></td>
+<td>Audit a collection of repos for DataCard completeness, schema consistency, and consolidation opportunities.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="scaffold_readme">scaffold_readme<a class="headerlink" href="#scaffold_readme" title="Permanent link">&para;</a></h2>
+<p>Inspects the files in a HuggingFace dataset repository and produces a skeleton
+README in valid HuggingFace DataCard YAML format. The skeleton follows only the
+official DataCard specification — no labretriever-specific extensions are added.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>repo_id</code></td>
+<td><code>str</code></td>
+<td>HuggingFace dataset repository ID, e.g. <code>"BrentLab/callingcards"</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Return value:</strong></p>
+<p>One of two shapes:</p>
+<ul>
+<li><code>{"readme": "&lt;yaml_string&gt;"}</code> — a complete skeleton YAML ready to paste into
+  the repository README. All <code>description</code> fields are empty (<code>''</code>).</li>
+<li><code>{"needs_input": [{"file": ..., "reason": ..., "question": ...}, ...]}</code> — the
+  tool encountered files or column dtypes it cannot resolve without user guidance.
+  Address each question and call the tool again.</li>
+</ul>
+<p><strong>Behavior:</strong></p>
+<ul>
+<li><code>.parquet</code> files: schema read via DuckDB.</li>
+<li><code>.csv</code> / <code>.tsv</code> files: schema read via pandas.</li>
+<li>Standard non-data files (<code>.md</code>, <code>.py</code>, <code>.R</code>, <code>.sh</code>, <code>.yaml</code>, <code>.json</code>, etc.)
+  are silently skipped.</li>
+<li>Any other extension returns <code>needs_input</code> immediately.</li>
+<li>Columns with unrecognized dtypes return <code>needs_input</code> rather than guessing.</li>
+<li>Columns whose distinct-value count is &lt;= 10 in a sample of &gt;= 100 rows are
+  suggested as <code>class_label</code>; the <code>names</code> list is left empty for the author to fill.</li>
+<li>Hive-partitioned directories are detected automatically; the partition column
+  is appended to the feature list with <code>dtype: string</code>.</li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">labretriever.mcp_server._repo_server</span><span class="w"> </span><span class="kn">import</span> <span class="n">_scaffold_readme_impl</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">result</span> <span class="o">=</span> <span class="n">_scaffold_readme_impl</span><span class="p">(</span><span class="s2">&quot;BrentLab/callingcards&quot;</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">if</span> <span class="s2">&quot;readme&quot;</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;readme&quot;</span><span class="p">])</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="k">else</span><span class="p">:</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;needs_input&quot;</span><span class="p">]:</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;question&quot;</span><span class="p">])</span>
+</span></code></pre></div>
+<h2 id="audit_collection">audit_collection<a class="headerlink" href="#audit_collection" title="Permanent link">&para;</a></h2>
+<p>Audits every repo in a local directory or a HuggingFace collection URL against
+its DataCard specification. Reports completeness issues, schema inconsistencies,
+and generates ready-to-paste YAML for consolidating repeated field definitions.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>source</code></td>
+<td><code>str</code></td>
+<td>Local directory path (e.g. <code>"/home/user/code/hf"</code>) or HuggingFace collection URL (e.g. <code>"https://huggingface.co/collections/BrentLab/yeastresources-..."</code>).</td>
+</tr>
+<tr>
+<td><code>collection_context</code></td>
+<td><code>str \| None</code></td>
+<td>Optional path to a <a href="../brentlab_yeastresources_collection/">collection context document</a>. When supplied, field naming conventions and dataset type expectations from the document are used to add context-aware findings.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Return value:</strong></p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">{</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">&quot;source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;resolved source&gt;&quot;</span><span class="p">,</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="nt">&quot;schema_checks_performed&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="nt">&quot;repos&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="nt">&quot;callingcards&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">      </span><span class="nt">&quot;findings&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">        </span><span class="p">{</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">          </span><span class="nt">&quot;severity&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;warning&quot;</span><span class="p">,</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">          </span><span class="nt">&quot;check&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;missing_feature_descriptions&quot;</span><span class="p">,</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">          </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;annotated_features&quot;</span><span class="p">,</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">          </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;experiment_hops&quot;</span><span class="p">,</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">          </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Field &#39;experiment_hops&#39; in config &#39;annotated_features&#39; has no description.&quot;</span><span class="p">,</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">          </span><span class="nt">&quot;doc_link&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://cmatkhan.github.io/labretriever/huggingface_datacard/#feature-definitions&quot;</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">      </span><span class="p">]</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">  </span><span class="p">},</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">  </span><span class="nt">&quot;collection_suggestions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;consolidate_to_shared_features&quot;</span><span class="p">,</span>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="w">      </span><span class="nt">&quot;scope&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;same_repo&quot;</span><span class="p">,</span>
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="w">      </span><span class="nt">&quot;repo&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;callingcards&quot;</span><span class="p">,</span>
+</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="w">      </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;target_locus_tag&quot;</span><span class="p">,</span>
+</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="w">      </span><span class="nt">&quot;configs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;annotated_features&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;annotated_features_combined&quot;</span><span class="p">],</span>
+</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="w">      </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+</span><span id="__span-3-26"><a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="w">      </span><span class="nt">&quot;generated_yaml&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;features:\n- applies_to:\n  ...&quot;</span><span class="p">,</span>
+</span><span id="__span-3-27"><a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a><span class="w">      </span><span class="nt">&quot;doc_link&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://cmatkhan.github.io/labretriever/huggingface_datacard/#shared-feature-definitions&quot;</span>
+</span><span id="__span-3-28"><a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-3-29"><a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a><span class="w">  </span><span class="p">]</span>
+</span><span id="__span-3-30"><a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>Checks performed:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Severity</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>missing_description</code></td>
+<td>warning</td>
+<td>Config description is empty or absent.</td>
+</tr>
+<tr>
+<td><code>missing_feature_descriptions</code></td>
+<td>warning</td>
+<td>A feature in <code>dataset_info.features</code> has no description.</td>
+</tr>
+<tr>
+<td><code>undocumented_column</code></td>
+<td>error</td>
+<td>Column in data file not listed in <code>dataset_info.features</code> (local only).</td>
+</tr>
+<tr>
+<td><code>phantom_column</code></td>
+<td>warning</td>
+<td>Feature in <code>dataset_info.features</code> not found in data file (local only).</td>
+</tr>
+<tr>
+<td><code>dtype_mismatch</code></td>
+<td>error</td>
+<td>File column dtype is incompatible with declared HF dtype (local only, lenient).</td>
+</tr>
+<tr>
+<td><code>missing_role</code></td>
+<td>warning</td>
+<td>Feature has no <code>role</code> field.</td>
+</tr>
+<tr>
+<td><code>missing_doi</code></td>
+<td>info</td>
+<td>No <code>doi</code> at repo level.</td>
+</tr>
+<tr>
+<td><code>missing_citation</code></td>
+<td>info</td>
+<td>No <code>citation</code> at repo level.</td>
+</tr>
+<tr>
+<td><code>class_label_empty_names</code></td>
+<td>warning</td>
+<td><code>class_label</code> dtype has an empty <code>names</code> list.</td>
+</tr>
+<tr>
+<td><code>non_reserved_dataset_type</code></td>
+<td>info</td>
+<td>Config uses a collection-defined <code>dataset_type</code> (not an error).</td>
+</tr>
+<tr>
+<td><code>partition_col_undocumented</code></td>
+<td>warning</td>
+<td>Hive partition column not listed in features (local only).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example:</strong></p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">labretriever.mcp_server._repo_server</span><span class="w"> </span><span class="kn">import</span> <span class="n">_audit_collection_impl</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">result</span> <span class="o">=</span> <span class="n">_audit_collection_impl</span><span class="p">(</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="s2">&quot;/home/user/code/hf&quot;</span><span class="p">,</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="n">collection_context</span><span class="o">=</span><span class="s2">&quot;docs/brentlab_yeastresources_collection.md&quot;</span><span class="p">,</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="n">token</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="p">)</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="k">for</span> <span class="n">repo</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;repos&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>    <span class="k">for</span> <span class="n">finding</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;findings&quot;</span><span class="p">]:</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">finding</span><span class="p">[</span><span class="s1">&#39;severity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">repo</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">finding</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;collection_suggestions&quot;</span><span class="p">]:</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>    <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;generated_yaml&quot;</span><span class="p">):</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">&quot;generated_yaml&quot;</span><span class="p">])</span>
+</span></code></pre></div>
 <h2 id="example-session">Example Session<a class="headerlink" href="#example-session" title="Permanent link">&para;</a></h2>
-<p>After connecting, a typical workflow in Claude Code looks like:</p>
+<p>After connecting, a typical VirtualDB workflow in Claude Code looks like:</p>
 <ol>
 <li><code>list_datasets</code> - discover available views (<code>harbison</code>, <code>callingcards</code>, etc.)</li>
 <li><code>describe_dataset("harbison_meta")</code> - inspect sample-level columns</li>

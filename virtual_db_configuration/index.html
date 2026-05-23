@@ -9,7 +9,7 @@
         <meta name="description" content="Python API for querying and analyzing genomic datasets from HuggingFace Hub">
       
       
-        <meta name="author" content="ben mueller <email@email.com>, chase mateusiak <chasem@wustl.edu>, michael brent <brent@wustl.edu>">
+        <meta name="author" content="chase mateusiak <chasem@wustl.edu>">
       
       
         <link rel="canonical" href="https://cmatKhan.github.io/labretriever/virtual_db_configuration/">
@@ -1225,7 +1225,7 @@
   <span class="md-ellipsis">
     
   
-    BrentLab Collection
+    Collection Context Document (Example)
   
 
     
@@ -1394,6 +1394,67 @@
       
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#genome-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Genome Resources
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Genome Resources">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#part-a-datacard-level-region-sets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part A: Datacard-level region sets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#part-b-virtualdb-genome-resource-repo-entry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part B: VirtualDB genome-resource repo entry
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resolution order
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#python-accessors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Python accessors
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1651,6 +1712,67 @@
       
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#genome-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Genome Resources
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Genome Resources">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#part-a-datacard-level-region-sets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part A: Datacard-level region sets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#part-b-virtualdb-genome-resource-repo-entry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part B: VirtualDB genome-resource repo entry
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resolution order
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#python-accessors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Python accessors
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2064,6 +2186,134 @@ data via <code>(repo_id, config_name)</code> pairs for programmatic or developer
 <div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Equivalent to vdb.get_tags(&quot;harbison&quot;) above</span>
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">vdb</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_tags</span><span class="p">(</span><span class="s2">&quot;BrentLab/harbison_2004&quot;</span><span class="p">,</span> <span class="s2">&quot;harbison_2004&quot;</span><span class="p">)</span>
 </span></code></pre></div>
+<h2 id="genome-resources">Genome Resources<a class="headerlink" href="#genome-resources" title="Permanent link">&para;</a></h2>
+<p>Region set information is split across two layers: the HuggingFace datacard
+(where the data provenance belongs) and the VirtualDB config (for descriptions
+and overrides that should not require editing every datacard).</p>
+<h3 id="part-a-datacard-level-region-sets">Part A: Datacard-level region sets<a class="headerlink" href="#part-a-datacard-level-region-sets" title="Permanent link">&para;</a></h3>
+<p>A binding dataset intrinsically knows which genomic intervals it was built
+against. That information lives in the datacard as a <code>genome_resources</code> block
+at the repo level (applies to all configs in the card) or at the config level
+(applies only to that config, overrides repo-level entries of the same name).</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># repo-level: applies to all configs in this datacard</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nt">genome_resources</span><span class="p">:</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="nt">region_sets</span><span class="p">:</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span><span class="nt">yiming_promoters</span><span class="p">:</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">      </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://huggingface.co/datasets/BrentLab/yeast_genome_resources/resolve/main/yiming_promoters.bed</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">      </span><span class="nt">join_column</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">target_locus_tag</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="nt">configs</span><span class="p">:</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">config_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2026_analysis_set</span>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">    </span><span class="c1"># config-level: overrides the repo-level entry for this config only</span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="w">    </span><span class="nt">genome_resources</span><span class="p">:</span>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="w">      </span><span class="nt">region_sets</span><span class="p">:</span>
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="w">        </span><span class="nt">yiming_promoters</span><span class="p">:</span>
+</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://huggingface.co/datasets/BrentLab/yeast_genome_resources/resolve/main/yiming_promoters_v2.bed</span>
+</span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="w">          </span><span class="nt">join_column</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">target_locus_tag</span>
+</span></code></pre></div>
+<p>Sub-fields per region set entry:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path</code></td>
+<td>Relative path within the repo or full URL to the region BED/parquet file. Full URLs are preferred when referencing files in other HuggingFace repos.</td>
+</tr>
+<tr>
+<td><code>join_column</code></td>
+<td>Column in this dataset used to join to the region set (e.g. <code>target_locus_tag</code>).</td>
+</tr>
+</tbody>
+</table>
+<p>Both fields are optional; arbitrary additional fields are allowed.</p>
+<p>See the <a href="../huggingface_datacard/">HuggingFace datacard documentation</a> for the
+full <code>genome_resources</code> field reference.</p>
+<h3 id="part-b-virtualdb-genome-resource-repo-entry">Part B: VirtualDB genome-resource repo entry<a class="headerlink" href="#part-b-virtualdb-genome-resource-repo-entry" title="Permanent link">&para;</a></h3>
+<p>One or more repos in the VirtualDB config can act as genome-resource reference
+repos. These repos have a <code>genome_resources</code> key but no <code>dataset</code> key. No
+HuggingFace download is attempted for them — the block is YAML-only. Their
+region set entries are used to supplement or override datacard-declared entries,
+most commonly to add human-readable descriptions.</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nt">repositories</span><span class="p">:</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span><span class="nt">BrentLab/yeast_genome_resources</span><span class="p">:</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">    </span><span class="nt">genome_resources</span><span class="p">:</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">      </span><span class="nt">region_sets</span><span class="p">:</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">        </span><span class="nt">yiming_promoters</span><span class="p">:</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">          </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">            </span><span class="no">Yiming et al. (2001) promoter annotations. 700 bp upstream of each</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">            </span><span class="no">ORF start site.</span>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">        </span><span class="nt">mindel_promoters</span><span class="p">:</span>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="w">          </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="w">            </span><span class="no">Miura &amp; Bhaskara (Mindel) promoter annotations. Boundaries derived</span>
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="w">            </span><span class="no">from nucleosome-free region calls.</span>
+</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>
+</span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="w">  </span><span class="nt">BrentLab/callingcards</span><span class="p">:</span>
+</span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="w">    </span><span class="nt">dataset</span><span class="p">:</span>
+</span><span id="__span-8-16"><a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a><span class="w">      </span><span class="nt">2026_analysis_set</span><span class="p">:</span>
+</span><span id="__span-8-17"><a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a><span class="w">        </span><span class="nt">db_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">callingcards</span>
+</span><span id="__span-8-18"><a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a><span class="w">        </span><span class="nt">sample_id</span><span class="p">:</span>
+</span><span id="__span-8-19"><a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a><span class="w">          </span><span class="nt">field</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gm_id</span>
+</span></code></pre></div>
+<h3 id="resolution-order">Resolution order<a class="headerlink" href="#resolution-order" title="Permanent link">&para;</a></h3>
+<p><code>vdb.get_region_sets(db_name)</code> merges three layers, with later layers overriding
+earlier ones for the same named entry:</p>
+<ol>
+<li>Datacard repo-level <code>genome_resources.region_sets</code></li>
+<li>Datacard config-level <code>genome_resources.region_sets</code></li>
+<li>VirtualDB genome-resource repo entries (repos with <code>genome_resources</code> and no <code>dataset</code>)</li>
+</ol>
+<h3 id="python-accessors">Python accessors<a class="headerlink" href="#python-accessors" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">labretriever.virtual_db</span><span class="w"> </span><span class="kn">import</span> <span class="n">VirtualDB</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="n">vdb</span> <span class="o">=</span> <span class="n">VirtualDB</span><span class="p">(</span><span class="s2">&quot;datasets.yaml&quot;</span><span class="p">)</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="c1"># Returns all region sets merged from datacard + VirtualDB overrides</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="n">region_sets</span> <span class="o">=</span> <span class="n">vdb</span><span class="o">.</span><span class="n">get_region_sets</span><span class="p">(</span><span class="s2">&quot;callingcards&quot;</span><span class="p">)</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="c1"># -&gt; {</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="c1">#      &quot;yiming_promoters&quot;: RegionSetInfo(</span>
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="c1">#          path=&quot;https://huggingface.co/datasets/.../yiming_promoters.bed&quot;,</span>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="c1">#          join_column=&quot;target_locus_tag&quot;,</span>
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="c1">#          description=&quot;Yiming et al. (2001) promoter annotations...&quot;,</span>
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="c1">#      )</span>
+</span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="c1">#    }</span>
+</span><span id="__span-9-14"><a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>
+</span><span id="__span-9-15"><a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a><span class="c1"># Returns info for a single named region set, or None</span>
+</span><span id="__span-9-16"><a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a><span class="n">info</span> <span class="o">=</span> <span class="n">vdb</span><span class="o">.</span><span class="n">get_region_set_info</span><span class="p">(</span><span class="s2">&quot;callingcards&quot;</span><span class="p">,</span> <span class="s2">&quot;yiming_promoters&quot;</span><span class="p">)</span>
+</span><span id="__span-9-17"><a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a><span class="c1"># -&gt; RegionSetInfo(path=..., join_column=&quot;target_locus_tag&quot;, description=...)</span>
+</span><span id="__span-9-18"><a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a>
+</span><span id="__span-9-19"><a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a><span class="n">info</span> <span class="o">=</span> <span class="n">vdb</span><span class="o">.</span><span class="n">get_region_set_info</span><span class="p">(</span><span class="s2">&quot;harbison&quot;</span><span class="p">,</span> <span class="s2">&quot;yiming_promoters&quot;</span><span class="p">)</span>
+</span><span id="__span-9-20"><a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a><span class="c1"># -&gt; None  (harbison has no genome_resources in its datacard)</span>
+</span></code></pre></div>
+<p><code>RegionSetInfo</code> fields:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>description</code></td>
+<td>Human-readable description. Comes from VirtualDB override.</td>
+</tr>
+<tr>
+<td><code>path</code></td>
+<td>Relative path or full URL to the region file. Comes from the datacard.</td>
+</tr>
+<tr>
+<td><code>join_column</code></td>
+<td>Column used to join to the region set. Comes from the datacard.</td>
+</tr>
+</tbody>
+</table>
+<p>All three fields are optional; <code>None</code> is returned for any field not configured
+at any layer.</p>
 <h2 id="missing-value-labels">Missing Value Labels<a class="headerlink" href="#missing-value-labels" title="Permanent link">&para;</a></h2>
 <p><code>missing_value_labels</code> is a top-level mapping from property name to a default
 string value. When a property is listed here, every dataset&rsquo;s <code>_meta</code> view will
@@ -2071,9 +2321,9 @@ include that column &ndash; even datasets that have no explicit mapping for it. 
 those datasets, the column is emitted as the constant fallback value.</p>
 <p>Datasets that <em>do</em> have an explicit mapping for the property are unaffected; they
 resolve the value normally (from field definitions, a path, or an expression).</p>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nt">missing_value_labels</span><span class="p">:</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="nt">carbon_source</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;unspecified&quot;</span>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="nt">temperature_celsius</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;unspecified&quot;</span>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nt">missing_value_labels</span><span class="p">:</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span><span class="nt">carbon_source</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;unspecified&quot;</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span><span class="nt">temperature_celsius</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;unspecified&quot;</span>
 </span></code></pre></div>
 <p><strong>Behavior by dataset</strong>:</p>
 <table>
@@ -2113,11 +2363,11 @@ identifier column:
 <h3 id="fields">Fields<a class="headerlink" href="#fields" title="Permanent link">&para;</a></h3>
 <p>All fields in the comparative dataset are included. But they may be re-named
 (aliased) by specifically mapping them in the configuration.</p>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nt">dto</span><span class="p">:</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span><span class="c1"># this would make the displayed field name &#39;dto_pvalue&#39;</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">instead of &#39;empirical_pvalue&#39;</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">dto_pvalue</span><span class="p p-Indicator">:</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span><span class="nt">field</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">empirical_pvalue</span>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nt">dto</span><span class="p">:</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">  </span><span class="c1"># this would make the displayed field name &#39;dto_pvalue&#39;</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">instead of &#39;empirical_pvalue&#39;</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">dto_pvalue</span><span class="p p-Indicator">:</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">    </span><span class="nt">field</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">empirical_pvalue</span>
 </span></code></pre></div>
 <h3 id="link-structure">Link Structure<a class="headerlink" href="#link-structure" title="Permanent link">&para;</a></h3>
 <p>the <code>links</code> section specifies how the composite IDs map to primary datasets. The first
@@ -2125,14 +2375,14 @@ sub-element under <code>links</code> is the name of the field in the comparative
 contains the composite IDs. The value is a list of <code>[repo_id, config_name]</code>
 pairs indicating which primary datasets are referenced by that field. Those primary
 datasets must also be defined in the overall VirtualDB configuration.</p>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Within the comparative dataset config</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="nt">dto</span><span class="p">:</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span><span class="nt">links</span><span class="p">:</span>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">    </span><span class="nt">binding_id</span><span class="p">:</span>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">BrentLab/harbison_2004</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">harbison_2004</span><span class="p p-Indicator">]</span><span class="w">  </span><span class="c1"># [repo_id, config_name]</span>
-</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">BrentLab/callingcards</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">annotated_features</span><span class="p p-Indicator">]</span>
-</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">    </span><span class="nt">perturbation_id</span><span class="p">:</span>
-</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">BrentLab/kemmeren_2014</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">kemmeren_2014</span><span class="p p-Indicator">]</span>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># Within the comparative dataset config</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nt">dto</span><span class="p">:</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span><span class="nt">links</span><span class="p">:</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">    </span><span class="nt">binding_id</span><span class="p">:</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">BrentLab/harbison_2004</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">harbison_2004</span><span class="p p-Indicator">]</span><span class="w">  </span><span class="c1"># [repo_id, config_name]</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">BrentLab/callingcards</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">annotated_features</span><span class="p p-Indicator">]</span>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="w">    </span><span class="nt">perturbation_id</span><span class="p">:</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">BrentLab/kemmeren_2014</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">kemmeren_2014</span><span class="p p-Indicator">]</span>
 </span></code></pre></div>
 <p>See the <a href="../huggingface_datacard/#5-comparative">huggingface datacard documentation</a>
 for more detailed explanation of comparative datasets and composite IDs.</p>
@@ -2169,18 +2419,18 @@ additional columns:</p>
 <p>This makes it straightforward to join back to primary dataset views
 or filter by source dataset without parsing composite IDs in SQL.</p>
 <h3 id="view-diagram">View Diagram<a class="headerlink" href="#view-diagram" title="Permanent link">&para;</a></h3>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>__harbison_parquet  (raw parquet, not directly exposed)
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>  |
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>  +-&gt; harbison_meta  (deduplicated, one row per sample identifier,
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>  |                   with derived columns from config)
-</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>  |
-</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>  +-&gt; harbison  (full parquet joined to harbison_meta)
-</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>
-</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>__dto_parquet  (raw parquet, not directly exposed)
-</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>  |
-</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>  +-&gt; dto_expanded  (parquet + parsed columns:
-</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>                     binding_id_source, binding_id_id,
-</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>                     perturbation_id_source, perturbation_id_id)
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>__harbison_parquet  (raw parquet, not directly exposed)
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>  |
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>  +-&gt; harbison_meta  (deduplicated, one row per sample identifier,
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>  |                   with derived columns from config)
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>  |
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>  +-&gt; harbison  (full parquet joined to harbison_meta)
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>__dto_parquet  (raw parquet, not directly exposed)
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>  |
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>  +-&gt; dto_expanded  (parquet + parsed columns:
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>                     binding_id_source, binding_id_id,
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a>                     perturbation_id_source, perturbation_id_id)
 </span></code></pre></div>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <p>For usage examples and tutorials,
