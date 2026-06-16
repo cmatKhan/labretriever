@@ -13,7 +13,9 @@ Run via the ``labretriever-mcp`` entry point or directly with
 
 from __future__ import annotations
 
+import argparse
 import dataclasses
+import importlib.metadata
 import os
 
 from huggingface_hub.errors import GatedRepoError, RepositoryNotFoundError
@@ -317,6 +319,14 @@ def main() -> None:
     the user interactively.
 
     """
+    _version = importlib.metadata.version("labretriever")
+    parser = argparse.ArgumentParser(
+        prog="labretriever-mcp",
+        description="Run the labretriever VirtualDB MCP server over stdio.",
+    )
+    parser.add_argument("--version", action="version", version=f"%(prog)s {_version}")
+    parser.parse_args()
+
     global _vdb, _vdb_config_path, _startup_error
     config_path = os.environ.get("LABRETRIEVER_CONFIG")
     if not config_path:

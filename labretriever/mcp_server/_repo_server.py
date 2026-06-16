@@ -12,6 +12,8 @@ Run via the ``labretriever-mcp-repo`` entry point or directly with
 
 from __future__ import annotations
 
+import argparse
+import importlib.metadata
 import os
 import re
 from collections import defaultdict
@@ -1033,6 +1035,13 @@ def audit_collection(
 
 def main() -> None:
     """Start the labretriever-repo MCP server."""
+    _version = importlib.metadata.version("labretriever")
+    parser = argparse.ArgumentParser(
+        prog="labretriever-mcp-repo",
+        description="Run the labretriever DataCard/collection MCP server over stdio.",
+    )
+    parser.add_argument("--version", action="version", version=f"%(prog)s {_version}")
+    parser.parse_args()
     mcp.run(transport="stdio")
 
 
