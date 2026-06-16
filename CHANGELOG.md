@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.1.3] - 2026-06-16
+
+### Added
+
+- `labretriever-mcp` and `labretriever-mcp-repo` now accept `--version` and
+  `--help` flags. Both entry points use `argparse.ArgumentParser` with an
+  `action="version"` argument backed by `importlib.metadata.version("labretriever")`,
+  so the reported version is always consistent with the installed package and
+  requires no hardcoded string. This satisfies bioconda's requirement that all
+  CLI entry points respond to `--help` without error.
+
 ## [1.1.2] - 2026-05-22
 
 ### Fixed
