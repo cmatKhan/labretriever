@@ -1269,21 +1269,13 @@ class VirtualDB:
         # fall back to globbing the snapshot for all parquet files. When we still need
         # to call snapshot_download (downloaded_path is None), a missing card is an
         # error because we need the patterns to filter the download.
+        #
+        # DataCard is lazy — __init__ succeeds but get_config() triggers the fetch,
+        # so both calls must be inside the same try block.
         card = self.datacards.get(repo_id)
-        if card is None:
-            try:
+        try:
+            if card is None:
                 card = DataCard(repo_id, token=self.token)
-            except Exception as exc:
-                if downloaded_path is None:
-                    raise
-                logger.warning(
-                    "Could not load datacard for '%s'; "
-                    "falling back to full parquet glob: %s",
-                    repo_id,
-                    exc,
-                )
-
-        if card is not None:
             config = card.get_config(config_name)
             if not config:
                 logger.warning(
@@ -1293,8 +1285,15 @@ class VirtualDB:
                 )
                 return []
             file_patterns = [df.path for df in config.data_files]
-        else:
-            # Datacard unavailable but snapshot already resolved — grab everything.
+        except Exception as exc:
+            if downloaded_path is None:
+                raise
+            logger.warning(
+                "Could not load datacard for '%s'; "
+                "falling back to full parquet glob: %s",
+                repo_id,
+                exc,
+            )
             file_patterns = ["**/*.parquet"]
 
         if downloaded_path is None:
