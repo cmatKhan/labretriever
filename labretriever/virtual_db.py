@@ -1449,6 +1449,16 @@ class VirtualDB:
             meta_cols = sorted(actual_meta_cols)
         else:
             meta_cols = self._resolve_metadata_fields(repo_id, config_name) or []
+            if not meta_cols and self.local_files_only:
+                # DataCard unavailable in offline mode; fall back to all parquet
+                # columns so the meta view can still be registered.
+                meta_cols = self._get_view_columns(parquet_view)
+                logger.warning(
+                    "DataCard unavailable for '%s/%s' in offline mode; "
+                    "using all parquet columns for meta view.",
+                    repo_id,
+                    config_name,
+                )
             actual_meta_cols = set(meta_cols)
 
         if not meta_cols:
