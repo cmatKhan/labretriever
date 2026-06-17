@@ -1251,19 +1251,8 @@ class VirtualDB:
         :return: List of absolute paths to Parquet files
 
         """
-        card = self.datacards.get(repo_id) or DataCard(repo_id, token=self.token)
-        config = card.get_config(config_name)
-        if not config:
-            logger.warning(
-                "Config '%s' not found in repo '%s'",
-                config_name,
-                repo_id,
-            )
-            return []
-
-        file_patterns = [df.path for df in config.data_files]
-
-        # Fast path: read snapshot directory from the local refs/main pointer.
+        # Fast path: resolve snapshot directory from the local cache ref file
+        # without touching the network or loading the datacard.
         downloaded_path: str | None = None
         if self.local_files_only:
             snap = self._snapshot_path_from_cache(repo_id)
@@ -1274,6 +1263,39 @@ class VirtualDB:
                     repo_id,
                     downloaded_path,
                 )
+
+        # Load the datacard for file_patterns. When the fast path already resolved
+        # a snapshot (local_files_only + cache hit), a missing datacard is not fatal:
+        # fall back to globbing the snapshot for all parquet files. When we still need
+        # to call snapshot_download (downloaded_path is None), a missing card is an
+        # error because we need the patterns to filter the download.
+        card = self.datacards.get(repo_id)
+        if card is None:
+            try:
+                card = DataCard(repo_id, token=self.token)
+            except Exception as exc:
+                if downloaded_path is None:
+                    raise
+                logger.warning(
+                    "Could not load datacard for '%s'; "
+                    "falling back to full parquet glob: %s",
+                    repo_id,
+                    exc,
+                )
+
+        if card is not None:
+            config = card.get_config(config_name)
+            if not config:
+                logger.warning(
+                    "Config '%s' not found in repo '%s'",
+                    config_name,
+                    repo_id,
+                )
+                return []
+            file_patterns = [df.path for df in config.data_files]
+        else:
+            # Datacard unavailable but snapshot already resolved — grab everything.
+            file_patterns = ["**/*.parquet"]
 
         if downloaded_path is None:
             from huggingface_hub import snapshot_download
