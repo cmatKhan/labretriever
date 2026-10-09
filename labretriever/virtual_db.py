@@ -1251,19 +1251,8 @@ class VirtualDB:
         :return: List of absolute paths to Parquet files
 
         """
-        card = self.datacards.get(repo_id) or DataCard(repo_id, token=self.token)
-        config = card.get_config(config_name)
-        if not config:
-            logger.warning(
-                "Config '%s' not found in repo '%s'",
-                config_name,
-                repo_id,
-            )
-            return []
-
-        file_patterns = [df.path for df in config.data_files]
-
-        # Fast path: read snapshot directory from the local refs/main pointer.
+        # Fast path: resolve snapshot directory from the local cache ref file
+        # without touching the network or loading the datacard.
         downloaded_path: str | None = None
         if self.local_files_only:
             snap = self._snapshot_path_from_cache(repo_id)
@@ -1274,6 +1263,38 @@ class VirtualDB:
                     repo_id,
                     downloaded_path,
                 )
+
+        # Load the datacard for file_patterns. When the fast path already resolved
+        # a snapshot (local_files_only + cache hit), a missing datacard is not fatal:
+        # fall back to globbing the snapshot for all parquet files. When we still need
+        # to call snapshot_download (downloaded_path is None), a missing card is an
+        # error because we need the patterns to filter the download.
+        #
+        # DataCard is lazy — __init__ succeeds but get_config() triggers the fetch,
+        # so both calls must be inside the same try block.
+        card = self.datacards.get(repo_id)
+        try:
+            if card is None:
+                card = DataCard(repo_id, token=self.token)
+            config = card.get_config(config_name)
+            if not config:
+                logger.warning(
+                    "Config '%s' not found in repo '%s'",
+                    config_name,
+                    repo_id,
+                )
+                return []
+            file_patterns = [df.path for df in config.data_files]
+        except Exception as exc:
+            if downloaded_path is None:
+                raise
+            logger.warning(
+                "Could not load datacard for '%s'; "
+                "falling back to full parquet glob: %s",
+                repo_id,
+                exc,
+            )
+            file_patterns = ["**/*.parquet"]
 
         if downloaded_path is None:
             from huggingface_hub import snapshot_download
@@ -1428,6 +1449,16 @@ class VirtualDB:
             meta_cols = sorted(actual_meta_cols)
         else:
             meta_cols = self._resolve_metadata_fields(repo_id, config_name) or []
+            if not meta_cols and self.local_files_only:
+                # DataCard unavailable in offline mode; fall back to all parquet
+                # columns so the meta view can still be registered.
+                meta_cols = self._get_view_columns(parquet_view)
+                logger.warning(
+                    "DataCard unavailable for '%s/%s' in offline mode; "
+                    "using all parquet columns for meta view.",
+                    repo_id,
+                    config_name,
+                )
             actual_meta_cols = set(meta_cols)
 
         if not meta_cols:
@@ -1473,7 +1504,9 @@ class VirtualDB:
         # avoid a duplicate column name in the SELECT.  The rename uses
         # "<col>_orig", or "<col>_orig_1", etc., to avoid collisions with
         # other columns that already exist in the parquet.
-        prop_result = self._resolve_property_columns(repo_id, config_name)
+        prop_result = self._resolve_property_columns(
+            repo_id, config_name, db_name=db_name
+        )
 
         # Collect all column names that exist in the parquet so we can
         # find a unique _orig suffix when needed.
@@ -1841,6 +1874,7 @@ class VirtualDB:
         self,
         repo_id: str,
         config_name: str,
+        db_name: str | None = None,
     ) -> tuple[list[str], list[str]] | None:
         """
         Build SQL column expressions for derived property columns.
@@ -1851,6 +1885,8 @@ class VirtualDB:
 
         :param repo_id: Repository ID
         :param config_name: Configuration name
+        :param db_name: ``db_name`` of the dataset, used to find its external
+            metadata config
         :return: Tuple of (sql_expressions, raw_cols_needed) or None
             if no property mappings are configured.
             ``sql_expressions`` are SQL fragments like
@@ -1943,6 +1979,8 @@ class VirtualDB:
                     mapping.dtype,
                     config_name,
                     card,
+                    repo_id=repo_id,
+                    db_name=db_name,
                 )
                 if expr is not None:
                     expressions.append(expr)
@@ -1978,6 +2016,122 @@ class VirtualDB:
 
         return expressions, sorted(raw_cols)
 
+    def _external_meta_config_for(
+        self,
+        repo_id: str | None,
+        config_name: str,
+        db_name: str | None = None,
+    ) -> str | None:
+        """
+        Name of the external metadata config that describes a data config.
+
+        :param repo_id: Repository ID, used to find the dataset when ``db_name`` is
+            not given
+        :param config_name: Data config name
+        :param db_name: ``db_name`` of the dataset, when known
+        :return: The metadata config name, or ``None`` if the dataset has no
+            external metadata config
+
+        """
+        external: dict[str, str] = getattr(self, "_external_meta_configs", {})
+        if db_name is not None:
+            return external.get(db_name)
+        if repo_id is None:
+            return None
+        for name, target in self.db_name_map.items():
+            if target == (repo_id, config_name) and name in external:
+                return external[name]
+        return None
+
+    def _field_definitions(
+        self,
+        card: Any,
+        config_name: str,
+        field: str,
+        repo_id: str | None = None,
+        db_name: str | None = None,
+    ) -> dict[str, Any]:
+        """
+        Condition definitions for ``field``, wherever the datacard declares them.
+
+        A data config that relies on an external metadata config does not declare
+        the condition field itself: its definitions live on the metadata config. The
+        data config is tried first, so a field declared there resolves as it always
+        has.
+
+        :param card: DataCard instance
+        :param config_name: Data config name
+        :param field: Field whose definitions to fetch (e.g., "condition")
+        :param repo_id: Repository ID
+        :param db_name: ``db_name`` of the dataset, when known
+        :return: Mapping from each field value to its definition; empty if the
+            field is declared nowhere or has no definitions
+
+        """
+        candidates = [config_name]
+        meta_config = self._external_meta_config_for(repo_id, config_name, db_name)
+        if meta_config and meta_config != config_name:
+            candidates.append(meta_config)
+
+        first_error: Exception | None = None
+        declared = False
+        for candidate in candidates:
+            try:
+                defs = card.get_field_definitions(candidate, field)
+            except Exception as exc:
+                first_error = first_error or exc
+                continue
+            declared = True
+            if defs:
+                return defs
+        if not declared:
+            logger.warning(
+                "Could not get definitions for field '%s' " "in config '%s': %s",
+                field,
+                config_name,
+                first_error,
+            )
+        return {}
+
+    @staticmethod
+    def _condition_default(card: Any, config_name: str, path: str) -> Any:
+        """
+        The config-level, else top-level, ``experimental_conditions`` value at ``path``.
+
+        A key resolves field-level over config-level over top-level. A condition
+        definition states only what differs from the config's conditions, so a level
+        whose definition omits ``path`` inherits this value.
+
+        :param card: DataCard instance
+        :param config_name: Data config name
+        :param path: Dot-notation path, relative to a definition
+        :return: The inherited value (a list for list-valued paths), or ``None``
+
+        """
+        try:
+            merged = card.get_experimental_conditions(config_name)
+        except Exception:
+            return None
+        if not isinstance(merged, dict) or not merged:
+            return None
+        return get_nested_value(merged, path)
+
+    def _format_condition_value(self, key: str, raw: Any) -> str:
+        """
+        Render a resolved condition value as a string, applying factor aliases.
+
+        A list (e.g., the compounds of a carbon source) has each element aliased
+        before the elements are joined with ``", "``.
+
+        :param key: Output column name, which selects the factor aliases
+        :param raw: Value found at a path
+        :return: The alias-resolved string
+
+        """
+        if isinstance(raw, list):
+            return ", ".join(self._resolve_alias(key, str(v)) for v in raw)
+        return self._resolve_alias(key, str(raw))
+
     def _build_field_path_expr(
         self,
         key: str,
@@ -1986,13 +2140,21 @@ class VirtualDB:
         dtype: str | None,
         config_name: str,
         card: Any,
+        repo_id: str | None = None,
+        db_name: str | None = None,
     ) -> str | None:
         """
         Build a SQL expression for a field+path property mapping.
 
-        Resolves each definition value via ``get_nested_value``,
-        applies factor aliases, and returns either a constant or
-        a CASE WHEN expression.
+        Resolves the value of ``path`` for each level of ``field`` from the
+        field's definitions, applies factor aliases, and returns either a constant
+        or a CASE WHEN expression. A level whose definition omits ``path`` takes the
+        config-level, else top-level, value (the documented precedence is
+        field-level > config-level > top-level). The same default is used for values
+        that have no definition. Without a default, those fall back to the
+        ``missing_value_labels`` entry for ``key``, or NULL. When every level resolves
+        to the same value, and no different default exists, the column is that
+        constant for all samples.
 
         :param key: Output column name
         :param field: Source field in parquet (e.g., "condition")
@@ -2000,25 +2162,26 @@ class VirtualDB:
         :param dtype: Optional data type ("numeric", "string", "bool")
         :param config_name: Configuration name
         :param card: DataCard instance
+        :param repo_id: Repository ID, used to find the external metadata config
+        :param db_name: ``db_name`` of the dataset, when known
         :return: SQL expression string, or None on failure
 
         """
-        try:
-            defs = card.get_field_definitions(config_name, field)
-        except Exception as exc:
-            logger.warning(
-                "Could not get definitions for field '%s' " "in config '%s': %s",
-                field,
-                config_name,
-                exc,
-            )
-            return None
-
+        defs = self._field_definitions(card, config_name, field, repo_id, db_name)
         if not defs:
             return None
 
-        # Resolve each definition value
+        default_raw = self._condition_default(card, config_name, path)
+        default = (
+            self._format_condition_value(key, default_raw)
+            if default_raw is not None
+            else None
+        )
+
+        # Resolve each definition value; a level that omits the path inherits
+        # the default when there is one.
         value_map: dict[str, str] = {}
+        unresolved = 0
         for def_key, definition in defs.items():
             raw = get_nested_value(definition, path)
             if raw is None:
@@ -2032,24 +2195,26 @@ class VirtualDB:
                         else type(definition).__name__
                     ),
                 )
+                if default is None:
+                    unresolved += 1
+                    continue
+                value_map[str(def_key)] = default
                 continue
-            # Handle list results (e.g., carbon_source returns
-            # [{"compound": "D-glucose"}])
-            if isinstance(raw, list):
-                raw = raw[0] if len(raw) == 1 else ", ".join(str(v) for v in raw)
-            resolved = self._resolve_alias(key, str(raw))
-            value_map[str(def_key)] = resolved
+            value_map[str(def_key)] = self._format_condition_value(key, raw)
 
         if not value_map:
             return None
 
-        # If all values are the same, emit a constant
+        # If every level resolves to the same value, emit a constant. A level
+        # with no value of its own and no default is not "the same value", so
+        # it rules a constant out.
         unique_vals = set(value_map.values())
-        if len(unique_vals) == 1:
+        if len(unique_vals) == 1 and unresolved == 0:
             val = next(iter(unique_vals))
-            return self._literal_expr(key, val, dtype)
+            if default is None or default == val:
+                return self._literal_expr(key, val, dtype)
 
-        # Otherwise, build CASE WHEN
+        # Otherwise build CASE WHEN
         whens = []
         for def_key, resolved in value_map.items():
             escaped_key = def_key.replace("'", "''")
@@ -2057,9 +2222,10 @@ class VirtualDB:
             whens.append(f"WHEN {field} = '{escaped_key}' " f"THEN '{escaped_val}'")
         case_sql = " ".join(whens)
         missing = self.config.missing_value_labels.get(key)
-        if missing is not None:
-            escaped_missing = missing.replace("'", "''")
-            expr = f"CASE {case_sql} " f"ELSE '{escaped_missing}' END"
+        fallback = default if default is not None else missing
+        if fallback is not None:
+            escaped_fallback = fallback.replace("'", "''")
+            expr = f"CASE {case_sql} " f"ELSE '{escaped_fallback}' END"
         else:
             expr = f"CASE {case_sql} ELSE NULL END"
         if dtype == "numeric":
@@ -2125,10 +2291,7 @@ class VirtualDB:
             )
             return None
 
-        if isinstance(raw, list):
-            raw = raw[0] if len(raw) == 1 else ", ".join(str(v) for v in raw)
-
-        resolved = self._resolve_alias(key, str(raw))
+        resolved = self._format_condition_value(key, raw)
         return self._literal_expr(key, resolved, dtype)
 
     @staticmethod

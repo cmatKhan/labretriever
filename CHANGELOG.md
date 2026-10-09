@@ -1,5 +1,30 @@
 # Changelog
 
+## [1.1.5] - Unreleased
+
+### Fixed
+
+- Field+path property mappings (`field: condition, path: ...`) now follow the
+  precedence documented for experimental conditions: field-level over config-level
+  over top-level. A level whose definition omits the mapped path takes the
+  config-level, else top-level, `experimental_conditions` value, as do values that
+  have no definition at all. Previously a level that omitted the path was ignored,
+  and when the levels that did state it agreed the column became a constant for
+  every sample. A single level stating a value therefore applied it to all
+  samples: in the yeast collection `Temperature` was `37` for all 352 Harbison
+  samples, because only the `HEAT` condition states a temperature, and is now `30`
+  except for `HEAT`. Without a default, a level that omits the path still falls
+  back to `missing_value_labels`, or NULL.
+- Field+path mappings find condition definitions that live on an external metadata
+  config (`applies_to`), as column metadata already did. They previously looked
+  only at the data config, so a mapping on a dataset whose condition field is
+  declared on its metadata config produced no column. The data config is still
+  tried first.
+- A list-valued path, such as a carbon source with two compounds, has each element
+  aliased before the elements are joined, so `D-raffinose` and `D-galactose` read
+  `raffinose, galactose` rather than escaping `factor_aliases`. Single values and
+  single-element lists are unchanged. This applies to path-only mappings too.
+
 ## [1.1.3] - 2026-06-16
 
 ### Added
